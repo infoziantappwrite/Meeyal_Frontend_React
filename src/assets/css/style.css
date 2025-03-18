@@ -1845,7 +1845,7 @@ Testimonial Section
     overflow: hidden;
     text-align: center;
     padding: 50px 0;
-    background: url(assets/images/testimonial/bg-test.png) center center no-repeat;
+    background: url(../../../public/assets/images/testimonial/bg-test.png) center center no-repeat;
     background-size: cover;
     color: var(--secondary-color);
     z-index: 1;
