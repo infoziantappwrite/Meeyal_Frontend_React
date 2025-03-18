@@ -38,7 +38,7 @@ const NavBar = () => {
   }, []);
 
   return (
-    <div className="blog-section">
+    <div className="Navbar-section">
       <div id="top">
         <div className="container">
           <div className="top-left">

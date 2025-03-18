@@ -26,6 +26,26 @@ const Shop = () => {
                 { id: 10, name: "Konard Saree" }
             ]
         },
+        {
+            category: "Banarasi Saree",
+            subcategories: [
+                { id: 1, name: "Net Saree" },
+                { id: 2, name: "Kasavu Saree" },
+                { id: 3, name: "Patola Saree" },
+                { id: 4, name: "Paithani Saree" },
+                { id: 5, name: "Bandhani Saree" }
+            ]
+        },
+        {
+            category: "Chanderi Saree",
+            subcategories: [
+                { id: 6, name: "Gadwal Saree" },
+                { id: 7, name: "Clove" },
+                { id: 8, name: "Phulkari Saree" },
+                { id: 9, name: "Puttapaka Saree" },
+                { id: 10, name: "Konard Saree" }
+            ]
+        },
     ];
 
     const [isDropdownOpen, setDropdownOpen] = useState(false);
@@ -56,6 +76,7 @@ const Shop = () => {
                                                         <ul style={{ listStyle: "square" }}>
                                                             {category.subcategories.map((sub) => (
                                                                 <li key={sub.id}>
+                                                                    
                                                                     {/* 🔹 Navigate to /shop/SingplesareePage/id */}
                                                                     <button className="sub-item-btn"
                                                                         onClick={() => navigate(`/shop/SingplesareePage/${sub.id}`)}>

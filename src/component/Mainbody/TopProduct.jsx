@@ -4,60 +4,71 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import { useNavigate } from "react-router-dom";
 import { useCurrency } from "../../CurrencyContext";
-import { databases, storage, DatabaseId, ProdcutsCollectionId, BucketId } from "../../appwriteConfig"; 
+import { databases, DatabaseId, ProductsCollectionId, account } from "../../appwriteConfig";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import "bootstrap/dist/css/bootstrap.min.css"; 
+import "bootstrap/dist/css/bootstrap.min.css";
 import "./Mainbody.css";
 
 const TopProduct = () => {
-    const [activeTab, setActiveTab] = useState("featured");
-    const [products, setProducts] = useState({ featured: [], latest: [], bestseller: [] });
+    const [activeTab, setActiveTab] = useState("latest");
+    const [products, setProducts] = useState({latest: [], onsale: [], featured: [], bestseller: [] });
     const swiperRefs = useRef({});
     const navigate = useNavigate();
     const { currency } = useCurrency();
 
+
+
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await databases.listDocuments(DatabaseId, ProdcutsCollectionId);
-    
+                const response = await databases.listDocuments(DatabaseId, ProductsCollectionId);
+                console.log(response.documents);
+
                 const fetchedProducts = await Promise.all(response.documents.map(async (doc) => {
-                    let imageUrl = "https://dummyimage.com/300";  // Default placeholder image
+                    let imageUrl = "https://dummyimage.com/300"; // Default placeholder image
 
                     if (Array.isArray(doc.productimages) && doc.productimages.length > 0) {
-                        const fileId = doc.productimages[0]; 
-                        imageUrl = fileId
+                        imageUrl = doc.productimages[0]?.imageurl;
                     }
 
                     return {
                         id: doc.$id,
                         title: doc.productname,
+                        description: doc.details, // Full details of the product
                         discountPrice: doc.discountprice,
                         originalPrice: doc.originalprice,
                         stock: doc.stock,
+                        status: doc.status,
+                        sold: doc.sold,
+                        createdAt: doc.$createdAt,
+                        updatedAt: doc.$updatedAt,
                         image: imageUrl,
-                        category: doc.categories || "featured",
+                        category: doc.categories?.name || "Uncategorized",
+                        subcategory: doc.subcategories?.name || "Uncategorized",
+                        permissions: doc.$permissions,
+                        productImages: doc.productimages.map(img => img.imageurl),
                     };
                 }));
 
-              
-
-    
                 setProducts({
-                    featured: fetchedProducts.filter(p => p.category === "featured"),
-                    latest: fetchedProducts.filter(p => p.category === "latest"),
-                    bestseller: fetchedProducts.filter(p => p.category === "bestseller"),
+                    latest: fetchedProducts
+                        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sort by createdAt (newest first)
+                        .slice(0, 10), // Take the top 10
+                    onSale: fetchedProducts.filter(p => p.status === "on_sale"),
+                    featured: fetchedProducts.filter(p => p.status === "featured"),
+                    bestseller: fetchedProducts.filter(p => p.status === "bestseller"),
                 });
-    
+
             } catch (error) {
                 console.error("Error fetching products:", error);
             }
         };
-    
+
         fetchProducts();
     }, []);
-    
+
+
 
     return (
         <div className="top-product">
@@ -69,7 +80,7 @@ const TopProduct = () => {
                                 <h3>Top Products</h3>
                             </div>
 
-                            <Tab.Container defaultActiveKey="featured">
+                            <Tab.Container defaultActiveKey="latest">
                                 <Nav variant="tabs" className="vipodha-tabs section">
                                     <ul className="nav nav-tabs" id="myTab" role="tablist">
                                         {Object.keys(products).map(category => (
@@ -133,10 +144,10 @@ const TopProduct = () => {
                                                                             <div className="product-thumb transition">
                                                                                 <div className="image">
                                                                                     <a href="#" className="thumb-image" onClick={e => e.preventDefault()}>
-                                                                                        <img 
-                                                                                            src={product.image} 
-                                                                                            alt="Product" 
-                                                                                            onError={(e) => e.target.src = "https://dummyimage.com/300"} 
+                                                                                        <img
+                                                                                            src={product.image}
+                                                                                            alt="Product"
+                                                                                            onError={(e) => e.target.src = "https://dummyimage.com/300"}
                                                                                         />
                                                                                     </a>
                                                                                     <div className="button-group">
