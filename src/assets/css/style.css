@@ -3428,7 +3428,7 @@ Breadcrumb Title
     text-align: center;
     padding: 100px 0;
     margin-bottom: 50px;
-    background: url(assets/images/banners/breadcrumb_img.png);
+    background: url(../../../public/assets/images/banners/breadcrumb_img.png);
     background-size: cover !important;
 }
 .breadcrumb-main .page-title {
