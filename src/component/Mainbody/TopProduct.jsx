@@ -4,7 +4,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import { useNavigate } from "react-router-dom";
 import { useCurrency } from "../../CurrencyContext";
-import { databases, storage, DatabaseId, CollectionId, BucketId } from "../../appwriteConfig"; 
+import { databases, storage, DatabaseId, ProdcutsCollectionId, BucketId } from "../../appwriteConfig"; 
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "bootstrap/dist/css/bootstrap.min.css"; 
@@ -20,7 +20,7 @@ const TopProduct = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await databases.listDocuments(DatabaseId, CollectionId);
+                const response = await databases.listDocuments(DatabaseId, ProdcutsCollectionId);
     
                 const fetchedProducts = await Promise.all(response.documents.map(async (doc) => {
                     let imageUrl = "https://dummyimage.com/300";  // Default placeholder image
