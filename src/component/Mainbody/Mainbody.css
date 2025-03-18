@@ -1,0 +1,192 @@
+.banner-section{
+  /* Custom Previous Button */
+/* Custom Previous Button */
+.owl-prev, .owl-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  padding: 10px 15px;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 10;
+  border-radius: 50%;
+  transition: background 0.3s;
+}
+
+.owl-prev {
+  left: 10px;
+}
+
+.owl-next {
+  right: 10px;
+}
+
+.owl-prev:hover,
+.owl-next:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+}
+
+
+/* TopProduct.css */
+
+.top-product{
+  .container{
+    position: relative;
+  }
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 5 items per row */
+    gap: 20px;
+    position: relative;
+    padding: 20px 0; /* Add padding to prevent overlap */
+  }
+  
+  .product-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .custom-navigation {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    transform: translateY(-50%);
+    z-index: 10; /* Ensure buttons appear above content */
+  }
+  
+  .owl-prev, .owl-next {
+    /* background: #d8e029;  ✅ Yellowish background */
+    background-color: rgba(14, 13, 13, 0.597);
+    color: white;         /* ✅ Arrow color */
+    border: none;
+    width: 45px;          /* ✅ Circle size */
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;  /* ✅ Makes it circular */
+    cursor: pointer;
+    font-size: 20px;
+    position: absolute;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); /* ✅ Adds a slight shadow */
+    transition: background 0.3s ease-in-out;
+}
+
+.owl-prev:hover, .owl-next:hover {
+  background: #c5cd23a9; 
+}
+  
+  .owl-prev {
+    left: -40px; /* Adjust based on design */
+  }
+  
+  .owl-next {
+    right: -40px; /* Adjust based on design */
+  }
+
+
+  /* ✅ Adjust grid for tablets */
+@media (max-width: 1024px) {
+  .grid-container {
+    grid-template-columns: repeat(3, 1fr); /* Tablets: 3 items per row */
+  }
+}
+
+/* ✅ Adjust grid for mobile */
+@media (max-width: 768px) {
+  .grid-container {
+    grid-template-columns: repeat(2, 1fr); /* Mobile: 2 items per row */
+  }
+}
+
+@media (max-width: 480px) {
+  .grid-container {
+    grid-template-columns: repeat(1, 1fr); /* Smallest screens: 1 item per row */
+  }
+}
+
+/* ✅ Center products on small screens */
+.product-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ✅ Swiper Navigation Buttons */
+.custom-navigation {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  transform: translateY(-50%);
+  z-index: 10;
+}
+
+/* ✅ Style for navigation buttons */
+.owl-prev,
+.owl-next {
+  background-color: rgba(14, 13, 13, 0.597);
+  color: white;
+  border: none;
+  width: 40px; 
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  position: absolute;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  transition: background 0.3s ease-in-out;
+}
+
+/* ✅ Adjust button position for smaller screens */
+@media (max-width: 768px) {
+  .owl-prev, .owl-next {
+    width: 35px;
+    height: 35px;
+    font-size: 16px;
+  }
+
+  .owl-prev {
+    left: 10px;  /* Move inside on small screens */
+  }
+
+  .owl-next {
+    right: 10px; /* Move inside on small screens */
+  }
+}
+
+/* ✅ Adjust price & text size */
+.product-description h4 {
+  font-size: 1rem; /* Default */
+}
+
+@media (max-width: 768px) {
+  .product-description h4 {
+    font-size: 0.9rem; /* Reduce on mobile */
+  }
+}
+
+.price {
+  font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+  .price {
+    font-size: 0.9rem;
+  }
+}
+  
+}
