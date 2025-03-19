@@ -3,7 +3,7 @@ import React, { createContext, useState, useContext } from "react";
 const CurrencyContext = createContext();
 
 export const CurrencyProvider = ({ children }) => {
-  const [currency, setCurrency] = useState({ symbol: "$", label: "US Dollar", rate: 1 });
+  const [currency, setCurrency] = useState({ symbol: "₹", label: "Indian Rupee", rate: 1 });
 
   const changeCurrency = (newCurrency) => {
     setCurrency(newCurrency);

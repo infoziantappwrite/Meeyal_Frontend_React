@@ -4,10 +4,10 @@ import { useCurrency } from "../../CurrencyContext";
 
 // Dropdown Data
 const currencies = [
-  { symbol: "€", label: "Euro", rate: 0.92 },
-  { symbol: "£", label: "Pound Sterling", rate: 0.78 },
-  { symbol: "$", label: "US Dollar", rate: 1 },
-  { symbol: "₹", label: "Indian Rupee", rate: 83.05 },
+  { symbol: "€", label: "Euro", rate: 1 / 0.92 * 83.05 }, 
+  { symbol: "£", label: "Pound Sterling", rate: 1 / 0.78 * 83.05 },
+  { symbol: "$", label: "US Dollar", rate: 83.05 }, 
+  { symbol: "₹", label: "Indian Rupee", rate: 1 },
 ];
 
 

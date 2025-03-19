@@ -23,8 +23,8 @@ const TopProduct = () => {
         const fetchProducts = async () => {
             try {
                 const response = await databases.listDocuments(DatabaseId, ProductsCollectionId);
-                console.log(response.documents);
 
+                
                 const fetchedProducts = await Promise.all(response.documents.map(async (doc) => {
                     let imageUrl = "https://dummyimage.com/300"; // Default placeholder image
 
@@ -176,7 +176,7 @@ const TopProduct = () => {
                                                                                     </h4>
                                                                                     <p className="price">
                                                                                         <span className="original-price">
-                                                                                            {currency.symbol} {(product.originalPrice * currency.rate).toFixed(2)}
+                                                                                            {currency.symbol} {(product.originalPrice / currency.rate).toFixed(2)}
                                                                                         </span>
                                                                                     </p>
                                                                                 </div>
