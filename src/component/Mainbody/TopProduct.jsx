@@ -57,8 +57,12 @@ const TopProduct = () => {
                         .slice(0, 10), // Take the top 10
                     onSale: fetchedProducts.filter(p => p.status === "on_sale"),
                     featured: fetchedProducts.filter(p => p.status === "featured"),
-                    bestseller: fetchedProducts.filter(p => p.status === "bestseller"),
+                    bestseller: fetchedProducts
+                    .sort((a, b) => b.sold - a.sold) 
+                    .slice(0, 10),
+                    
                 });
+
 
             } catch (error) {
                 console.error("Error fetching products:", error);
