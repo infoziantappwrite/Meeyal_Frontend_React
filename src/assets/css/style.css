@@ -966,7 +966,7 @@ tr:last-child td.cart-total-price:last-child {
         font-size: 16px;
     }
     #logo img {
-        max-width: 120px !important; 
+        min-width: 50px !important; 
     }
     .top-left,
     #top .dropdown-toggle{

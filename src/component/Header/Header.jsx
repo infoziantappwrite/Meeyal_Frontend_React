@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { FaBars, FaTimes } from "react-icons/fa"; // Import icons
+import { FaHome, FaShoppingBag, FaInfoCircle, FaPhone, FaTimes, FaBars } from "react-icons/fa"; // Import icons
 import { Link } from "react-router-dom";
 import "./Header.css";
-import Blog from "./NavBar";
-import Home from "./Button/Home";
+import NavBar from "./NavBar";
 import Shop from "./Button/Shop";
 import Search from "./Button/Search";
 import Admin from "./Button/Admin";
@@ -42,8 +41,8 @@ const Header = () => {
     }, []);
 
     return (
-        <div>
-            <Blog />
+        <div className="top-nav">
+            <NavBar />
 
             <div className="header-section">
                 <header className={`main-header ${isSticky ? "sticky" : ""}`}>

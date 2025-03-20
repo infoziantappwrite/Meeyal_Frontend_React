@@ -47,7 +47,7 @@ const Shop = () => {
         >
             <div className={`with-sub-menu ${isDropdownOpen ? "open" : ""}`}>
                
-                    Shop <b className={`fa ${isDropdownOpen ? "fa-angle-up" : "fa-angle-down"}`}></b>
+                  <p>Shop <b className={`fa ${isDropdownOpen ? "fa-angle-up" : "fa-angle-down"}`}></b></p> 
                 {/* Submenu */}
                 <div className="sub-menu">
                     <div className="categories">
