@@ -136,7 +136,7 @@ const TopProduct = () => {
                                                     </div>
 
                                                     <Swiper
-                                                    
+
                                                         modules={[Navigation, Pagination]}
                                                         navigation={false}
                                                         pagination={{ clickable: true }}
@@ -149,56 +149,58 @@ const TopProduct = () => {
                                                                 <div className="grid-container">
                                                                     {chunk.map(product => (
                                                                         <div key={product.id} className="product-layout">
-                                                                            <div className="product-thumb transition">
-                                                                                <div className={`image ${product.sold === 0 ? "out-of-stock" : ""}`}>
-                                                                                    {products["onSale"].some(p => p.id === product.id) && (
-                                                                                        <span className="badge sale-badge">On Sale</span>
-                                                                                    )}
-                                                                                    {products["featured"].some(p => p.id === product.id) && (
-                                                                                        <span className="badge featured-badge">Featured</span>
-                                                                                    )}
+                                                                            <div className="product-card">
+                                                                                <div className="product-thumb transition">
+                                                                                    <div className={`image ${product.sold === 0 ? "out-of-stock" : ""}`}>
+                                                                                        {products["onSale"].some(p => p.id === product.id) && (
+                                                                                            <span className="badge sale-badge">On Sale</span>
+                                                                                        )}
+                                                                                        {products["featured"].some(p => p.id === product.id) && (
+                                                                                            <span className="badge featured-badge">Featured</span>
+                                                                                        )}
 
-                                                                                    <a href="#" className="thumb-image" onClick={e => e.preventDefault()}>
-                                                                                        <img
-                                                                                            src={product.image}
-                                                                                            alt="Product"
-                                                                                            onError={(e) => e.target.src = "https://dummyimage.com/300"}
-                                                                                        />
-                                                                                    </a>
+                                                                                        <a href="#" className="thumb-image" onClick={e => e.preventDefault()}>
+                                                                                            <img
+                                                                                                src={product.image}
+                                                                                                alt="Product"
+                                                                                                onError={(e) => e.target.src = "https://dummyimage.com/300"}
+                                                                                            />
+                                                                                        </a>
 
-                                                                                    {product.sold === 0 && <div className="overlay"><span>Sold Out</span></div>}
+                                                                                        {product.sold === 0 && <div className="overlay"><span>Sold Out</span></div>}
 
-                                                                                    <div className="button-group">
-                                                                                        <button className="addcart" type="button" title="Add to Cart" disabled={product.sold === 0}>
-                                                                                            <i className="icon-bag"></i>
-                                                                                        </button>
-                                                                                        <button className="wishlist" type="button" title="Add to wishlist" disabled={product.sold === 0}>
-                                                                                            <i className="icon-like"></i>
-                                                                                        </button>
-                                                                                        <button
-                                                                                            className="vipodha_quickview-button"
-                                                                                            type="button"
-                                                                                            title="Quickview"
-                                                                                            onClick={() => navigate(`/shop/SingplesareePage/${product.id}`)}
-                                                                                            disabled={product.sold === 0}
-                                                                                        >
-                                                                                            <i className="icon-eye"></i>
-                                                                                        </button>
-                                                                                        <button className="compare" type="button" title="Compare" disabled={product.sold === 0}>
-                                                                                            <i className="icon-shuffle-arrows"></i>
-                                                                                        </button>
+                                                                                        <div className="button-group">
+                                                                                            <button className="addcart" type="button" title="Add to Cart" disabled={product.sold === 0}>
+                                                                                                <i className="icon-bag"></i>
+                                                                                            </button>
+                                                                                            <button className="wishlist" type="button" title="Add to wishlist" disabled={product.sold === 0}>
+                                                                                                <i className="icon-like"></i>
+                                                                                            </button>
+                                                                                            <button
+                                                                                                className="vipodha_quickview-button"
+                                                                                                type="button"
+                                                                                                title="Quickview"
+                                                                                                onClick={() => navigate(`/shop/SingplesareePage/${product.id}`)}
+                                                                                                disabled={product.sold === 0}
+                                                                                            >
+                                                                                                <i className="icon-eye"></i>
+                                                                                            </button>
+                                                                                            <button className="compare" type="button" title="Compare" disabled={product.sold === 0}>
+                                                                                                <i className="icon-shuffle-arrows"></i>
+                                                                                            </button>
+                                                                                        </div>
                                                                                     </div>
-                                                                                </div>
 
-                                                                                <div className="product-description">
-                                                                                    <h4 className="product-title">
-                                                                                        <a href="#">{product.title}</a>
-                                                                                    </h4>
-                                                                                    <p className="price">
-                                                                                        <span className="original-price">
-                                                                                            {currency.symbol} {(product.originalPrice / currency.rate).toFixed(2)}
-                                                                                        </span>
-                                                                                    </p>
+                                                                                    <div className="product-description">
+                                                                                        <h4 className="product-title">
+                                                                                            <a href="#">{product.title}</a>
+                                                                                        </h4>
+                                                                                        <p className="price">
+                                                                                            <span className="original-price">
+                                                                                                {currency.symbol} {(product.originalPrice / currency.rate).toFixed(2)}
+                                                                                            </span>
+                                                                                        </p>
+                                                                                    </div>
                                                                                 </div>
                                                                             </div>
                                                                         </div>

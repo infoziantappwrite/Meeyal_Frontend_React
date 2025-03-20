@@ -16,6 +16,7 @@ import RegisterPage from "./component/Pages/RegAndLogin/RegisterPage";
 import SingleSareePage from "./component/Pages/SingleSareePage";
 import ProtectedRoute from "./ProtectedRoute";
 import { ToastContainer } from "react-toastify";
+import SinglePage from "./component/Pages/SinglePage";
 
 // ✅ 404 Not Found Component
 const NotFound = () => (
@@ -46,7 +47,8 @@ const AppLayout = () => {
        
 
         <Route element={<ProtectedRoute />}>
-        <Route path="/shop/SingplesareePage/:id" element={<SingleSareePage />} />
+        {/* <Route path="/shop/SingplesareePage/:id" element={<SingleSareePage />} /> */}
+         <Route path="/shop/SingplesareePage/:id" element={<SinglePage />} />
         </Route>
 
 
