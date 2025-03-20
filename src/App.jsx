@@ -1,5 +1,5 @@
 import React from "react";
-import { HashRouter  as Router, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter  as Router, Routes, Route, useLocation } from "react-router-dom";
 import Header from "./component/Header/Header";
 import Mainbody from "./component/Mainbody/Mainbody";
 import "./index.css";
@@ -16,6 +16,7 @@ import RegisterPage from "./component/Pages/RegAndLogin/RegisterPage";
 import SingleSareePage from "./component/Pages/SingleSareePage";
 import ProtectedRoute from "./ProtectedRoute";
 import { ToastContainer } from "react-toastify";
+import SinglePage from "./component/Pages/SinglePage";
 
 // ✅ 404 Not Found Component
 const NotFound = () => (
@@ -43,7 +44,8 @@ const AppLayout = () => {
         <Route path="/login" element={<LoginPage />} /> {/* ✅ Add Login Page Route */}
         <Route path="/register" element={<RegisterPage />} /> {/* ✅ Add Register Page Route */}
         <Route element={<ProtectedRoute />}>
-        <Route path="/shop/SingplesareePage/:id" element={<SingleSareePage />} />
+        {/* <Route path="/shop/SingplesareePage/:id" element={<SingleSareePage />} /> */}
+         <Route path="/shop/SingplesareePage/:id" element={<SinglePage />} />
         </Route>
 
 

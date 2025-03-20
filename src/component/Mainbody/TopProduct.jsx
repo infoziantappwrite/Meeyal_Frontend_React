@@ -53,7 +53,8 @@ const TopProduct = () => {
 
                 setProducts({
                     latest: fetchedProducts
-                        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)), // Sort by createdAt (newest first)
+                        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sort by createdAt (newest first)
+                        .slice(0, 20),
                     onSale: fetchedProducts.filter(p => p.status === "on_sale"),
                     featured: fetchedProducts.filter(p => p.status === "featured"),
                     bestseller: fetchedProducts
@@ -87,21 +88,24 @@ const TopProduct = () => {
                                 <Nav variant="tabs" className="vipodha-tabs section">
                                     <ul className="nav nav-tabs" id="myTab" role="tablist">
                                         {Object.keys(products).map(category => (
-                                            <li className="nav-item" role="presentation" key={category}>
-                                                <Nav.Link
-                                                    className={`nav-link hscp-hover ${activeTab === category ? "active" : ""}`}
-                                                    id={`${category}-tab`}
-                                                    onClick={() => setActiveTab(category)}
-                                                    role="tab"
-                                                    aria-controls={category}
-                                                    aria-selected={activeTab === category}
-                                                    eventKey={category.toLowerCase()}
-                                                >
-                                                    <span>{category.charAt(0).toUpperCase() + category.slice(1)}</span>
-                                                </Nav.Link>
-                                            </li>
+                                            category.toLowerCase() !== "onsale" && (
+                                                <li className="nav-item" role="presentation" key={category}>
+                                                    <Nav.Link
+                                                        className={`nav-link hscp-hover ${activeTab === category ? "active" : ""}`}
+                                                        id={`${category}-tab`}
+                                                        onClick={() => setActiveTab(category)}
+                                                        role="tab"
+                                                        aria-controls={category}
+                                                        aria-selected={activeTab === category}
+                                                        eventKey={category.toLowerCase()}
+                                                    >
+                                                        <span>{category.charAt(0).toUpperCase() + category.slice(1)}</span>
+                                                    </Nav.Link>
+                                                </li>
+                                            )
                                         ))}
                                     </ul>
+
                                 </Nav>
 
                                 <Tab.Content>
@@ -132,8 +136,9 @@ const TopProduct = () => {
                                                     </div>
 
                                                     <Swiper
+
                                                         modules={[Navigation, Pagination]}
-                                                        navigation
+                                                        navigation={false}
                                                         pagination={{ clickable: true }}
                                                         spaceBetween={20}
                                                         slidesPerView={1}
@@ -144,56 +149,58 @@ const TopProduct = () => {
                                                                 <div className="grid-container">
                                                                     {chunk.map(product => (
                                                                         <div key={product.id} className="product-layout">
-                                                                            <div className="product-thumb transition">
-                                                                                <div className={`image ${product.sold === 0 ? "out-of-stock" : ""}`}>
-                                                                                    {products["onSale"].some(p => p.id === product.id) && (
-                                                                                        <span className="badge sale-badge">On Sale</span>
-                                                                                    )}
-                                                                                    {products["featured"].some(p => p.id === product.id) && (
-                                                                                        <span className="badge featured-badge">Featured</span>
-                                                                                    )}
+                                                                            <div className="product-card">
+                                                                                <div className="product-thumb transition">
+                                                                                    <div className={`image ${product.sold === 0 ? "out-of-stock" : ""}`}>
+                                                                                        {products["onSale"].some(p => p.id === product.id) && (
+                                                                                            <span className="badge sale-badge">On Sale</span>
+                                                                                        )}
+                                                                                        {products["featured"].some(p => p.id === product.id) && (
+                                                                                            <span className="badge featured-badge">Featured</span>
+                                                                                        )}
 
-                                                                                    <a href="#" className="thumb-image" onClick={e => e.preventDefault()}>
-                                                                                        <img
-                                                                                            src={product.image}
-                                                                                            alt="Product"
-                                                                                            onError={(e) => e.target.src = "https://dummyimage.com/300"}
-                                                                                        />
-                                                                                    </a>
+                                                                                        <a href="#" className="thumb-image" onClick={e => e.preventDefault()}>
+                                                                                            <img
+                                                                                                src={product.image}
+                                                                                                alt="Product"
+                                                                                                onError={(e) => e.target.src = "https://dummyimage.com/300"}
+                                                                                            />
+                                                                                        </a>
 
-                                                                                    {product.sold === 0 && <div className="overlay"><span>Sold Out</span></div>}
+                                                                                        {product.sold === 0 && <div className="overlay"><span>Sold Out</span></div>}
 
-                                                                                    <div className="button-group">
-                                                                                        <button className="addcart" type="button" title="Add to Cart" disabled={product.sold === 0}>
-                                                                                            <i className="icon-bag"></i>
-                                                                                        </button>
-                                                                                        <button className="wishlist" type="button" title="Add to wishlist" disabled={product.sold === 0}>
-                                                                                            <i className="icon-like"></i>
-                                                                                        </button>
-                                                                                        <button
-                                                                                            className="vipodha_quickview-button"
-                                                                                            type="button"
-                                                                                            title="Quickview"
-                                                                                            onClick={() => navigate(`/shop/SingplesareePage/${product.id}`)}
-                                                                                            disabled={product.sold === 0}
-                                                                                        >
-                                                                                            <i className="icon-eye"></i>
-                                                                                        </button>
-                                                                                        <button className="compare" type="button" title="Compare" disabled={product.sold === 0}>
-                                                                                            <i className="icon-shuffle-arrows"></i>
-                                                                                        </button>
+                                                                                        <div className="button-group">
+                                                                                            <button className="addcart" type="button" title="Add to Cart" disabled={product.sold === 0}>
+                                                                                                <i className="icon-bag"></i>
+                                                                                            </button>
+                                                                                            <button className="wishlist" type="button" title="Add to wishlist" disabled={product.sold === 0}>
+                                                                                                <i className="icon-like"></i>
+                                                                                            </button>
+                                                                                            <button
+                                                                                                className="vipodha_quickview-button"
+                                                                                                type="button"
+                                                                                                title="Quickview"
+                                                                                                onClick={() => navigate(`/shop/SingplesareePage/${product.id}`)}
+                                                                                                disabled={product.sold === 0}
+                                                                                            >
+                                                                                                <i className="icon-eye"></i>
+                                                                                            </button>
+                                                                                            <button className="compare" type="button" title="Compare" disabled={product.sold === 0}>
+                                                                                                <i className="icon-shuffle-arrows"></i>
+                                                                                            </button>
+                                                                                        </div>
                                                                                     </div>
-                                                                                </div>
 
-                                                                                <div className="product-description">
-                                                                                    <h4 className="product-title">
-                                                                                        <a href="#">{product.title}</a>
-                                                                                    </h4>
-                                                                                    <p className="price">
-                                                                                        <span className="original-price">
-                                                                                            {currency.symbol} {(product.originalPrice / currency.rate).toFixed(2)}
-                                                                                        </span>
-                                                                                    </p>
+                                                                                    <div className="product-description">
+                                                                                        <h4 className="product-title">
+                                                                                            <a href="#">{product.title}</a>
+                                                                                        </h4>
+                                                                                        <p className="price">
+                                                                                            <span className="original-price">
+                                                                                                {currency.symbol} {(product.originalPrice / currency.rate).toFixed(2)}
+                                                                                            </span>
+                                                                                        </p>
+                                                                                    </div>
                                                                                 </div>
                                                                             </div>
                                                                         </div>

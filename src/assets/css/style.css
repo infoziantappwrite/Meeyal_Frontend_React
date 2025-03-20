@@ -40,6 +40,14 @@ p {
     margin: 0 0 10px;
 }
 
+/* Banner-section */
+
+@media (max-width: 480px){
+    .img-fluid {
+        height: 200px;
+}
+}
+
 /*----- 
 buttons 
 -----*/
@@ -1116,12 +1124,12 @@ Service Section
         padding: 10px 20px;
     }
     .service-icon-foor {
-        height: 60px;
-        min-width: 60px;
-        width: 60px;
-        line-height: 60px;
-        margin-right: 10px;
-        font-size: 28px;
+        height: 40px;
+        min-width: 40px;
+        width: 40px;
+        line-height: 40px;
+        margin-right: 6px;
+        font-size: 16px;
     }
 }
 /*-----
@@ -1223,7 +1231,7 @@ Products
     text-align: center;
     overflow: hidden;
     margin: 0;
-    border-radius: 20px;
+    border-radius: 10px;
 }
 .product-thumb .image .swap-image {
     left: 0;

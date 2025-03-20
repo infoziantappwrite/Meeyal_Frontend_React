@@ -14,10 +14,9 @@ const Shop = () => {
             const subcategoriesResponse = await databases.listDocuments(DatabaseId, subcategoriesCollectionId);
             const subcategories = subcategoriesResponse.documents;
 
-            console.log("Subcategories:", subcategories);
 
-            // Extract unique category names from subcategories
-            const categoryNames = [...new Set(subcategories.map((sub) => sub.categories.name))];
+            const categoryName = [...new Set(subcategories.map((sub) => sub.categories.name))];
+           
 
             // Match subcategories with their respective category
             const formattedCategories = categoryNames.map((category) => ({

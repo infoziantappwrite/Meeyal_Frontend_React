@@ -4,9 +4,9 @@ import { useCurrency } from "../../CurrencyContext";
 
 // Dropdown Data
 const currencies = [
-  { symbol: "€", label: "Euro", rate: 1 / 0.92 * 83.05 }, 
+  { symbol: "€", label: "Euro", rate: 1 / 0.92 * 83.05 },
   { symbol: "£", label: "Pound Sterling", rate: 1 / 0.78 * 83.05 },
-  { symbol: "$", label: "US Dollar", rate: 83.05 }, 
+  { symbol: "$", label: "US Dollar", rate: 83.05 },
   { symbol: "₹", label: "Indian Rupee", rate: 1 },
 ];
 
@@ -16,7 +16,7 @@ const NavBar = () => {
   const { currency, changeCurrency } = useCurrency();
   const [currencyOpen, setCurrencyOpen] = useState(false);
   const [languageOpen, setLanguageOpen] = useState(false);
- 
+
   const currencyRef = useRef(null);
   const languageRef = useRef(null);
 
@@ -55,7 +55,10 @@ const NavBar = () => {
               <div className="btn-group">
                 <button
                   className="btn btn-link dropdown-toggle"
-                  onClick={() => setCurrencyOpen(!currencyOpen)}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent event bubbling
+                    setCurrencyOpen(!currencyOpen);
+                  }}
                 >
                   <span className="symbol">{currency.symbol}</span>
                   <span className="drop-text">Currency</span>
