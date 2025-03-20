@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { FaBars, FaTimes } from "react-icons/fa"; // Import icons
+import { Link } from "react-router-dom";
 import "./Header.css";
 import Blog from "./NavBar";
 import Home from "./Button/Home";
@@ -10,9 +12,18 @@ import Card from "./Button/Card";
 
 
 const Header = () => {
-            
-    const [isSticky, setIsSticky] = useState(false);
 
+    const [isSticky, setIsSticky] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
+    const [showNav, setShowNav] = useState(false);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 993);
+
+    // ✅ Detect screen width and update state
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth < 993);
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
 
     useEffect(() => {
@@ -38,7 +49,7 @@ const Header = () => {
                 <header className={`main-header ${isSticky ? "sticky" : ""}`}>
                     <div className="container">
                         <div className="header-inner">
-                            
+
                             <div className="header-left">
                                 <div id="logo">
                                     <a href="index.html">
@@ -49,23 +60,22 @@ const Header = () => {
                             <div className="header-center">
                                 <div className="vipodha_megamenu-style-dev">
                                     <div className="responsive vipodha_default">
-
                                         <div className="navbar-default">
-                                            <div className=" container-vipodha_megamenu   horizontal ">
-
+                                            <div className="container-vipodha_megamenu horizontal">
                                                 <div className="vipodha_megamenu-wrapper megamenu_typeheader">
+                                                    {/* Mobile Menu Icon */}
+                                                    <div className="menu-icon" onClick={() => setIsOpen(!isOpen)}>
+                                                        {isOpen ? <FaTimes className="close-icon" /> : <FaBars className="bar-icon" />}
+                                                    </div>
 
-                                                    <span id="remove-vipodha_megamenu" className="fa fa-times"></span>
-
-                                                    <div className="vipodha_megamenu-pattern">
-                                                        <div className="container">
-                                                            <ul className="vipodha_megamenu" data-megamenuid="55" data-transition="slide" data-animationtime="500">
-                                                                {/* Home Link */}
-                                                              <Home />
-                                                                {/* Shop Dropdown */}
-                                                               <Shop />
-                                                            </ul>
-                                                        </div>
+                                                    {/* Navigation Links */}
+                                                    <div className={`nav-links ${isOpen ? "open" : ""}`}>
+                                                        <ul className="vipodha_megamenu">
+                                                            <li className="li"><Link to="/" onClick={() => setShowNav(false)}>Home</Link></li>
+                                                            <li className="li"><a><Shop></Shop></a></li>
+                                                            <li className="li"><Link to="/about" onClick={() => setShowNav(false)}>About</Link></li>
+                                                            <li className="li"><Link to="/contact" onClick={() => setShowNav(false)}>Contact</Link></li>
+                                                        </ul>
                                                     </div>
                                                 </div>
                                             </div>
@@ -75,13 +85,27 @@ const Header = () => {
                             </div>
 
                             <div className="header-right">
-                               <Search />
-
-                         <Admin />
-                              <Card />
+                                {isMobile && (
+                                    <button className="hamburger-menu" onClick={() => setShowNav(!showNav)}>
+                                        {showNav ? <FaTimes size={24} /> : <FaBars size={24} />}
+                                    </button>
+                                )}
+                                <Search />
+                                <Admin />
+                                <Card />
                             </div>
                         </div>
                     </div>
+                    {showNav && (
+                        <nav className="mobile-nav">
+                            <ul className="ul">
+                                <li className="li"><Link to="/" onClick={() => setShowNav(false)}>Home</Link></li>
+                                <li className="li"><Shop></Shop></li>
+                                <li className="li"><Link to="/about" onClick={() => setShowNav(false)}>About</Link></li>
+                                <li className="li"><Link to="/contact" onClick={() => setShowNav(false)}>Contact</Link></li>
+                            </ul>
+                        </nav>
+                    )}
                 </header>
             </div>
         </div>

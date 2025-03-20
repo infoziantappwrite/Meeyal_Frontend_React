@@ -30,7 +30,6 @@ const AppLayout = () => {
   const location = useLocation(); // 🔹 Get the current route
 
   // 🔹 Hide Header only on the 404 page
-  const hideHeaderRoutes = ["/404"]; 
   const is404 = !["/", "/shop", "/cart", "/login", "/register"].includes(location.pathname) &&
               !location.pathname.startsWith("/shop/SingplesareePage/");
 
@@ -43,8 +42,6 @@ const AppLayout = () => {
         <Route path="/cart" element={<CartPage />} /> {/* ✅ Add Cart Page Route */}
         <Route path="/login" element={<LoginPage />} /> {/* ✅ Add Login Page Route */}
         <Route path="/register" element={<RegisterPage />} /> {/* ✅ Add Register Page Route */}
-       
-
         <Route element={<ProtectedRoute />}>
         <Route path="/shop/SingplesareePage/:id" element={<SingleSareePage />} />
         </Route>
