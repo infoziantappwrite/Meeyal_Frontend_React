@@ -15,8 +15,7 @@ const Shop = () => {
             const subcategories = subcategoriesResponse.documents;
 
 
-            const categoryName = [...new Set(subcategories.map((sub) => sub.categories.name))];
-           
+            const categoryNames = [...new Set(subcategories.map((sub) => sub.categories.name))];
 
             // Match subcategories with their respective category
             const formattedCategories = categoryNames.map((category) => ({
