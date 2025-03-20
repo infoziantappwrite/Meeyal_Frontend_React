@@ -109,7 +109,7 @@
 
 @media (max-width: 480px) {
   .grid-container {
-    grid-template-columns: repeat(1, 1fr); /* Smallest screens: 1 item per row */
+    grid-template-columns: repeat(2 , 1fr); /* Smallest screens: 1 item per row */
   }
 }
 
@@ -187,6 +187,50 @@
   .price {
     font-size: 0.9rem;
   }
+}
+
+.badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: white;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 5px;
+  z-index: 10;
+}
+
+.sale-badge {
+  background-color: #09c12e; /* Red for Sale */
+}
+
+.featured-badge {
+  background-color: #00b3ff; /* Yellow for Featured */
+}
+
+/* Disable interaction if stock is 0 */
+.out-of-stock {
+  position: relative;
+  pointer-events: none; /* Disable clicking */
+  opacity: 0.5; /* Reduce visibility */
+}
+
+/* "Sold Out" overlay */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6); /* Dark semi-transparent overlay */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  text-transform: uppercase;
 }
   
 }

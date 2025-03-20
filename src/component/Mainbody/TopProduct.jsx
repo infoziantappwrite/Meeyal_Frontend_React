@@ -12,7 +12,7 @@ import "./Mainbody.css";
 
 const TopProduct = () => {
     const [activeTab, setActiveTab] = useState("latest");
-    const [products, setProducts] = useState({latest: [], onsale: [], featured: [], bestseller: [] });
+    const [products, setProducts] = useState({ latest: [], onsale: [], featured: [], bestseller: [] });
     const swiperRefs = useRef({});
     const navigate = useNavigate();
     const { currency } = useCurrency();
@@ -24,7 +24,7 @@ const TopProduct = () => {
             try {
                 const response = await databases.listDocuments(DatabaseId, ProductsCollectionId);
 
-                
+
                 const fetchedProducts = await Promise.all(response.documents.map(async (doc) => {
                     let imageUrl = "https://dummyimage.com/300"; // Default placeholder image
 
@@ -53,14 +53,13 @@ const TopProduct = () => {
 
                 setProducts({
                     latest: fetchedProducts
-                        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sort by createdAt (newest first)
-                        .slice(0, 10), // Take the top 10
+                        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)), // Sort by createdAt (newest first)
                     onSale: fetchedProducts.filter(p => p.status === "on_sale"),
                     featured: fetchedProducts.filter(p => p.status === "featured"),
                     bestseller: fetchedProducts
-                    .sort((a, b) => b.sold - a.sold) 
-                    .slice(0, 10),
-                    
+                        .sort((a, b) => b.sold - a.sold)
+                        .slice(0, 10),
+
                 });
 
 
@@ -146,7 +145,14 @@ const TopProduct = () => {
                                                                     {chunk.map(product => (
                                                                         <div key={product.id} className="product-layout">
                                                                             <div className="product-thumb transition">
-                                                                                <div className="image">
+                                                                                <div className={`image ${product.sold === 0 ? "out-of-stock" : ""}`}>
+                                                                                    {products["onSale"].some(p => p.id === product.id) && (
+                                                                                        <span className="badge sale-badge">On Sale</span>
+                                                                                    )}
+                                                                                    {products["featured"].some(p => p.id === product.id) && (
+                                                                                        <span className="badge featured-badge">Featured</span>
+                                                                                    )}
+
                                                                                     <a href="#" className="thumb-image" onClick={e => e.preventDefault()}>
                                                                                         <img
                                                                                             src={product.image}
@@ -154,11 +160,14 @@ const TopProduct = () => {
                                                                                             onError={(e) => e.target.src = "https://dummyimage.com/300"}
                                                                                         />
                                                                                     </a>
+
+                                                                                    {product.sold === 0 && <div className="overlay"><span>Sold Out</span></div>}
+
                                                                                     <div className="button-group">
-                                                                                        <button className="addcart" type="button" title="Add to Cart">
+                                                                                        <button className="addcart" type="button" title="Add to Cart" disabled={product.sold === 0}>
                                                                                             <i className="icon-bag"></i>
                                                                                         </button>
-                                                                                        <button className="wishlist" type="button" title="Add to wishlist">
+                                                                                        <button className="wishlist" type="button" title="Add to wishlist" disabled={product.sold === 0}>
                                                                                             <i className="icon-like"></i>
                                                                                         </button>
                                                                                         <button
@@ -166,14 +175,16 @@ const TopProduct = () => {
                                                                                             type="button"
                                                                                             title="Quickview"
                                                                                             onClick={() => navigate(`/shop/SingplesareePage/${product.id}`)}
+                                                                                            disabled={product.sold === 0}
                                                                                         >
                                                                                             <i className="icon-eye"></i>
                                                                                         </button>
-                                                                                        <button className="compare" type="button" title="Compare">
+                                                                                        <button className="compare" type="button" title="Compare" disabled={product.sold === 0}>
                                                                                             <i className="icon-shuffle-arrows"></i>
                                                                                         </button>
                                                                                     </div>
                                                                                 </div>
+
                                                                                 <div className="product-description">
                                                                                     <h4 className="product-title">
                                                                                         <a href="#">{product.title}</a>
