@@ -37,8 +37,10 @@
         left: 0;
         width: 100%;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        /* Add shadow for effect */
         animation: slideDown 0.3s ease-in-out;
+        border-bottom: #ffc3e6 1px solid;
+        box-shadow: #df53a1;
+        
     }
 
     .sub-menu {
@@ -352,6 +354,7 @@
     margin: 0;
     text-align: left;
     margin-bottom: 1px solid gray;
+   
 }
 
 .mobile-nav .ul .li {
@@ -360,11 +363,18 @@
     border-bottom: #cdcdcd 1px solid;
    
 }
+.mobile-nav ,p{
+    font-size: 20px;
+    margin: 0 !important;
+    font-weight:bolder;
 
-.mobile-nav ul li a {
+}
+
+
+.mobile-nav ul li a ,p{
     text-decoration: none;
     color: #333;
-    font-size: 20px;
+   
     
 }
 
@@ -440,7 +450,9 @@
 
 }
 
+
 .header-section {
+    
 
     /* Main Navigation Container */
     .header-center {

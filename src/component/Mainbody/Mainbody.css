@@ -44,13 +44,9 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 15px;
-    border: 1px solid #d12a8b6e;
-    border-radius: 10px;
-    background: rgb(246, 245, 245);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+   
     transition: transform 0.3s ease-in-out;
-    border-radius: 25px;
+    border-radius:10px;
     margin-bottom: 10px;
 }
 
@@ -67,6 +63,7 @@
     flex-direction: column;
     align-items: center;
   }
+
   
   .custom-navigation {
     position: absolute;
@@ -98,7 +95,7 @@
 }
 
 .owl-prev:hover, .owl-next:hover {
-  background: #c5cd23a9; 
+  background: #dc4298; 
 }
   
   .owl-prev {
@@ -204,6 +201,30 @@
   line-height: 1.4em;       /* Adjust line height */
   max-height: 2.8em;        /* Ensures max two lines */
 }
+.price {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.original-price {
+  color: #888;
+  font-size: 14px;
+}
+
+.discount {
+  color: red;
+  font-size: 14px;
+  margin: 5px;
+
+}
+
+.discounted-price {
+  color: #d12a8b;
+  font-size: 16px;
+  font-weight: bold;
+}
+
 
 
 @media (max-width: 768px) {

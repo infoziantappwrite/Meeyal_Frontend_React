@@ -4,7 +4,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import { useNavigate } from "react-router-dom";
 import { useCurrency } from "../../CurrencyContext";
-import { databases, DatabaseId, ProductsCollectionId, account } from "../../appwriteConfig";
+import { databases, DatabaseId, ProductsCollectionId } from "../../appwriteConfig";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -196,10 +196,34 @@ const TopProduct = () => {
                                                                                             <a href="#">{product.title}</a>
                                                                                         </h4>
                                                                                         <p className="price">
-                                                                                            <span className="original-price">
-                                                                                                {currency.symbol} {(product.originalPrice / currency.rate).toFixed(2)}
-                                                                                            </span>
+                                                                                            {product.discountPrice && product.discountPrice > 0 ? (
+                                                                                                <>
+                                                                                                    {/* Strikethrough Original Price */}
+                                                                                                    <span className="original-price">
+                                                                                                        <s>{currency.symbol} {(product.originalPrice / currency.rate).toFixed(2)}</s>
+                                                                                                    </span>
+
+                                                                                                    {/* Discount Percentage */}
+                                                                                                    <span className="discount">
+                                                                                                        -{product.discountPrice}%
+                                                                                                    </span>
+
+                                                                                                    {/* Discounted Price */}
+                                                                                                    <span className="discounted-price">
+                                                                                                        {currency.symbol}&nbsp;{((product.originalPrice * (100 - product.discountPrice)) / 100 / currency.rate).toFixed(2)}
+                                                                                                    </span>
+
+                                                                                                </>
+                                                                                            ) : (
+                                                                                                // If no discount, show only the original price
+                                                                                                <span className="discounted-price">
+                                                                                                    {currency.symbol} {(product.originalPrice / currency.rate).toFixed(2)}
+                                                                                                </span>
+                                                                                            )}
                                                                                         </p>
+
+
+
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
