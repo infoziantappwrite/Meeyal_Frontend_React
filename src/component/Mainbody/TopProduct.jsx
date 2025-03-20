@@ -53,7 +53,8 @@ const TopProduct = () => {
 
                 setProducts({
                     latest: fetchedProducts
-                        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)), // Sort by createdAt (newest first)
+                        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sort by createdAt (newest first)
+                        .slice(0, 20),
                     onSale: fetchedProducts.filter(p => p.status === "on_sale"),
                     featured: fetchedProducts.filter(p => p.status === "featured"),
                     bestseller: fetchedProducts
@@ -87,21 +88,24 @@ const TopProduct = () => {
                                 <Nav variant="tabs" className="vipodha-tabs section">
                                     <ul className="nav nav-tabs" id="myTab" role="tablist">
                                         {Object.keys(products).map(category => (
-                                            <li className="nav-item" role="presentation" key={category}>
-                                                <Nav.Link
-                                                    className={`nav-link hscp-hover ${activeTab === category ? "active" : ""}`}
-                                                    id={`${category}-tab`}
-                                                    onClick={() => setActiveTab(category)}
-                                                    role="tab"
-                                                    aria-controls={category}
-                                                    aria-selected={activeTab === category}
-                                                    eventKey={category.toLowerCase()}
-                                                >
-                                                    <span>{category.charAt(0).toUpperCase() + category.slice(1)}</span>
-                                                </Nav.Link>
-                                            </li>
+                                            category.toLowerCase() !== "onsale" && (
+                                                <li className="nav-item" role="presentation" key={category}>
+                                                    <Nav.Link
+                                                        className={`nav-link hscp-hover ${activeTab === category ? "active" : ""}`}
+                                                        id={`${category}-tab`}
+                                                        onClick={() => setActiveTab(category)}
+                                                        role="tab"
+                                                        aria-controls={category}
+                                                        aria-selected={activeTab === category}
+                                                        eventKey={category.toLowerCase()}
+                                                    >
+                                                        <span>{category.charAt(0).toUpperCase() + category.slice(1)}</span>
+                                                    </Nav.Link>
+                                                </li>
+                                            )
                                         ))}
                                     </ul>
+
                                 </Nav>
 
                                 <Tab.Content>
@@ -132,8 +136,9 @@ const TopProduct = () => {
                                                     </div>
 
                                                     <Swiper
+                                                    
                                                         modules={[Navigation, Pagination]}
-                                                        navigation
+                                                        navigation={false}
                                                         pagination={{ clickable: true }}
                                                         spaceBetween={20}
                                                         slidesPerView={1}

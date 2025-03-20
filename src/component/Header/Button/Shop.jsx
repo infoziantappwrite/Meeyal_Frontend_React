@@ -16,8 +16,6 @@ const Shop = () => {
             const subcategories = subcategoriesResponse.documents;
             
 
-            console.log("Subcategories:", subcategories);
-
             // 2️⃣ Extract unique category IDs from subcategories
             const categoryName = [...new Set(subcategories.map((sub) => sub.categories.name))];
             
