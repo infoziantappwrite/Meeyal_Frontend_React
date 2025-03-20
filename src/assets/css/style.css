@@ -921,12 +921,7 @@ tr:last-child td.cart-total-price:last-child {
     color: var(--primary-hover-color);
     font-weight: 500;
 }
-@media (max-width: 1199px) and (min-width: 992px) {
-    .header-center {
-        border-top: 1px solid var(--border-color);
-        text-align: center;
-    }
-}
+
 @media (max-width: 1199px) {
     .header-inner {
         padding: 10px 0;       

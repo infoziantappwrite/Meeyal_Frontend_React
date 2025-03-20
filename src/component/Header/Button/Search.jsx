@@ -1,21 +1,30 @@
-import { useState } from 'react';
-import "../Header.css"; // Import the CSS file properly
+import { useState } from "react";
+import { FaSearch } from "react-icons/fa"; // Import search icon
+import "../Header.css"; // Ensure correct path
 
 const Search = () => {
-  const [value, setValue] = useState('');
+  const [isVisible, setIsVisible] = useState(false);
+  const [value, setValue] = useState("");
 
   return (
-  <div className='search-section'>
-      <div className="search-container"> {/* Corrected class name */}
-      <input
-        type="text"
-        className="textbox"  // Use className instead of styles
-        placeholder="Search data..."
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-      />
+    <div
+      className="search-wrapper"
+      onMouseEnter={() => setIsVisible(true)}
+      onMouseLeave={() => setIsVisible(false)}
+    >
+      <div className="search-icon" onClick={() => setIsVisible(!isVisible)}>
+        <FaSearch />
+      </div>
+      <div className={`search-container ${isVisible ? "visible" : ""}`}>
+        <input
+          type="text"
+          className="textbox"
+          placeholder="Search data..."
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+        />
+      </div>
     </div>
-  </div>
   );
 };
 
