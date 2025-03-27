@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter  as Router, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import Header from "./component/Header/Header";
 import Mainbody from "./component/Mainbody/Mainbody";
 import "./index.css";
@@ -13,10 +13,12 @@ import Footer from "./component/Header/Footer";
 import CartPage from "./component/Pages/CartPage";
 import LoginPage from "./component/Pages/RegAndLogin/LoginPage";
 import RegisterPage from "./component/Pages/RegAndLogin/RegisterPage";
-import SingleSareePage from "./component/Pages/SingleSareePage";
 import ProtectedRoute from "./ProtectedRoute";
 import { ToastContainer } from "react-toastify";
 import SinglePage from "./component/Pages/SinglePage";
+import PublicRoute from "./PublicRoute";
+import Profile from "./component/Pages/RegAndLogin/Profile";
+import Categories from "./component/Pages/Categories/Categories ";
 
 // ✅ 404 Not Found Component
 const NotFound = () => (
@@ -31,28 +33,32 @@ const AppLayout = () => {
   const location = useLocation(); // 🔹 Get the current route
 
   // 🔹 Hide Header only on the 404 page
-  const is404 = !["/", "/shop", "/cart", "/login", "/register"].includes(location.pathname) &&
-              !location.pathname.startsWith("/shop/SingplesareePage/");
+  const is404 = !["/", "/shop", "/cart", "/login", "/register", "/profile","/shop/:categoryName/:subcategoryName"].includes(location.pathname) &&
+    !location.pathname.startsWith("/shop");
 
   return (
     <>
-      {!is404 && <Header /> } {/* 🔹 Hide Header if it's 404 */}
+      {!is404 && <Header />} {/* 🔹 Hide Header if it's 404 */}
       <Routes>
         <Route path="/" element={<Mainbody />} />
         <Route path="/shop" element={<div></div>} />
-        <Route path="/cart" element={<CartPage />} /> {/* ✅ Add Cart Page Route */}
-        <Route path="/login" element={<LoginPage />} /> {/* ✅ Add Login Page Route */}
-        <Route path="/register" element={<RegisterPage />} /> {/* ✅ Add Register Page Route */}
+        <Route path="/cart" element={<CartPage />} />
+        
+        <Route element={<PublicRoute />}>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+        </Route>
         <Route element={<ProtectedRoute />}>
-        {/* <Route path="/shop/SingplesareePage/:id" element={<SingleSareePage />} /> */}
-         <Route path="/shop/SingplesareePage/:id" element={<SinglePage />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/shop/SingplesareePage/:id" element={<SinglePage />} />
+          <Route path="/shop/:categoryName/:subcategoryName" element={<Categories />} />
         </Route>
 
 
         {/* ✅ Catch-All Route for 404 Page */}
         <Route path="*" element={<NotFound />} />
       </Routes>
-      {!is404 && <Footer /> } {/* 🔹 Hide Header if it's 404 */}
+      {!is404 && <Footer />} {/* 🔹 Hide Header if it's 404 */}
     </>
   );
 };
@@ -60,7 +66,7 @@ const AppLayout = () => {
 function App() {
   return (
     <Router>
-         <ToastContainer />
+      <ToastContainer />
       <AppLayout />
     </Router>
   );

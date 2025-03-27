@@ -3,10 +3,24 @@ import { useNavigate } from "react-router-dom";
 import "../Header.css";
 import { databases, DatabaseId, subcategoriesCollectionId } from "../../../appwriteConfig";
 
-const Shop = () => {
+const Shop = ({ setShowNav }) => {
     const navigate = useNavigate();
     const [sareeCategories, setSareeCategories] = useState([]);
     const [isDropdownOpen, setDropdownOpen] = useState(false);
+
+    const handleClickOutside = (event) => {
+        if (!event.target.closest(".shop-section")) {
+            setDropdownOpen(false);
+           
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener("click", handleClickOutside);
+        return () => {
+            document.removeEventListener("click", handleClickOutside);
+        };
+    }, []);
 
     // ✅ Fetch subcategories first and then get categories
     const fetchSubcategoriesAndCategories = async () => {
@@ -42,12 +56,15 @@ const Shop = () => {
     return (
         <div
             className="shop-section"
-            onMouseEnter={() => setDropdownOpen(true)}
-            onMouseLeave={() => setDropdownOpen(false)}
+             onClick={(e) => {
+                e.stopPropagation(); // Prevent closing when clicking inside
+                setDropdownOpen(prev => !prev);
+            }}
+            
         >
             <div className={`with-sub-menu ${isDropdownOpen ? "open" : ""}`}>
-               
-                  <p>Shop <b className={`fa ${isDropdownOpen ? "fa-angle-up" : "fa-angle-down"}`}></b></p> 
+
+                <li>Shop <b className={`fa ${isDropdownOpen ? "fa-angle-up" : "fa-angle-down"}`}></b></li>
                 {/* Submenu */}
                 <div className="sub-menu">
                     <div className="categories">
@@ -59,7 +76,18 @@ const Shop = () => {
                                         <li key={sub.id}>
                                             <button
                                                 className="sub-item-btn"
-                                                onClick={() => navigate(`/shop/SingplesareePage/${sub.id}`)}
+                                                onClick={() =>
+                                                   {navigate(`/shop/${category.category}/${sub.name}`, {
+                                                        state: {
+                                                            sareeCategories,
+                                                            category,
+                                                            relatedSubcategories: category.subcategories,
+                                                            catid: sub.id
+                                                        },
+                                                    });
+                                                    setShowNav(false);
+                                                }
+                                                }
                                             >
                                                 {sub.name}
                                             </button>
@@ -68,6 +96,7 @@ const Shop = () => {
                                 </ul>
                             </div>
                         ))}
+
                     </div>
                 </div>
             </div>

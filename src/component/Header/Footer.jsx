@@ -93,7 +93,7 @@ const Footer = () => {
                             </div>
                         </div>
                     </div>
-                    <p class="copyright">Powered By HTML Template © 2023</p>
+                    <p class="copyright">Designed By Infoziant © 2025</p>
                 </div>
                 <a class="scrollToTop back-to-top" title="Top" ></a>
             </footer>
