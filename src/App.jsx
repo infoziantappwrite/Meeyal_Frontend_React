@@ -34,7 +34,7 @@ const AppLayout = () => {
 
   // 🔹 Hide Header only on the 404 page
   const is404 = !["/", "/shop","/productdetails/:id", "/cart", "/login", "/register", "/profile","/shop/:categoryName/:subcategoryName"].includes(location.pathname) &&
-    !location.pathname.startsWith("/shop");
+    !location.pathname.startsWith("/shop") && !location.pathname.startsWith("/productdetails");
 
   return (
     <>
