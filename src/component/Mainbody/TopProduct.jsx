@@ -180,7 +180,7 @@ const TopProduct = () => {
                                                                                                 className="vipodha_quickview-button"
                                                                                                 type="button"
                                                                                                 title="Quickview"
-                                                                                                onClick={() => navigate(`/shop/SingplesareePage/${product.id}`)}
+                                                                                                onClick={() => navigate(`/productdetails/${product.id}`)}
                                                                                                 disabled={product.sold === 0}
                                                                                             >
                                                                                                 <i className="icon-eye"></i>

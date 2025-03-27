@@ -33,7 +33,7 @@ const AppLayout = () => {
   const location = useLocation(); // 🔹 Get the current route
 
   // 🔹 Hide Header only on the 404 page
-  const is404 = !["/", "/shop", "/cart", "/login", "/register", "/profile","/shop/:categoryName/:subcategoryName"].includes(location.pathname) &&
+  const is404 = !["/", "/shop","/productdetails/:id", "/cart", "/login", "/register", "/profile","/shop/:categoryName/:subcategoryName"].includes(location.pathname) &&
     !location.pathname.startsWith("/shop");
 
   return (
@@ -50,7 +50,7 @@ const AppLayout = () => {
         </Route>
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<Profile />} />
-          <Route path="/shop/SingplesareePage/:id" element={<SinglePage />} />
+          <Route path="/productdetails/:id" element={<SinglePage />} />
           <Route path="/shop/:categoryName/:subcategoryName" element={<Categories />} />
         </Route>
 

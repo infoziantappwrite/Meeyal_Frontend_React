@@ -2,13 +2,12 @@ import React from "react";
 import {  useLocation, Link, useNavigate } from "react-router-dom";
 import CategorySection from "./CategorySection";
 import CategoryBanner from "./CategoryBanner,";
+import ProductList from "./ProductList";
 
 
 const Categories = () => {
     const navigate = useNavigate();
     const location = useLocation();
-   
-
     // Get saree categories from the navigation state
     const sareeCategories = location.state?.sareeCategories || [];
     const category = location.state?.category || {};
@@ -19,7 +18,7 @@ const Categories = () => {
     const subcategory = category?.subcategories.find(sub => sub.id ===categoryID) || {};
     //console.log(subcategory);
     const subcategoryName = subcategory.name || "";
-    console.log(categoryID)
+    //console.log(categoryID)
 
     return (
         <section>
@@ -79,6 +78,7 @@ const Categories = () => {
                                     </div>
                                 </div>
                             </div>
+                            <ProductList subcatid={categoryID}></ProductList>
                            
                         </div>
 
