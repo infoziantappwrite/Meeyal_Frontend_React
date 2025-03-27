@@ -18,7 +18,7 @@ const LoginPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  console.log(account.createEmailPasswordSession);
+  //console.log(account.createEmailPasswordSession);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

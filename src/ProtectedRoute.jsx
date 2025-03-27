@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Navigate, Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { account } from "./appwriteConfig";
@@ -13,7 +14,7 @@ const ProtectedRoute = () => {
       try {
         await account.getSession("current"); // Checks if session exists
         setIsAuthenticated(true);
-      } catch (error) {
+      } catch{
         setIsAuthenticated(false);
         
         if (!hasShownToast) {

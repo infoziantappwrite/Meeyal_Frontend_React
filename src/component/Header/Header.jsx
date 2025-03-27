@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaHome, FaShoppingBag, FaInfoCircle, FaPhone, FaTimes, FaBars } from "react-icons/fa"; // Import icons
+import { FaTimes, FaBars } from "react-icons/fa"; // Import icons
 import { Link } from "react-router-dom";
 import "./Header.css";
 import NavBar from "./NavBar";
@@ -71,7 +71,7 @@ const Header = () => {
                                                     <div className={`nav-links ${isOpen ? "open" : ""}`}>
                                                         <ul className="vipodha_megamenu">
                                                             <li className="li"><Link to="/" onClick={() => setShowNav(false)}>Home</Link></li>
-                                                            <li className="li"><a><Shop></Shop></a></li>
+                                                            <li className="li"><a><Shop setShowNav={setShowNav}/></a></li>
                                                             <li className="li"><Link to="/about" onClick={() => setShowNav(false)}>About</Link></li>
                                                             <li className="li"><Link to="/contact" onClick={() => setShowNav(false)}>Contact</Link></li>
                                                         </ul>
@@ -99,7 +99,7 @@ const Header = () => {
                         <nav className="mobile-nav">
                             <ul className="ul">
                                 <li className="li"><Link to="/" onClick={() => setShowNav(false)}>Home</Link></li>
-                                <li className="li"><Shop></Shop></li>
+                                <li className="li"  ><Shop setShowNav={setShowNav}/></li>
                                 <li className="li"><Link to="/about" onClick={() => setShowNav(false)}>About</Link></li>
                                 <li className="li"><Link to="/contact" onClick={() => setShowNav(false)}>Contact</Link></li>
                             </ul>
