@@ -131,7 +131,7 @@ const SinglePage = () => {
                               {product.discountprice ? (
                                 <>
                                   <span className="old-price">₹{product.originalprice}</span>
-                                  <span className="discounted-price"> ₹{product.discountprice}</span>
+                                  <span className="discounted-price"> ₹{product.originalprice - product.discountprice}</span>
                                 </>
                               ) : (
                                 <span className="regular-price">₹{product.originalprice}</span>
@@ -140,7 +140,7 @@ const SinglePage = () => {
  
                             {product.discountprice && (
                               <div className="price-right">
-                                <span className="discount-badge">🔥 You Save ₹{product.originalprice - product.discountprice}!</span>
+                                <span className="discount-badge">🔥 You Save  ₹{product.discountprice}!</span>
                               </div>
                             )}
                           </div>
@@ -178,7 +178,7 @@ const SinglePage = () => {
                   <div className="related-products-grid">
                     {relatedProducts.map((related) => (
                       <div key={related.$id} className="related-product-card">
-                        <Link to={`/shop/SingplesareePage/${related.$id}`}>
+                        <Link to={`/productdetails/${related.$id}`}>
                           <div className="product-image-container">
                             <img src={related.productimages[0]?.imageurl} alt={related.productname} />
  
