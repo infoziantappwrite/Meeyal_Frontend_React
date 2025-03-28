@@ -2,7 +2,7 @@ import React from 'react'
 
 const Footer = () => {
     return (
-            <footer style={{marginTop: "5px"}}>
+            <footer style={{marginTop: "0px"}}>
                 <div class="container">
                     <div class="footer-top">
                         <div class="row">

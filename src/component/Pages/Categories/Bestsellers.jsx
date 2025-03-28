@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { databases, DatabaseId, ProductsCollectionId } from "../../../appwriteConfig";
+import { useCurrency } from "../../../CurrencyContext"; // Import currency context
 
 const Bestsellers = () => {
   const [bestsellers, setBestsellers] = useState([]);
+   const { currency } = useCurrency(); // Get currency info
+  
 
   useEffect(() => {
     const fetchProducts = async () => { 
@@ -19,10 +22,13 @@ const Bestsellers = () => {
           return {
             id: doc.$id,
             title: doc.productname,
-            price: doc.discountprice || doc.originalprice, // Show discounted price if available
+            price: doc.discountprice 
+                ? ((doc.originalprice * (100 - doc.discountprice)) / (100 * currency.rate)).toFixed(2) 
+                : doc.originalprice, // Apply discount if available
             sold: doc.sold,
             image: imageUrl,
-          };
+        };
+        
         }));
 
         // Sort by most sold and take top 10
@@ -64,7 +70,9 @@ const Bestsellers = () => {
                               <a href={`/productdetails/${product.id}`}>{product.title}</a>
                             </h4>
                             <div className="price-cartbtn clearfix">
-                              <p className="price">${product.price}</p>
+                            <span className="discounted-price">
+                                  {currency.symbol}&nbsp;{product.price}
+                                </span>
                             </div>
                             <div className="rating">
                               {[...Array(5)].map((_, i) => (
