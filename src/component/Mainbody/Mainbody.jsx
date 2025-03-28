@@ -70,38 +70,7 @@ const Mainbody = () => {
                 {/* <!-- .banner section -->
 
 		<!-- Newsletter section -->	 */}
-                <div class="news wow fadeInUp top-margin-all">
-                    <div class="container vipodhanewsletterblock ">
-                        <div class="vipodha-newsletter-form block-content box-content">
-                            <div class="title-text page-title toggled hidden">
-                                <h3>Newsletter</h3>
-                            </div>
-                            <div class="block_box">
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="news-info">
-                                            <i class="icon-newslatter"></i>
-                                            <div class="news-desc">
-                                                <h4 class="title-text page-title">Newsletter</h4>
-                                                <div class="news-description">Get free 20% discount for all products on your first
-                                                    order.
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="frmvipodhanewsletter">
-                                            <div class="subscribe-form">
-                                                <input class="newsletter-email-address" type="email" placeholder="Enter Your E-mail.." />
-                                                <input class="newsletter-submit" type="submit" value="Subscribe" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+              
                 {/* <!-- .Newsletter section -->	
 
 		<!-- Customers Said --> */}

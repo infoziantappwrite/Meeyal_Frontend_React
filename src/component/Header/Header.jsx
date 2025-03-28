@@ -52,7 +52,8 @@ const Header = () => {
                             <div className="header-left">
                                 <div id="logo">
                                     <a href="index.html">
-                                        <img src="assets/images/logo.png" title="Your Store" alt="Your Store" className="img-responsive" />
+                                    <img src="/assets/images/logo.png" title="Your Store" alt="Your Store" className="img-responsive" />
+
                                     </a>
                                 </div>
                             </div>

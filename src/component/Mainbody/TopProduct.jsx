@@ -110,7 +110,7 @@ const TopProduct = () => {
 
                                 <Tab.Content>
                                     {Object.keys(products).map(category => {
-                                        const chunkSize = 10;
+                                        const chunkSize = 8;
                                         const productChunks = [];
 
                                         for (let i = 0; i < products[category].length; i += chunkSize) {
@@ -151,13 +151,14 @@ const TopProduct = () => {
                                                                         <div key={product.id} className="product-layout">
                                                                             <div className="product-card">
                                                                                 <div className="product-thumb transition">
-                                                                                    <div className={`image ${product.sold === 0 ? "out-of-stock" : ""}`}>
+                                                                                    <div className={`image `}>
                                                                                         {products["onSale"].some(p => p.id === product.id) && (
                                                                                             <span className="badge sale-badge">On Sale</span>
                                                                                         )}
                                                                                         {products["featured"].some(p => p.id === product.id) && (
                                                                                             <span className="badge featured-badge">Featured</span>
                                                                                         )}
+                                                                                        {product.stock === 0 && <span className="badge out-of-badge">out of stock</span>}
 
                                                                                         <a href="#" className="thumb-image" onClick={e => e.preventDefault()}>
                                                                                             <img
@@ -167,13 +168,13 @@ const TopProduct = () => {
                                                                                             />
                                                                                         </a>
 
-                                                                                        {product.sold === 0 && <div className="overlay"><span>Sold Out</span></div>}
+                                                                                        
 
                                                                                         <div className="button-group">
-                                                                                            <button className="addcart" type="button" title="Add to Cart" disabled={product.sold === 0}>
+                                                                                            <button className="addcart" type="button" title="Add to Cart" disabled={product.stock=== 0}>
                                                                                                 <i className="icon-bag"></i>
                                                                                             </button>
-                                                                                            <button className="wishlist" type="button" title="Add to wishlist" disabled={product.sold === 0}>
+                                                                                            <button className="wishlist" type="button" title="Add to wishlist" disabled={product.stock === 0}>
                                                                                                 <i className="icon-like"></i>
                                                                                             </button>
                                                                                             <button
@@ -181,20 +182,21 @@ const TopProduct = () => {
                                                                                                 type="button"
                                                                                                 title="Quickview"
                                                                                                 onClick={() => navigate(`/productdetails/${product.id}`)}
-                                                                                                disabled={product.sold === 0}
+                                                                                                disabled={product.stock === 0}
                                                                                             >
                                                                                                 <i className="icon-eye"></i>
                                                                                             </button>
-                                                                                            <button className="compare" type="button" title="Compare" disabled={product.sold === 0}>
-                                                                                                <i className="icon-shuffle-arrows"></i>
-                                                                                            </button>
+                                                                                            
                                                                                         </div>
                                                                                     </div>
 
                                                                                     <div className="product-description">
+                                                                                       
                                                                                         <h4 className="product-title">
+                                                                                        
                                                                                             <a href="#">{product.title}</a>
                                                                                         </h4>
+                                                                                        <p className="sub-cat">{product.subcategory}</p>
                                                                                         <p className="price">
                                                                                             {product.discountPrice && product.discountPrice > 0 ? (
                                                                                                 <>

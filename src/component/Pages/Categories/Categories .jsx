@@ -1,31 +1,53 @@
-import React from "react";
+import React, { useState,useEffect } from "react";
 import { useLocation, Link, useNavigate } from "react-router-dom";
-import CategorySection from "./CategorySection";
 import CategoryBanner from "./CategoryBanner,";
 import ProductList from "./ProductList";
 import FilterComponent from "./FilterComponent";
 import Bestsellers from "./Bestsellers";
-import OfferBanner from "./OfferBanner";
 
 
 const Categories = () => {
+   
     const navigate = useNavigate();
     const location = useLocation();
-    // Get saree categories from the navigation state
-    const sareeCategories = location.state?.sareeCategories || [];
-    const category = location.state?.category || {};
-    //console.log(category);
-    const categoryName = category.category || "";
-    const relatedSubcategories = location.state?.relatedSubcategories || [];
+    
+    // Extract data from location state
+    const category = location.state?.category || null;
     const categoryID = location.state?.catid || "";
-    const subcategory = category?.subcategories.find(sub => sub.id === categoryID) || {};
-    //console.log(subcategory);
-    const subcategoryName = subcategory.name || "";
-    //console.log(categoryID)
-    const applyFilters = (selectedFilters) => {
-        console.log("Applied Filters:", selectedFilters);
-        // Implement filtering logic here
-      };
+    const relatedSubcategories = location.state?.relatedSubcategories || [];
+    
+    // Get category and subcategory names
+    const categoryName = category?.category || "";
+    const subcategory = category?.subcategories?.find(sub => sub.id === categoryID) || null;
+    const subcategoryName = subcategory?.name || "";
+
+    // If any required data is missing, redirect to home
+    useEffect(() => {
+        if (!category || !categoryID || !subcategory) {
+            navigate("/");
+        }
+    }, [category, categoryID, subcategory, navigate]);
+
+
+
+    const [filters, setFilters] = useState({
+        price: { min: 0, max: Infinity },
+        sort: "default",
+        limit: 12,
+      });
+    
+      // Function to apply filters
+      const handleApplyFilters = (newFilters) => {
+        console.log("New Filters Applied:", newFilters);
+        setFilters(prevFilters => {
+            if (JSON.stringify(prevFilters) !== JSON.stringify(newFilters)) {
+                return newFilters;
+            }
+            return prevFilters;
+        });
+    };
+    
+
 
     return (
         <section>
@@ -52,10 +74,8 @@ const Categories = () => {
                 <div class="container">
                     <div class="row">
                         <aside id="column-left" class="col-sm-3">
-                            <CategorySection sareeCategories={sareeCategories} />
-                            <FilterComponent onApplyFilters={applyFilters} />
-                            <Bestsellers></Bestsellers>
-                            <OfferBanner/>
+                        <Bestsellers></Bestsellers>
+                        
                             
                         </aside>
                         <div id="content" class="col-sm-9  all-blog">
@@ -89,72 +109,10 @@ const Categories = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div class="category-info">
-                                <div class="row">
-                                    <div class="col-sm-2 col-xs-5 category-list-grid text-start">
-                                        <div class="btn-group btn-group-sm">
-                                            <button type="button" id="grid-view" class="btn btn-default active"
-                                                data-toggle="tooltip" title="" data-original-title="Grid"><i
-                                                    class="icon-grid"></i></button>
-                                            <button type="button" id="list-view" class="btn btn-default" data-toggle="tooltip"
-                                                title="" data-original-title="List"><i class="icon-list"></i></button>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3 col-xs-7 category-compare">
-                                        <div class="form-group"><a href="category.html#" id="compare-total" class="btn btn-link">Product
-                                            Compare (0)</a></div>
-                                    </div>
-                                    <div class="col-sm-7 col-xs-12 category-sorting">
-                                        <div class="sort-cat">
-                                            <div class="text-category-sort">
-                                                <label class="input-group-addon" for="input-sort">Sort By:</label>
-                                            </div>
-                                            <div class="select-cat-sort">
-                                                <select id="input-sort" class="form-control" onchange="location = this.value;">
-                                                    <option value="#" selected="selected">Default</option>
-                                                    <option value="#">
-                                                        Name (A - Z)</option>
-                                                    <option value="#">
-                                                        Name (Z - A)</option>
-                                                    <option value="#">
-                                                        Price (Low &gt; High)</option>
-                                                    <option value="#">
-                                                        Price (High &gt; Low)</option>
-                                                    <option value="#">
-                                                        Rating (Highest)</option>
-                                                    <option value="#">
-                                                        Rating (Lowest)</option>
-                                                    <option value="#">
-                                                        Model (A - Z)</option>
-                                                    <option value="#">
-                                                        Model (Z - A)</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="limit-cat">
-                                            <div class="text-category-limit">
-                                                <label class="input-group-addon" for="input-limit">Show:</label>
-                                            </div>
-                                            <div class="select-cat-limit">
-                                                <select id="input-limit" class="form-control" onchange="location = this.value;">
-                                                    <option value="#" selected="selected">12</option>
-                                                    <option value="#">
-                                                        25</option>
-                                                    <option value="#">
-                                                        50</option>
-                                                    <option value="#">
-                                                        75</option>
-                                                    <option value="#">
-                                                        100</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <ProductList subcatid={categoryID}></ProductList>
 
                         </div>
+                        <FilterComponent onApplyFilters={handleApplyFilters} />
+                        <ProductList subcatid={categoryID} filter={filters}></ProductList>
 
                     </div>
                 </div>
