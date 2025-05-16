@@ -10,9 +10,9 @@ import { CurrencyProvider } from "./CurrencyContext";
 
 const root = createRoot(document.getElementById("root")); // ✅ Correct usage
 root.render(
-  <StrictMode>
+ 
     <CurrencyProvider>
       <App />
     </CurrencyProvider>,
-  </StrictMode>
+
 );

@@ -19,6 +19,8 @@ import SinglePage from "./component/Pages/SinglePage";
 import PublicRoute from "./PublicRoute";
 import Profile from "./component/Pages/RegAndLogin/Profile";
 import Categories from "./component/Pages/Categories/Categories ";
+import VerifyPage from "./component/Pages/RegAndLogin/VerifyPage";
+import ResetPasswordPage from "./component/Pages/RegAndLogin/ResetPasswordPage";
 
 // ✅ 404 Not Found Component
 const NotFound = () => (
@@ -33,8 +35,8 @@ const AppLayout = () => {
   const location = useLocation(); // 🔹 Get the current route
 
   // 🔹 Hide Header only on the 404 page
-  const is404 = !["/", "/shop","/productdetails/:id", "/cart", "/login", "/register", "/profile","/shop/:categoryName/:subcategoryName"].includes(location.pathname) &&
-    !location.pathname.startsWith("/shop") && !location.pathname.startsWith("/productdetails");
+  const is404 = !["/", "/shop", "/productdetails/:id", "/cart", "/login", "/register", "/profile", "/shop/:categoryName/:subcategoryName"].includes(location.pathname) &&
+    !location.pathname.startsWith("/shop") && !location.pathname.startsWith("/productdetails") && !location.pathname.startsWith("/verify") && !location.pathname.startsWith("/reset-password");
 
   return (
     <>
@@ -43,10 +45,12 @@ const AppLayout = () => {
         <Route path="/" element={<Mainbody />} />
         <Route path="/shop" element={<div></div>} />
         <Route path="/cart" element={<CartPage />} />
-        
+
         <Route element={<PublicRoute />}>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/verify" element={<VerifyPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
         </Route>
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<Profile />} />
@@ -66,10 +70,19 @@ const AppLayout = () => {
 function App() {
   return (
     <Router>
-      <ToastContainer />
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={true}
+        closeOnClick={true}
+        pauseOnHover={false}
+        draggable={true}
+        theme="colored"
+      />
       <AppLayout />
     </Router>
   );
 }
 
 export default App;
+

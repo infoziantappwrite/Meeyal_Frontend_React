@@ -21,7 +21,7 @@ const Admin = () => {
 
   useEffect(() => {
     checkAuth();
-  }, [isAuthenticated]); // ✅ Run effect when isAuthenticated changes
+  }, []); // ✅ Run effect when isAuthenticated changes
 
   // Logout function
   const handleLogout = async () => {
