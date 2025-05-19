@@ -36,7 +36,7 @@ const Slider = () => {
       };
 
   return (
-       <aside id="column-left" className="col-sm-3">
+       <aside id="column-left" className="col-sm-3 mb-4">
               <div className="account-content list-group">
                 <div className="box-content">
                   <h3 className="toggled relative">Account</h3>

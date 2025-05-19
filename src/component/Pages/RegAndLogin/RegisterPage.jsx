@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom"; // Ensure you have React Router installed
-import { account, ID } from "../../../appwriteConfig";
 import Slider from "./Slider.jsx";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
+const API_URL = import.meta.env.VITE_API_URL;
+
+
+
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -9,34 +15,49 @@ const RegisterPage = () => {
   // State for form fields
   const [formData, setFormData] = useState({
     firstname: "",
+    username: "",
     phone: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
 
   // Handle Input Change
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    //console.log(API_URL);
   };
 
   // Handle Form Submit
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      const response = await account.create(
-        ID.unique(),
-        formData.email,
-        formData.password,
-        formData.firstname
-      );
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Passwords do not match!");
+      return;
+    }
 
-      console.log("User Registered:", response);
-      alert("Registration Successful!");
-      navigate("/login"); // Redirect to login page after successful registration
-    } catch (error) {
-      console.error("Registration Error:", error.message);
-      alert("Failed to register. Try again!");
+    const strongPasswordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+    if (!strongPasswordRegex.test(formData.password)) {
+      toast.error("Password must be at least 8 characters long and include a number and special character.");
+      return;
+    }
+
+    try {
+      await axios.post(`${API_URL}/users/register`, {
+        name: formData.firstname,
+        username: formData.username,
+        mobile: formData.phone,
+        email: formData.email,
+        password: formData.password,
+      });
+
+      toast.success("Registration successful!");
+      navigate("/login");
+    } catch (err) {
+      const msg = err.response?.data?.message || "Registration failed!";
+      toast.error(msg);
+      console.error("Error:", err);
     }
   };
 
@@ -56,10 +77,10 @@ const RegisterPage = () => {
         <div className="container">
           <div className="row">
             {/* Sidebar */}
-           <Slider />
+            <Slider />
 
             {/* Main Content */}
-            <div id="content" className="col-sm-9 all-blog my-account">
+            <div id="content" className="col-sm-9 all-blog my-account mb-4 ">
               <div className="row">
                 <form className="form-horizontal well" onSubmit={handleSubmit}>
                   <p>
@@ -85,6 +106,22 @@ const RegisterPage = () => {
                         />
                       </div>
                     </div>
+                    <div className="form-group required row">
+                      <label className="col-sm-2 control-label" htmlFor="input-username">Username</label>
+                      <div className="col-sm-10">
+                        <input
+                          type="text"
+                          name="username"
+                          placeholder="Username"
+                          id="input-username"
+                          className="form-control"
+                          value={formData.username}
+                          onChange={handleChange}
+                          required
+                        />
+                      </div>
+                    </div>
+
 
                     <div className="form-group required row">
                       <label className="col-sm-2 control-label" htmlFor="input-phone">Phone Number</label>
@@ -121,7 +158,10 @@ const RegisterPage = () => {
 
                   {/* Password */}
                   <fieldset id="password">
-                    <legend>Your Password</legend>
+                    <legend className="d-flex gap-2 align-items-center">
+                      <span>Your Password</span>
+                      <small className="text-muted text-sm">(Must be 8+ chars, include number & symbol)</small>
+                    </legend>
                     <div className="form-group required row">
                       <label className="col-sm-2 control-label" htmlFor="input-password">Password</label>
                       <div className="col-sm-10">
@@ -136,6 +176,24 @@ const RegisterPage = () => {
                           required
                         />
                       </div>
+
+                    </div>
+                    <div className="form-group required row">
+                      <label className="col-sm-2 control-label" htmlFor="input-password">Comfirm Password</label>
+                      <div className="col-sm-10">
+                        <input
+                          type="password"
+                          name="confirmPassword"  // ✅ Correct
+                          placeholder="Confirm Password"
+                          id="input-confirm-password"
+                          className="form-control"
+                          value={formData.confirmPassword}
+                          onChange={handleChange}
+                          required
+                        />
+
+                      </div>
+
                     </div>
                   </fieldset>
 

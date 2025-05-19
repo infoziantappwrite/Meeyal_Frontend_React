@@ -661,6 +661,7 @@ span.labeloffer {
     color: var(--primary-color);
     padding: 7px 0 0 0;
     font-weight: 500;
+    margin: 0% !important;
 }
 ul.route.html-link {
     list-style: none;

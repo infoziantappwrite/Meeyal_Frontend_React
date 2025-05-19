@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { account } from "./appwriteConfig";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Loader from "./component/Loader";
 
 const ProtectedRoute = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -18,14 +19,7 @@ const ProtectedRoute = () => {
         setIsAuthenticated(false);
         
         if (!hasShownToast) {
-          toast.warning("Please log in first!", {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: false,
-            draggable: true,
-          });
+          toast.warning("Please log in first!");
 
           setHasShownToast(true); // Prevents showing multiple times
         }
@@ -34,7 +28,7 @@ const ProtectedRoute = () => {
     checkAuth();
   }, [hasShownToast]); // Depend on hasShownToast
 
-  if (isAuthenticated === null) return <p>Loading...</p>; // Show loading state while checking session
+  if (isAuthenticated === null) return <Loader/>; // Show loading state while checking session
   return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
 };
 

@@ -9,6 +9,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Mainbody.css";
+import TopProductActions from "./ProductActions"; // Import the ProductActions component
 
 const TopProduct = () => {
     const [activeTab, setActiveTab] = useState("latest");
@@ -171,12 +172,7 @@ const TopProduct = () => {
                                                                                         
 
                                                                                         <div className="button-group">
-                                                                                            <button className="addcart" type="button" title="Add to Cart" disabled={product.stock=== 0}>
-                                                                                                <i className="icon-bag"></i>
-                                                                                            </button>
-                                                                                            <button className="wishlist" type="button" title="Add to wishlist" disabled={product.stock === 0}>
-                                                                                                <i className="icon-like"></i>
-                                                                                            </button>
+                                                                                            <TopProductActions productId={product.id} stock={product.stock} /> {/* Pass productId and stock to ProductActions */}
                                                                                             <button
                                                                                                 className="vipodha_quickview-button"
                                                                                                 type="button"
