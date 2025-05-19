@@ -21,7 +21,7 @@ const Admin = () => {
 
   useEffect(() => {
     checkAuth();
-  }, []); // ✅ Run effect when isAuthenticated changes
+  }, []); 
 
   // Logout function
   const handleLogout = async () => {
@@ -96,7 +96,7 @@ const Admin = () => {
                       className="dropdown-item"
                       onClick={() => {
                         navigate("/register");
-                        toggleDropdownClose(); // ✅ Close dropdown after navigation
+                        toggleDropdownClose(); 
                       }}
                     >
                       Register

@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom"; // Ensure you have React Router installed
-import { account, ID } from "../../../appwriteConfig";
 import Slider from "./Slider.jsx";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
+const API_URL = import.meta.env.VITE_API_URL;
+
+
+
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -11,6 +15,7 @@ const RegisterPage = () => {
   // State for form fields
   const [formData, setFormData] = useState({
     firstname: "",
+    username: "",
     phone: "",
     email: "",
     password: "",
@@ -20,49 +25,39 @@ const RegisterPage = () => {
   // Handle Input Change
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    //console.log(API_URL);
   };
 
   // Handle Form Submit
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (formData.password !== formData.confirmPassword) {
       toast.error("Passwords do not match!");
       return;
     }
+
     const strongPasswordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
     if (!strongPasswordRegex.test(formData.password)) {
       toast.error("Password must be at least 8 characters long and include a number and special character.");
       return;
     }
-    
-    try {
-      await account.create(
-        ID.unique(),
-        formData.email,
-        formData.password,
-        formData.firstname,
-      );
-      await account.createEmailPasswordSession(formData.email, formData.password);
-      try {
-        await account.updatePhone(formData.phone,formData.password );
-        await account.createVerification(`${window.location.origin}/verify`);
-        toast.success("Registration successful! Check your email to verify.");
-        await account.deleteSession("current");
-      } catch (verificationError) {
-        // If verification email fails, delete session
-        await account.deleteSession("current");
 
-        toast.error("Verification email failed to send. Please try registering again.");
-        console.error("Verification Error:", verificationError.message);
-        return;
-      }
-      // console.log("User Registered:", response);
-      navigate("/login"); // Redirect to login page after successful registration
-    } catch (error) {
-      //console.error("Registration Error:", error.message);
-      await account.deleteSession("current");
-      toast.error(error.message || "Failed to register. Try again!");
-      console.error("Registration Error:", error.message);
+    try {
+      await axios.post(`${API_URL}/users/register`, {
+        name: formData.firstname,
+        username: formData.username,
+        mobile: formData.phone,
+        email: formData.email,
+        password: formData.password,
+      });
+
+      toast.success("Registration successful!");
+      navigate("/login");
+    } catch (err) {
+      const msg = err.response?.data?.message || "Registration failed!";
+      toast.error(msg);
+      console.error("Error:", err);
     }
   };
 
@@ -111,6 +106,22 @@ const RegisterPage = () => {
                         />
                       </div>
                     </div>
+                    <div className="form-group required row">
+                      <label className="col-sm-2 control-label" htmlFor="input-username">Username</label>
+                      <div className="col-sm-10">
+                        <input
+                          type="text"
+                          name="username"
+                          placeholder="Username"
+                          id="input-username"
+                          className="form-control"
+                          value={formData.username}
+                          onChange={handleChange}
+                          required
+                        />
+                      </div>
+                    </div>
+
 
                     <div className="form-group required row">
                       <label className="col-sm-2 control-label" htmlFor="input-phone">Phone Number</label>
