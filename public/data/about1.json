@@ -1,0 +1,75 @@
+{
+  "title": "Meeyal Sarees",
+  "subtitle": "Traditional Elegance for Modern Times",
+  "established": "Est. 2010",
+  "banner": "/assets/images/about/hero-banner.jpg",
+  "mission": "To preserve the rich heritage of Indian textiles while empowering artisans and weavers across the country.",
+  "vision": "To be the most trusted destination for authentic and exquisite sarees that celebrate the diverse craftsmanship of India.",
+  "story": "Meeyal Sarees began with a passion for preserving traditional Indian craftsmanship. Our founder, inspired by the intricate artistry of handloom sarees, embarked on a journey across India to discover unique weaving techniques passed down through generations. What started as a small collection has now grown into a curated showcase of India's finest textiles, each with a story to tell.",
+  "values": [
+    {
+      "title": "Authenticity",
+      "description": "We source directly from artisans to ensure genuine handcrafted products.",
+      "icon": "certificate"
+    },
+    {
+      "title": "Sustainability",
+      "description": "We champion eco-friendly practices in production and packaging.",
+      "icon": "leaf"
+    },
+    {
+      "title": "Community",
+      "description": "We support weaver communities through fair trade practices.",
+      "icon": "users"
+    },
+    {
+      "title": "Innovation",
+      "description": "We blend traditional techniques with contemporary designs.",
+      "icon": "lightbulb"
+    }
+  ],
+  "process": [
+    {
+      "step": "Sourcing",
+      "description": "We travel to remote villages to find the most skilled artisans."
+    },
+    {
+      "step": "Curation",
+      "description": "Each saree is personally selected for its craftsmanship and design."
+    },
+    {
+      "step": "Quality Check",
+      "description": "Rigorous testing ensures only the finest pieces reach our customers."
+    },
+    {
+      "step": "Delivery",
+      "description": "Your saree is carefully packaged and delivered to your doorstep."
+    }
+  ],
+  "team": [
+    {
+      "name": "Priya Sharma",
+      "position": "Founder & Creative Director",
+      "image": "/assets/images/about/team/team-1.jpg",
+      "bio": "With 15 years in textile design, Priya has worked with master weavers across India."
+    },
+    {
+      "name": "Rajesh Patel",
+      "position": "Head of Procurement",
+      "image": "/assets/images/about/team/team-2.jpg",
+      "bio": "Rajesh has built relationships with weaver communities in over 50 villages."
+    },
+    {
+      "name": "Anita Desai",
+      "position": "Design Consultant",
+      "image": "/assets/images/about/team/team-3.jpg",
+      "bio": "A textile graduate from NIFT, Anita brings contemporary design sensibilities."
+    }
+  ],
+  "achievements": [
+    "Recognized by the Ministry of Textiles for preserving traditional crafts",
+    "Featured in Vogue India's 'Brands That Matter' list, 2022",
+    "Empowered over 500 weaver families across 7 states",
+    "Zero carbon footprint packaging since 2018"
+  ]
+}

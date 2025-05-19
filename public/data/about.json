@@ -1,0 +1,54 @@
+{
+  "heroImage": "/assets/images/about/hero-banner.jpg",
+  "heroTitle": "Our Story",
+  "heroSubtitle": "Discover who we are and what we stand for",
+
+  "storyImage": "/assets/images/about/story.jpg",
+  "storyTitle": "How We Started",
+  "storyContent": "Founded in 2020, our journey began with a simple vision: to create a platform that brings quality products to customers who appreciate both style and substance. What started as a small passion project has now grown into a thriving online marketplace with customers across the country. Each product in our collection is carefully curated to ensure it meets our high standards for quality, sustainability, and design excellence. We believe that shopping should be more than just a transaction—it should be an experience that brings joy and satisfaction.",
+
+  "missionImage": "/assets/images/about/mission.jpg",
+  "missionTitle": "Our Mission",
+  "missionContent": "We're on a mission to revolutionize online shopping by offering carefully curated collections that combine quality, sustainability, and style. We believe in creating a shopping experience that feels personal and thoughtful, where each customer finds exactly what they need while discovering new favorites along the way. Our commitment extends beyond just selling products—we aim to build a community of like-minded individuals who share our passion for conscious consumption and appreciate the stories behind the items they purchase.",
+
+  "teamTitle": "Meet Our Team",
+  "teamMembers": [
+    {
+      "name": "Sarah Johnson",
+      "position": "Founder & CEO",
+      "image": "/assets/images/about/team/team-1.jpg",
+      "bio": "With over 15 years in retail, Sarah founded this company with a vision to create an inclusive shopping experience."
+    },
+    {
+      "name": "Michael Chen",
+      "position": "Creative Director",
+      "image": "/assets/images/about/team/team-2.jpg",
+      "bio": "Michael brings his artistic vision to every aspect of our brand, from product selection to website design."
+    },
+    {
+      "name": "Aisha Patel",
+      "position": "Head of Customer Experience",
+      "image": "/assets/images/about/team/team-3.jpg",
+      "bio": "Aisha ensures that every customer interaction with our brand is smooth, pleasant, and memorable."
+    }
+  ],
+
+  "valuesTitle": "Our Core Values",
+  "values": [
+    {
+      "title": "Quality First",
+      "description": "We never compromise on quality. Every product in our store is tested and approved to meet our high standards.",
+      "icon": "/assets/images/about/quality2.jpg"
+    },
+    {
+      "title": "Sustainability",
+      "description": "We're committed to reducing our environmental impact through sustainable sourcing and eco-friendly practices.",
+      "icon": "/assets/images/about/sustainability.jpg"
+    },
+    {
+      "title": "Customer Care",
+      "description": "Your satisfaction is our top priority. We're here to make your shopping experience as enjoyable as possible.",
+      "icon": "/assets/images/about/customer.png"
+    }
+  ]
+}
