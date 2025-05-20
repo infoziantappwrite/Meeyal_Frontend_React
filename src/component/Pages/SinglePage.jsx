@@ -1,221 +1,192 @@
-import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { databases, DatabaseId, ProductsCollectionId } from "../../appwriteConfig";
-import { Query } from "appwrite";
-import "./SinglePage.css";
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useCurrency } from "../../CurrencyContext";
+import "../../assets/css/SinglPage.css";
 
 const SinglePage = () => {
-  const { id } = useParams();
-  const productId = id;
-  const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [relatedProducts, setRelatedProducts] = useState([]); // Related products state
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { currency } = useCurrency();
 
+  const product = location.state?.product;
+  const allProducts = location.state?.allProducts || [];
+
+  const [selectedImage, setSelectedImage] = useState(
+    product?.productImages && product.productImages.length > 0
+      ? product.productImages[0]
+      : product?.image
+  );
+
+  const [otherProducts, setOtherProducts] = useState([]);
 
   useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const response = await databases.getDocument(DatabaseId, ProductsCollectionId, productId);
-        setProduct(response);
-        setSelectedImage(response.productimages[0]?.imageurl); // Set initial image
+    if (product && allProducts.length > 0) {
+      const filtered = allProducts.filter((p) => p.id !== product.id);
+      setOtherProducts(filtered);
+    }
+    console.log("Current Product:", product);
+    console.log("All Products:", allProducts);
+    console.log("Other Products:", otherProducts);
+  }, [product, allProducts]);
 
-        console.log(response);
+  if (!product) {
+    return (
+      <div className="error-container">
+        <h2>Product data not found</h2>
+        <p>
+          The product details are not available. Please go back and try again.
+        </p>
+        <button onClick={() => navigate(-1)}>Go Back</button>
+      </div>
+    );
+  }
 
+  const {
+    title,
+    description,
+    image,
+    productImages,
+    discountPrice,
+    originalPrice,
+    stock,
+    category,
+    subcategory,
+  } = product;
 
-        if (response.categories?.$id && response.subcategories?.$id) {
-          const relatedResponse = await databases.listDocuments(DatabaseId, ProductsCollectionId, [
-            Query.equal("categories", response.categories.$id), // Match category by ID
-            Query.equal("subcategories", response.subcategories.$id), // Match subcategory by ID
-            Query.limit(5),
-            Query.orderDesc("$createdAt")
-          ]);
-
-          // Exclude the current product from the related list
-          const filteredProducts = relatedResponse.documents.filter(prod => prod.$id !== productId);
-          setRelatedProducts(filteredProducts);
-
-        } else {
-          //console.log("Category or Subcategory ID not found, skipping related products query.");
-          setRelatedProducts([]); // Set empty array if no valid categories/subcategories
-        }
-
-
-      } catch (error) {
-        console.error("Error fetching product:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProduct();
-  }, [productId]);
-
-  if (loading) return <h2>Loading...</h2>;
-  if (!product) return <h2>Product not found</h2>;
+  const discountedPrice =
+    discountPrice && discountPrice > 0
+      ? (originalPrice * (100 - discountPrice)) / 100
+      : originalPrice;
 
   return (
-    <div className="SinglePage">
-      <section>
-        <div className="breadcrumb-main">
-          <div className="container">
-            <div className="breadcrumb-container">
-              <h2 className="page-title">{product.productname}</h2>
-              <ul className="breadcrumb">
-                <li className="breadcrumb-item">
-                  <a href="/">
-                    <i className="fas fa-home"></i>
-                  </a>
-                </li>
-                <li className="breadcrumb-item">
-                  <a href="/category">{product.categories?.name}</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
+    <div className="product-details-container">
+      <button className="back-button" onClick={() => navigate(-1)}>
+        ← Back to Products
+      </button>
 
-      <div className="blog-section product-details">
-        <div className="container">
-          <div className="row">
-            <div id="content" className="col-sm-12">
-              <div className="pro-detail product-content">
-                <div className="row">
-                  <div className="col-md-12 product-left-container">
-                    {/* Product Gallery - 10% */}
-                    <div className="product-gallery">
-                      {product.productimages.map((image, index) => (
-                        <img
-                          key={index}
-                          src={image.imageurl}
-                          alt={`Product Image ${index + 1}`}
-                          className={selectedImage === image.imageurl ? "selected" : ""}
-                          onClick={() => setSelectedImage(image.imageurl)}
-                        />
-                      ))}
-                    </div>
+      <h1 className="product-title">{title}</h1>
+      <p className="product-category">
+        <strong>Category:</strong> {category} / {subcategory}
+      </p>
 
-                    {/* Main Product Image - 70% */}
-                    <div className="pro-image">
-                      <img
-                        src={selectedImage}
-                        alt={product.productname}
-                        title={product.productname}
-                      />
-                    </div>
-
-                    {/* Product Details - 20% */}
-                    <div className="product-right">
-                      <h1>{product.productname}</h1>
-                      <div className="rating">
-                        <div className="product-rating">
-                          {[...Array(5)].map((_, i) => (
-                            <span key={i} className="fa fa-stack">
-                              <i className="fa-regular fa-star"></i>
-                            </span>
-                          ))}
-                        </div>
-                        <a href="#" className="review">
-                          {product.reviews || 0} reviews
-                        </a>
-                      </div>
-                      <hr />
-                      <ul className="list-unstyled manufacturer-listpro">
-                        <li>
-                          <span className="disc">Category:</span>{" "}
-                          <span className="disc1">{product.categories?.name}</span>
-                        </li>
-                        <li>
-                          <span className="disc">Availability:</span>{" "}
-                          <span className="disc1">{product.stock > 0 ? "In Stock" : "Out of Stock"}</span>
-                        </li>
-                        <li>
-                          <div className="price-wrapper">
-                            <span className="disc">Price:</span>
-                            <div className="price-container">
-                              <div className="price-left">
-                                {product.discountprice ? (
-                                  <>
-                                    <span className="old-price">₹{product.originalprice}</span>
-                                    <span className="discounted-price"> ₹{product.originalprice - product.discountprice}</span>
-                                  </>
-                                ) : (
-                                  <span className="regular-price">₹{product.originalprice}</span>
-                                )}
-                              </div>
-                              {product.discountprice && (
-                                <div className="price-right">
-                                  <span className="discount-badge">🔥 You Save ₹{product.discountprice}!</span>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                          <div style={{ display: "flex", alignItems: "center", fontSize: "12px", color: "#555", marginTop: "5px" }}>
-                            <span style={{ marginRight: "5px" }}>
-                              <i className="fas fa-info-circle"></i> {/* FontAwesome icon */}
-                            </span>
-                            <p style={{ margin: 0 }}>Tax included. Shipping calculated at checkout.</p>
-                          </div>
-                        </li>
-                      </ul>
-                      <button className="btn btn-primary">
-                        <i className="fas fa-shopping-cart"></i> Add to Cart
-                      </button>
-                      <button className="btn btn-primary">
-                        <i className="fas fa-heart"></i> Add to Wishlist
-                      </button>
-
-                      <div className="product-description">
-                        <h3>Product Description</h3>
-                        <p>{product.details}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+      <div className="product-content">
+        <div className="product-images">
+          <div className="main-image-container">
+            <img
+              className="main-image"
+              src={selectedImage || "/placeholder.svg"}
+              alt={title}
+              onError={(e) => (e.target.src = "https://dummyimage.com/600x400")}
+            />
           </div>
 
-
-
-
-          {/* Related Products Section */}
-          <div className="related-products">
-            <h3>Related Products</h3>
-            <div className="related-products-grid">
-              {relatedProducts.map((related) => (
-                <div key={related.$id} className="related-product-card">
-                  <Link to={`/productdetails/${related.$id}`}>
-                    <div className="product-image-container">
-                      <img src={related.productimages[0]?.imageurl} alt={related.productname} />
-
-                      {/* Sold Out Overlay */}
-                      {related.sold === 0 && <div className="overlay"><span>Sold Out</span></div>}
-
-                      {/* Status Badges */}
-                      {related.status === "on_sale" && <span className="product-badge onsale">On Sale</span>}
-                      {related.status === "featured" && <span className="product-badge featured">Featured</span>}
-                      {related.status === "bestseller" && <span className="product-badge bestseller">Bestseller</span>}
-                    </div>
-
-                    <h4>{related.productname}</h4>
-                    {related.discountprice ? (
-                      <>
-                        <span className="old-price">₹{related.originalprice}</span>
-                        <span className="discounted-price">₹{related.originalprice - related.discountprice}</span>
-                      </>
-                    ) : (
-                      <span className="regular-price">₹{related.originalprice}</span>
-                    )}
-                  </Link>
-                </div>
+          {productImages && productImages.length > 1 && (
+            <div className="thumbnail-container">
+              {productImages.map((imgUrl, idx) => (
+                <img
+                  className={`thumbnail ${
+                    selectedImage === imgUrl ? "active-thumbnail" : ""
+                  }`}
+                  key={idx}
+                  src={imgUrl || "/placeholder.svg"}
+                  alt={`${title} ${idx + 1}`}
+                  onError={(e) => (e.target.src = "https://dummyimage.com/80")}
+                  onClick={() => setSelectedImage(imgUrl)}
+                />
               ))}
             </div>
+          )}
+        </div>
+
+        <div className="product-info">
+          <p className="product-description">{description}</p>
+
+          <div className="price-container">
+            {discountPrice && discountPrice > 0 ? (
+              <>
+                <span className="original-price">
+                  {currency.symbol} {(originalPrice / currency.rate).toFixed(2)}
+                </span>
+                <span className="discount-badge">-{discountPrice}%</span>
+                <span className="final-price">
+                  {currency.symbol}{" "}
+                  {(discountedPrice / currency.rate).toFixed(2)}
+                </span>
+              </>
+            ) : (
+              <span className="final-price">
+                {currency.symbol} {(originalPrice / currency.rate).toFixed(2)}
+              </span>
+            )}
           </div>
-          {/* End Related Products */}
+
+          <p className="stock-info">
+            <strong>Stock: </strong>
+            {stock > 0 ? (
+              <span className="in-stock">{stock} available</span>
+            ) : (
+              <span className="out-of-stock">Out of stock</span>
+            )}
+          </p>
+
+          <button className="add-to-cart-button" disabled={stock === 0}>
+            {stock > 0 ? "Add to Cart" : "Out of Stock"}
+          </button>
         </div>
       </div>
+
+      {/* View Other Products Section */}
+      {otherProducts.length > 0 && (
+        <div className="related-products-section" style={{ marginTop: "3rem" }}>
+          <h2>View Other Products</h2>
+          <div
+            className="related-products-grid"
+            style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}
+          >
+            {otherProducts.map((item) => (
+              <div
+                key={item._id}
+                className="related-product-card"
+                style={{
+                  cursor: "pointer",
+                  border: "1px solid #ddd",
+                  padding: "10px",
+                  width: "150px",
+                }}
+                onClick={() =>
+                  navigate(`/productdetails/${item._id}`, {
+                    state: { product: item, allProducts },
+                  })
+                }
+              >
+                <img
+                  src={item.image || "https://dummyimage.com/150"}
+                  alt={item.title}
+                  className="related-product-image"
+                  style={{
+                    width: "100%",
+                    height: "auto",
+                    marginBottom: "0.5rem",
+                  }}
+                  onError={(e) => (e.target.src = "https://dummyimage.com/150")}
+                />
+                <div className="related-product-info">
+                  <p
+                    className="related-product-title"
+                    style={{ fontWeight: "bold", marginBottom: "0.25rem" }}
+                  >
+                    {item.title}
+                  </p>
+                  <p className="related-product-price">
+                    {currency.symbol}{" "}
+                    {(item.originalPrice / currency.rate).toFixed(2)}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
