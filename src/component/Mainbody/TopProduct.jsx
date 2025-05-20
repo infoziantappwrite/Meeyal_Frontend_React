@@ -19,60 +19,55 @@ const TopProduct = () => {
     const { currency } = useCurrency();
 
 
+    console.log(products);
+    
 
-    useEffect(() => {
-        const fetchProducts = async () => {
-            try {
-                const response = await databases.listDocuments(DatabaseId, ProductsCollectionId);
+useEffect(() => {
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch("https://meeyaladminbackend-production.up.railway.app/api/products");
+      const data = await response.json();
 
+      const fetchedProducts = data.map((doc) => {
+        // Safely get the image URL from the first productImage object
+        let imageUrl = "https://dummyimage.com/300";
+        if (Array.isArray(doc.productImages) && doc.productImages.length > 0) {
+          imageUrl = doc.productImages[0]?.imageUrl || imageUrl;
+        }
 
-                const fetchedProducts = await Promise.all(response.documents.map(async (doc) => {
-                    let imageUrl = "https://dummyimage.com/300"; // Default placeholder image
-
-                    if (Array.isArray(doc.productimages) && doc.productimages.length > 0) {
-                        imageUrl = doc.productimages[0]?.imageurl;
-                    }
-
-                    return {
-                        id: doc.$id,
-                        title: doc.productname,
-                        description: doc.details, // Full details of the product
-                        discountPrice: doc.discountprice,
-                        originalPrice: doc.originalprice,
-                        stock: doc.stock,
-                        status: doc.status,
-                        sold: doc.sold,
-                        createdAt: doc.$createdAt,
-                        updatedAt: doc.$updatedAt,
-                        image: imageUrl,
-                        category: doc.categories?.name || "Uncategorized",
-                        subcategory: doc.subcategories?.name || "Uncategorized",
-                        permissions: doc.$permissions,
-                        productImages: doc.productimages.map(img => img.imageurl),
-                    };
-                }));
-
-                setProducts({
-                    latest: fetchedProducts
-                        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sort by createdAt (newest first)
-                        .slice(0, 20),
-                    onSale: fetchedProducts.filter(p => p.status === "on_sale"),
-                    featured: fetchedProducts.filter(p => p.status === "featured"),
-                    bestseller: fetchedProducts
-                        .sort((a, b) => b.sold - a.sold)
-                        .slice(0, 10),
-
-                });
-
-
-            } catch (error) {
-                console.error("Error fetching products:", error);
-            }
+        return {
+          id: doc._id,
+          title: doc.productName,
+          description: doc.details,
+          discountPrice: doc.discountPrice,
+          originalPrice: doc.originalPrice,
+          stock: doc.stock,
+          status: doc.status,
+          sold: doc.sold,
+          createdAt: doc.createdAt,
+          updatedAt: doc.updatedAt,
+          image: imageUrl,
+          category: doc.category?.name || "Uncategorized",
+          subcategory: doc.subCategory?.name || "Uncategorized",
+          productImages: doc.productImages.map(img => img.imageUrl), // Safely map image URLs
         };
+      });
 
-        fetchProducts();
-    }, []);
+      setProducts({
+        latest: fetchedProducts
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          .slice(0, 20),
+        onSale: fetchedProducts.filter((p) => p.status === "on_sale"),
+        featured: fetchedProducts.filter((p) => p.status === "featured"),
+        bestseller: fetchedProducts.sort((a, b) => b.sold - a.sold).slice(0, 10),
+      });
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
 
+  fetchProducts();
+}, []);
 
 
     return (
