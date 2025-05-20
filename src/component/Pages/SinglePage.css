@@ -1,0 +1,397 @@
+
+.SinglePage{
+    /* Container for product-left */
+    .product-left-container {
+      display: flex;
+      width: 100%;
+      align-items: center;
+    }
+    
+    /* Product Gallery - 10% */
+    .product-gallery {
+      width: 10%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .product-gallery img {
+      width: 100%;
+      max-width: 70px; /* Adjust thumbnail size */
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: transform 0.3s ease-in-out;
+    }
+    
+    .product-gallery img:hover {
+      transform: scale(1.1);
+    }
+    
+    .product-gallery img.selected {
+      border: 3px solid #d12a8b6e;
+    }
+    
+    /* Main Product Image - 70% */
+    .pro-image {
+      width: 50%;
+      display: flex;
+      align-items: center;
+      margin-left: 10px;
+    }
+    
+    .pro-image img {
+      width: 100%;
+      max-width: 400px; /* Adjusted for better balance */
+      object-fit: cover;
+    }
+    
+    /* Right Section (Product Details) - 20% */
+    .product-right {
+      width: 70%;
+     
+    }
+    
+    
+    .product-right h1 {
+      font-size: 26px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    
+    .rating {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    
+    .product-rating .fa-stack {
+      color: #f39c12;
+    }
+    
+    .review {
+      margin-left: 10px;
+      color: #007bff;
+      text-decoration: none;
+    }
+    
+    .list-unstyled li {
+      margin-bottom: 8px;
+    }
+    
+    .disc {
+      font-weight: bold;
+    }
+    
+    .disc1 {
+      font-weight: normal;
+    }
+    
+    /* Attractive Button Design */
+    .btn-primary {
+      background: linear-gradient(45deg, #dc4298, #ff70c1); /* Gradient Pink */
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease-in-out;
+      box-shadow: 0 4px 10px #ff82c985;
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(90deg, #dc4298, #ff70c1); /* Darker Pink */
+      transform: scale(1.05); /* Slight pop effect */
+      box-shadow: 0 6px 15px #ff82c985;
+    }
+    
+    /* Add margin for spacing between buttons */
+    .btn-primary + .btn-primary {
+      margin-left: 10px;
+    }
+    
+    
+    /* Product Description */
+    .product-description h3 {
+      font-size: 22px;
+      margin-top: 20px;
+    }
+    
+    .product-description p {
+      font-size: 16px;
+      line-height: 1.5;
+      color: #555;
+    }
+    
+    /* Price Container (Flex Layout) */
+      /* Wrap Price Label and Value in Flex */
+      .price-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 10px; /* Space between "Price:" and the value */
+        width: 100%;
+      }
+      
+      /* Price Container (Value) */
+      .price-container {
+        display: flex;
+        align-items: center;
+      }
+      
+      /* Price Label */
+      .disc {
+        font-weight: bold;
+        font-size: 18px;
+      }
+      
+      /* Price Left (Original + Discounted Price) */
+      .price-left {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      
+      /* Price Right (Discount Badge) */
+      .price-right {
+        display: flex;
+        align-items: center;
+        margin-left: 10px;
+      }
+      
+      /* Original Price (Strikethrough) */
+      .old-price {
+        text-decoration: line-through;
+        color: #999;
+        font-size: 16px;
+        font-weight: 500;
+      }
+      
+      /* Discounted Price */
+      .discounted-price {
+        color: #ff4081;
+        font-size: 20px;
+        font-weight: bold;
+      }
+      
+      /* Discount Badge */
+      .discount-badge {
+        background: #28a745;
+        color: white;
+        font-size: 14px;
+        padding: 5px 12px;
+        border-radius: 5px;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+    
+    /* Screens Below 1400px */
+    @media (max-width: 1400px) {
+      .pro-image img {
+        max-width: 500px;
+      }
+    }
+    
+    /* Tablets (Below 1024px) */
+    @media (max-width: 1024px) {
+      .product-left-container {
+        flex-direction: column;
+        align-items: center;
+      }
+    
+      .product-gallery {
+        width: 100%;
+        flex-direction: row;
+        justify-content: center;
+      }
+    
+      .product-gallery img {
+        max-width: 60px;
+        margin: 5px;
+      }
+    
+      .pro-image {
+        width: 100%;
+        margin-left: 0;
+        justify-content: center;
+      }
+    
+      .pro-image img {
+        max-width: 400px;
+      }
+    
+      .product-right {
+        width: 90%;
+        text-align: center;
+      }
+    }
+    
+    /* Mobile Devices (Below 768px) */
+    @media (max-width: 768px) {
+      .product-gallery img {
+        max-width: 50px;
+      }
+    
+      .pro-image img {
+        max-width: 300px;
+      }
+    
+      .product-right h1 {
+        font-size: 22px;
+      }
+    }
+    
+    /* Small Mobile Devices (Below 480px) */
+    @media (max-width: 480px) {
+      .product-gallery img {
+        max-width: 40px;
+      }
+    
+      .pro-image img {
+        max-width: 250px;
+      }
+    
+      .product-right h1 {
+        font-size: 20px;
+      }
+    }
+    
+    
+    
+    
+       
+       
+      /* Related Products Section */
+      .related-products {
+        margin-top: 40px;
+      }
+       
+      .related-products h3 {
+        font-size: 22px;
+        margin-bottom: 20px;
+      }
+       
+      .related-products-grid {
+        display: grid;
+        gap: 15px;
+        overflow-x: auto;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        margin-bottom: 40px;
+      }
+    
+      
+       
+      .related-product-card img {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+        border-radius: 5px;
+      }
+       
+      .related-product-card h4 {
+        font-size: 16px;
+        margin: 10px 0;
+      }
+       
+      .related-product-card p {
+        font-size: 14px;
+        color: #333;
+      }
+       
+      .related-product-card:hover {
+        transform: scale(1.02);
+      }
+       
+      .product-image-container {
+        position: relative;
+      }
+       
+      .product-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        padding: 5px 10px;
+        font-size: 12px;
+        font-weight: bold;
+        color: white;
+        border-radius: 5px;
+      }
+       
+      /* Different Colors for Different Status */
+      .onsale {
+        background-color: #09c12e; /* Red for Sale */
+      }
+       
+      .featured {
+        background-color: #00b3ff; /* Yellow for Featured */
+      }
+       
+      /* "Sold Out" overlay */
+      .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6); /* Dark semi-transparent overlay */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 18px;
+        font-weight: bold;
+        text-transform: uppercase;
+        z-index: 2;
+        border-radius: 5px;
+      }
+       
+       
+      /* Default for larger screens */
+      @media (min-width: 1024px) {
+        .related-products-grid {
+          display: flex; /* Scrollable row */
+          flex-wrap: nowrap;
+        }
+      }
+       
+      /* Tablet View (Show 5 Products in Grid) */
+      @media (max-width: 1024px) and (min-width: 600px) {
+        .related-products-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr); /* 3 columns */
+        }
+       
+        .related-product-card {
+          width: 100%; /* Adjust size */
+        }
+      }
+       
+      /* Mobile View (Show 2 Products Per Row) */
+      @media (max-width: 600px) {
+        .related-products-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr); /* 2 columns */
+        }
+       
+        .related-product-card {
+          width: 100%;
+        }
+      }
+       
+       
+    
+       
+      /* Fade-in Animation */
+      @keyframes fade-in {
+        from {
+          opacity: 0;
+          transform: translateY(-5px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+       
+       
+    }
