@@ -5,7 +5,6 @@ import Slider from "./Slider";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-
 const LoginPage = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -36,14 +35,16 @@ const LoginPage = () => {
     }
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(""); // Clear previous errors
 
     try {
       // Create a session first
-      await account.createEmailPasswordSession(formData.email, formData.password);
+      await account.createEmailPasswordSession(
+        formData.email,
+        formData.password
+      );
 
       // Get user details after login
       const user = await account.get();
@@ -51,7 +52,9 @@ const LoginPage = () => {
       if (!user.emailVerification) {
         // If not verified, end session and send verification email
         await account.createVerification(`${window.location.origin}/verify`);
-        toast.warning(`Email not verified. A verification link has been sent to your email ${user.email}`);
+        toast.warning(
+          `Email not verified. A verification link has been sent to your email ${user.email}`
+        );
         await account.deleteSession("current");
       } else {
         // If verified, proceed
@@ -64,8 +67,6 @@ const LoginPage = () => {
       toast.error(err.message || "Login failed. Please try again.");
     }
   };
-
-
 
   // Check and delete expired sessions
   // useEffect(() => {
@@ -90,7 +91,6 @@ const LoginPage = () => {
   //   checkSession();
   // }, [navigate]);
 
-
   return (
     <div>
       <section>
@@ -106,10 +106,8 @@ const LoginPage = () => {
       <div className="blog-section">
         <div className="container">
           <div className="row">
-
             {/* Sidebar */}
             <Slider />
-
             {/* Main Content */}
             <div id="content" className="col-sm-9 all-blog my-account">
               <div className="row">
@@ -117,9 +115,16 @@ const LoginPage = () => {
                 <div className="col-md-6">
                   <div className="well">
                     <h2>New Customer</h2>
-                    <p><strong>Register Account</strong></p>
-                    <p>By creating an account you will be able to shop faster, track orders, and manage your preferences.</p>
-                    <Link to="/register" className="btn btn-primary">Continue</Link>
+                    <p>
+                      <strong>Register Account</strong>
+                    </p>
+                    <p>
+                      By creating an account you will be able to shop faster,
+                      track orders, and manage your preferences.
+                    </p>
+                    <Link to="/register" className="btn btn-primary">
+                      Continue
+                    </Link>
                   </div>
                 </div>
 
@@ -127,11 +132,15 @@ const LoginPage = () => {
                 <div className="col-md-6 mb-4">
                   <div className="well">
                     <h2>Returning Customer</h2>
-                    <p><strong>I am a returning customer</strong></p>
+                    <p>
+                      <strong>I am a returning customer</strong>
+                    </p>
                     {error && <p className="text-danger">{error}</p>}
                     <form onSubmit={handleSubmit}>
                       <div className="form-group">
-                        <label className="control-label" htmlFor="input-email">E-Mail Address</label>
+                        <label className="control-label" htmlFor="input-email">
+                          E-Mail Address
+                        </label>
                         <input
                           type="email"
                           name="email"
@@ -144,7 +153,12 @@ const LoginPage = () => {
                         />
                       </div>
                       <div className="form-group">
-                        <label className="control-label" htmlFor="input-password">Password</label>
+                        <label
+                          className="control-label"
+                          htmlFor="input-password"
+                        >
+                          Password
+                        </label>
                         <input
                           type="password"
                           name="password"
@@ -159,20 +173,29 @@ const LoginPage = () => {
                           type="button"
                           onClick={handlePasswordReset}
                           className="btn-link p-0"
-                          style={{ color: "#373737", textDecoration: "underline", fontSize: "0.8rem" }}
+                          style={{
+                            color: "#373737",
+                            textDecoration: "underline",
+                            fontSize: "0.8rem",
+                          }}
                         >
                           Forgotten Password?
                         </button>
-
                       </div>
-                      <button type="submit" className="btn btn-primary">Login</button>
+                      <button type="submit" className="btn btn-primary">
+                        Login
+                      </button>
                     </form>
                   </div>
                 </div>
-              </div> {/* End of Row */}
-            </div> {/* End of Main Content */}
-          </div> {/* End of Row */}
-        </div> {/* End of Container */}
+              </div>{" "}
+              {/* End of Row */}
+            </div>{" "}
+            {/* End of Main Content */}
+          </div>{" "}
+          {/* End of Row */}
+        </div>{" "}
+        {/* End of Container */}
       </div>
     </div>
   );

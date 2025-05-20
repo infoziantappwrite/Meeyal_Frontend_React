@@ -1,5 +1,10 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import Header from "./component/Header/Header";
 import Mainbody from "./component/Mainbody/Mainbody";
 import "./index.css";
@@ -21,6 +26,9 @@ import Profile from "./component/Pages/RegAndLogin/Profile";
 import Categories from "./component/Pages/Categories/Categories ";
 import VerifyPage from "./component/Pages/RegAndLogin/VerifyPage";
 import ResetPasswordPage from "./component/Pages/RegAndLogin/ResetPasswordPage";
+import About from "./component/Pages/About";
+import About1 from "./component/Pages/About1";
+import Contact from "./component/Pages/Contact";
 
 // ✅ 404 Not Found Component
 const NotFound = () => (
@@ -35,8 +43,25 @@ const AppLayout = () => {
   const location = useLocation(); // 🔹 Get the current route
 
   // 🔹 Hide Header only on the 404 page
-  const is404 = !["/", "/shop", "/productdetails/:id", "/cart", "/login", "/register", "/profile", "/shop/:categoryName/:subcategoryName"].includes(location.pathname) &&
-    !location.pathname.startsWith("/shop") && !location.pathname.startsWith("/productdetails") && !location.pathname.startsWith("/verify") && !location.pathname.startsWith("/reset-password");
+  const is404 =
+    ![
+      "/",
+      "/shop",
+      "/about",
+      "/about1",
+      "/contact",
+
+      "/productdetails/:id",
+      "/cart",
+      "/login",
+      "/register",
+      "/profile",
+      "/shop/:categoryName/:subcategoryName",
+    ].includes(location.pathname) &&
+    !location.pathname.startsWith("/shop") &&
+    !location.pathname.startsWith("/productdetails") &&
+    !location.pathname.startsWith("/verify") &&
+    !location.pathname.startsWith("/reset-password");
 
   return (
     <>
@@ -45,6 +70,9 @@ const AppLayout = () => {
         <Route path="/" element={<Mainbody />} />
         <Route path="/shop" element={<div></div>} />
         <Route path="/cart" element={<CartPage />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/about1" element={<About1 />} />
+        <Route path="/contact" element={<Contact />} />
 
         <Route element={<PublicRoute />}>
           <Route path="/login" element={<LoginPage />} />
@@ -55,9 +83,11 @@ const AppLayout = () => {
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<Profile />} />
           <Route path="/productdetails/:id" element={<SinglePage />} />
-          <Route path="/shop/:categoryName/:subcategoryName" element={<Categories />} />
+          <Route
+            path="/shop/:categoryName/:subcategoryName"
+            element={<Categories />}
+          />
         </Route>
-
 
         {/* ✅ Catch-All Route for 404 Page */}
         <Route path="*" element={<NotFound />} />
@@ -85,4 +115,3 @@ function App() {
 }
 
 export default App;
-
