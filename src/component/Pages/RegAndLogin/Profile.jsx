@@ -1,172 +1,165 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { account } from "../../../appwriteConfig";
+import axios from "axios";
 import { toast } from "react-toastify";
-import Slider from "./Slider"; // Import Slider component
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 const Profile = () => {
   const [user, setUser] = useState(null);
+  const [showChangePassword, setShowChangePassword] = useState(false);
+
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
   const navigate = useNavigate();
 
-  const [showOTPForm, setShowOTPForm] = useState(false);
-const [otp, setOtp] = useState("");
-const [isEditingPhone, setIsEditingPhone] = useState(false);
-const [newPhone, setNewPhone] = useState("");
-const [password, setPassword] = useState("");
-
-const handleSendOTP = async () => {
-  try {
-    await account.createPhoneVerification();
-    toast.success("OTP sent to your phone!");
-    setShowOTPForm(true);
-  } catch (error) {
-    toast.error(error.message || "Failed to send OTP");
-  }
-};
-const handleVerifyPhone = async (e) => {
-  e.preventDefault();
-  try {
-   await account.updatePhoneVerification(user.$id, otp);
-    toast.success("Phone verified successfully!");
-    setShowOTPForm(false);
-    setOtp('');
-    setNewPhone('');
-    setPassword('');
-    setUser(await account.get()); // Refresh user data
-  } catch (error) {
-    toast.error(error.message || "Verification failed");
-  }
-};
-
-
-
-const handleChangePhone = async (e) => {
-  e.preventDefault();
-  if (!newPhone.startsWith("+")) {
-    toast.error("Phone number must start with '+' sign!");
-    return;
-  }
-  try {
-    await account.updatePhone(newPhone, password);
-    toast.success("Phone number updated. Please verify.");
-    setUser(await account.get());
-    setIsEditingPhone(false);
-    setShowOTPForm(false);
-  } catch (error) {
-    toast.error("Failed to update phone number. " + error.message);
-  }
-};
-
-
-
-
-  // Fetch user details
   useEffect(() => {
-    const getUser = async () => {
+    const fetchUser = async () => {
       try {
-        const userData = await account.get();
-        setUser(userData);
-        console.log("User data:", userData); // Log user data for debugging
+        const response = await axios.get(`${API_URL}/users/profile`, {
+          withCredentials: true,
+        });
+        setUser(response.data.user || response.data); // depending on your backend response
       } catch (error) {
-        console.error("Error fetching user data:", error);
-        toast.error("Failed to fetch user details. Please log in again.");
+        console.error("Error fetching user profile:", error);
+        toast.error("Please log in to view your profile.");
         navigate("/login");
       }
     };
 
-    getUser();
+    fetchUser();
   }, [navigate]);
 
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+
+    if (newPassword !== confirmPassword) {
+      toast.error("New password and confirm password do not match.");
+      return;
+    }
+
+    if (!oldPassword || !newPassword || !confirmPassword) {
+      toast.error("Please fill all password fields.");
+      return;
+    }
+
+    try {
+      await axios.post(
+        `${API_URL}/users/change-password`,
+        {
+          oldPassword,
+          newPassword,
+          confirmPassword,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      toast.success("Password changed successfully!");
+      setOldPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setShowChangePassword(false);
+    } catch (error) {
+      const msg =
+        error.response?.data?.message ||
+        "Failed to change password. Please try again.";
+      toast.error(msg);
+    }
+  };
 
   return (
-    <div id="content" className="col-sm-9 all-blog my-account mb-4 ">
-    <div className="row justify-content-center">
-      <div className="col-md-10">
-        <div className="card shadow-sm p-4 bg-light rounded-4">
-          <h2 className="mb-4 border-bottom pb-2 text-primary">Profile Information</h2>
-  
-          {user ? (
-            <div className="fs-5">
-              <p><strong>Name:</strong> {user.name}</p>
-              <p className="mt-3"><strong>Email:</strong> {user.email}</p>
-              {showOTPForm && (
-                <form onSubmit={handleVerifyPhone} className="mt-3">
-                  <div className="form-group row align-items-center">
-                    <label className="col-sm-3 col-form-label">Enter OTP</label>
-                    <div className="col-sm-6">
+    <div id="content" className="col-sm-9 all-blog my-account mb-4">
+      <div className="row justify-content-center">
+        <div className="col-md-10">
+          <div className="card shadow-sm p-4 bg-light rounded-4">
+            <h2 className="mb-4 border-bottom pb-2 text-primary">
+              Profile Information
+            </h2>
+
+            {user ? (
+              <div className="fs-5">
+                <p>
+                  <strong>Name:</strong> {user.name}
+                </p>
+                <p>
+                  <strong>Email:</strong> {user.email}
+                </p>
+                <p>
+                  <strong>Phone:</strong> {user.mobile || "Not Provided"}
+                </p>
+
+                <hr />
+
+                <button
+                  className="btn btn-outline-primary mb-3"
+                  onClick={() => setShowChangePassword(!showChangePassword)}
+                >
+                  {showChangePassword ? "Cancel Change Password" : "Change Password"}
+                </button>
+
+                {showChangePassword && (
+                  <form onSubmit={handleChangePassword} className="mb-3">
+                    <div className="mb-3">
+                      <label htmlFor="oldPassword" className="form-label">
+                        Old Password
+                      </label>
                       <input
-                        type="text"
-                        value={otp}
-                        onChange={(e) => setOtp(e.target.value)}
+                        type="password"
+                        id="oldPassword"
                         className="form-control"
+                        value={oldPassword}
+                        onChange={(e) => setOldPassword(e.target.value)}
                         required
+                        minLength={6}
                       />
                     </div>
-                    <div className="col-sm-3">
-                      <button type="submit" className="btn btn-success">Verify</button>
+
+                    <div className="mb-3">
+                      <label htmlFor="newPassword" className="form-label">
+                        New Password
+                      </label>
+                      <input
+                        type="password"
+                        id="newPassword"
+                        className="form-control"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        required
+                        minLength={6}
+                      />
                     </div>
-                  </div>
-                </form>
-              )}
-              <p>
-  <strong>Phone:</strong> {user.phone}{" "}
-  {!user.phoneVerification && (
-    <button className="btn btn-sm btn-warning ms-2" onClick={handleSendOTP}>
-      Verify First
-    </button>
-  )}
-  <button
-    className="btn btn-sm btn-outline-secondary ms-2"
-    onClick={() => setIsEditingPhone(!isEditingPhone)}
-  >
-    {isEditingPhone ? "Cancel" : "Change Phone"}
-  </button>
-</p>
 
-{isEditingPhone && (
-  <form onSubmit={handleChangePhone} className="mt-3">
-    <div className="form-group row mb-3">
-      <label className="col-sm-3 col-form-label">New Phone</label>
-      <div className="col-sm-9">
-        <input
-          type="tel"
-          className="form-control"
-          placeholder="+91xxxxxxxxxx"
-          value={newPhone}
-          onChange={(e) => setNewPhone(e.target.value)}
-          required
-        />
-      </div>
-    </div>
+                    <div className="mb-3">
+                      <label htmlFor="confirmPassword" className="form-label">
+                        Confirm New Password
+                      </label>
+                      <input
+                        type="password"
+                        id="confirmPassword"
+                        className="form-control"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        required
+                        minLength={6}
+                      />
+                    </div>
 
-    <div className="form-group row mb-3">
-      <label className="col-sm-3 col-form-label">Confirm Password</label>
-      <div className="col-sm-9">
-        <input
-          type="password"
-          className="form-control"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-      </div>
-    </div>
-
-    <div className="text-end">
-      <button type="submit" className="btn btn-primary">Update Phone</button>
-    </div>
-  </form>
-)}
-
-            </div>
-          ) : (
-            <p>Loading user details...</p>
-          )}
+                    <button type="submit" className="btn btn-primary">
+                      Update Password
+                    </button>
+                  </form>
+                )}
+              </div>
+            ) : (
+              <p>Loading user details...</p>
+            )}
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  
   );
 };
 
