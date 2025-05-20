@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { account } from "../../../appwriteConfig"; // Import Appwrite account instance
+import axios from "axios";
 import { toast } from "react-toastify";
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 const Admin = () => {
   const [open, setOpen] = useState(false);
@@ -9,11 +11,15 @@ const Admin = () => {
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
-  // Check authentication status
+  // ✅ Check authentication via cookie-based session
   const checkAuth = async () => {
     try {
-      await account.getSession("current");
-      setIsAuthenticated(true);
+      const response = await axios.get(`${API_URL}/users/profile`, {
+        withCredentials: true,
+      });
+      if (response.status === 200) {
+        setIsAuthenticated(true);
+      }
     } catch {
       setIsAuthenticated(false);
     }
@@ -21,30 +27,25 @@ const Admin = () => {
 
   useEffect(() => {
     checkAuth();
-  }, []); 
+  }, []);
 
-  // Logout function
+  // ✅ Logout using backend route
   const handleLogout = async () => {
     try {
-      await account.deleteSession("current"); // Logs out the user
+      await axios.post(`${API_URL}/users/logout`, {}, { withCredentials: true });
       setIsAuthenticated(false);
       toast.success("Logged out successfully!");
-      setOpen(false); // Close dropdown
-      navigate("/login"); // Redirect to login page
+      setOpen(false);
+      navigate("/login");
     } catch (error) {
-      console.log(error);
+      console.error("Logout error:", error);
       toast.error("Failed to log out. Try again.");
     }
   };
 
   // Toggle dropdown on click
-  const toggleDropdown = () => {
-    setOpen(!open);
-  };
-
-  const toggleDropdownClose = () => {
-    setOpen(false);
-  };
+  const toggleDropdown = () => setOpen(!open);
+  const toggleDropdownClose = () => setOpen(false);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -54,9 +55,7 @@ const Admin = () => {
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
@@ -67,7 +66,6 @@ const Admin = () => {
             <i className="fa fa-user user-icon"></i>
           </div>
 
-          {/* Dropdown menu */}
           {open && (
             <ul className="dropdown-menu dropdown-menu-right">
               {isAuthenticated ? (
@@ -77,7 +75,7 @@ const Admin = () => {
                       className="dropdown-item"
                       onClick={() => {
                         navigate("/profile");
-                        toggleDropdownClose(); // ✅ Close dropdown after navigation
+                        toggleDropdownClose();
                       }}
                     >
                       Profile
@@ -96,7 +94,7 @@ const Admin = () => {
                       className="dropdown-item"
                       onClick={() => {
                         navigate("/register");
-                        toggleDropdownClose(); 
+                        toggleDropdownClose();
                       }}
                     >
                       Register
@@ -107,7 +105,7 @@ const Admin = () => {
                       className="dropdown-item"
                       onClick={() => {
                         navigate("/login");
-                        toggleDropdownClose(); // ✅ Close dropdown after navigation
+                        toggleDropdownClose();
                       }}
                     >
                       Login
