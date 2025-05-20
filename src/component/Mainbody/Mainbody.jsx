@@ -1,16 +1,51 @@
-import React from 'react'
-import BannerSection from './BannerSection'
-import TopProduct from './TopProduct'
-import SubBanner from './SubBanner'
-import Testimonials from './Testimonials'
+import React, { useEffect, useState } from 'react';
+import BannerSection from './BannerSection';
+import TopProduct from './TopProduct';
+import SubBanner from './SubBanner';
+import Testimonials from './Testimonials';
 
 const Mainbody = () => {
+  const [banners, setMainBanners] = useState([]);
+  const [offerBanners, setOfferBanners] = useState([]);
+  const [specialBanners, setSpecialBanners] = useState([]);
+  const [newCollectionBanners, setNewCollectionBanners] = useState([]);
+  const [categoryBanners, setCategoryBanners] = useState([]);
+
+  useEffect(() => {
+    const fetchBannerImages = async () => {
+      try {
+        const response = await fetch("https://meeyaladminbackend-production.up.railway.app/api/offer");
+        const data = await response.json();
+
+        const formatBanners = (tag) =>
+          data
+            .filter((banner) => banner.tag === tag)
+            .map((banner) => ({
+              id: banner._id || banner.id,
+              url: banner.imageurl || banner.imagesUrl,
+            }));
+
+        setMainBanners(formatBanners("main"));
+        setOfferBanners(formatBanners("offer"));
+        setSpecialBanners(formatBanners("special"));
+        setNewCollectionBanners(formatBanners("newcollection"));
+        setCategoryBanners(formatBanners("category"));
+      } catch (error) {
+        console.error("Error fetching banners:", error);
+      }
+    };
+
+    fetchBannerImages();
+  }, []);
+
+
+
     return (
         <div>
             <section class="main_section">
 
                 {/* Banner Section */}
-                <BannerSection />
+                 <BannerSection banners={banners} />
 
                 {/* <!-- service Section --> */}
                 <div class="service-box  wow fadeInUp top-margin-all ">
@@ -66,7 +101,10 @@ const Mainbody = () => {
 
 
                 {/* <!-- banner section --> */}
-              <SubBanner />
+              <SubBanner
+        newCollectionBanners={newCollectionBanners}
+        offerBanners={offerBanners}
+      />
                 {/* <!-- .banner section -->
 
 		<!-- Newsletter section -->	 */}

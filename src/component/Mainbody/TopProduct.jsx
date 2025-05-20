@@ -19,55 +19,52 @@ const TopProduct = () => {
     const { currency } = useCurrency();
 
 
-    console.log(products);
-    
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const response = await fetch("https://meeyaladminbackend-production.up.railway.app/api/products");
+                const data = await response.json();
 
-useEffect(() => {
-  const fetchProducts = async () => {
-    try {
-      const response = await fetch("https://meeyaladminbackend-production.up.railway.app/api/products");
-      const data = await response.json();
+                const fetchedProducts = data.map((doc) => {
+                    // Safely get the image URL from the first productImage object
+                    let imageUrl = "https://dummyimage.com/300";
+                    if (Array.isArray(doc.productImages) && doc.productImages.length > 0) {
+                        imageUrl = doc.productImages[0]?.imageUrl || imageUrl;
+                    }
 
-      const fetchedProducts = data.map((doc) => {
-        // Safely get the image URL from the first productImage object
-        let imageUrl = "https://dummyimage.com/300";
-        if (Array.isArray(doc.productImages) && doc.productImages.length > 0) {
-          imageUrl = doc.productImages[0]?.imageUrl || imageUrl;
-        }
+                    return {
+                        id: doc._id,
+                        title: doc.productName,
+                        description: doc.details,
+                        discountPrice: doc.discountPrice,
+                        originalPrice: doc.originalPrice,
+                        stock: doc.stock,
+                        status: doc.status,
+                        sold: doc.sold,
+                        createdAt: doc.createdAt,
+                        updatedAt: doc.updatedAt,
+                        image: imageUrl,
+                        category: doc.category?.name || "Uncategorized",
+                        subcategory: doc.subCategory?.name || "Uncategorized",
+                        productImages: doc.productImages.map(img => img.imageUrl), // Safely map image URLs
+                    };
+                });
 
-        return {
-          id: doc._id,
-          title: doc.productName,
-          description: doc.details,
-          discountPrice: doc.discountPrice,
-          originalPrice: doc.originalPrice,
-          stock: doc.stock,
-          status: doc.status,
-          sold: doc.sold,
-          createdAt: doc.createdAt,
-          updatedAt: doc.updatedAt,
-          image: imageUrl,
-          category: doc.category?.name || "Uncategorized",
-          subcategory: doc.subCategory?.name || "Uncategorized",
-          productImages: doc.productImages.map(img => img.imageUrl), // Safely map image URLs
+                setProducts({
+                    latest: fetchedProducts
+                        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                        .slice(0, 20),
+                    onSale: fetchedProducts.filter((p) => p.status === "on_sale"),
+                    featured: fetchedProducts.filter((p) => p.status === "featured"),
+                    bestseller: fetchedProducts.sort((a, b) => b.sold - a.sold).slice(0, 10),
+                });
+            } catch (error) {
+                console.error("Error fetching products:", error);
+            }
         };
-      });
 
-      setProducts({
-        latest: fetchedProducts
-          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-          .slice(0, 20),
-        onSale: fetchedProducts.filter((p) => p.status === "on_sale"),
-        featured: fetchedProducts.filter((p) => p.status === "featured"),
-        bestseller: fetchedProducts.sort((a, b) => b.sold - a.sold).slice(0, 10),
-      });
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    }
-  };
-
-  fetchProducts();
-}, []);
+        fetchProducts();
+    }, []);
 
 
     return (
@@ -164,7 +161,7 @@ useEffect(() => {
                                                                                             />
                                                                                         </a>
 
-                                                                                        
+
 
                                                                                         <div className="button-group">
                                                                                             <TopProductActions productId={product.id} stock={product.stock} /> {/* Pass productId and stock to ProductActions */}
@@ -177,14 +174,14 @@ useEffect(() => {
                                                                                             >
                                                                                                 <i className="icon-eye"></i>
                                                                                             </button>
-                                                                                            
+
                                                                                         </div>
                                                                                     </div>
 
                                                                                     <div className="product-description">
-                                                                                       
+
                                                                                         <h4 className="product-title">
-                                                                                        
+
                                                                                             <a href="#">{product.title}</a>
                                                                                         </h4>
                                                                                         <p className="sub-cat">{product.subcategory}</p>

@@ -1,31 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { databases, DatabaseId, BannerImageCollectionId } from "../../appwriteConfig"; // Import Appwrite config
 
-const SubBanner = () => {
-    const [offerBanner, setOfferBanner] = useState(null);
-    const [newCollectionBanner, setNewCollectionBanner] = useState(null);
+const SubBanner = ({ newCollectionBanners, offerBanners }) => {
+
+    const offerBanner = offerBanners?.[0];
+  const newCollectionBanner = newCollectionBanners?.[0];
     
-
-    useEffect(() => {
-      const fetchBannerImages = async () => {
-        try {
-          const response = await databases.listDocuments(DatabaseId, BannerImageCollectionId);
-          const banners = response.documents.map((doc) => ({
-            id: doc.$id,
-            url: doc.imageurl,
-            tag: doc.tag,
-          }));
-  
-          setOfferBanner(banners.find((banner) => banner.tag === "offer") || null);
-          setNewCollectionBanner(banners.find((banner) => banner.tag === "newcollection") || null);
-        } catch (error) {
-          console.error("Error fetching banner images:", error);
-        }
-      };
-  
-      fetchBannerImages();
-    }, []);
-
 
     const banners = [
         {

@@ -7,6 +7,8 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 const Profile = () => {
   const [user, setUser] = useState(null);
+  console.log(user);
+  
   const [showChangePassword, setShowChangePassword] = useState(false);
 
   const [oldPassword, setOldPassword] = useState("");
