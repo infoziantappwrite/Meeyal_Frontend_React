@@ -5,9 +5,9 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.5);
+  background: #dc4298;
   color: #fff;
-  padding: 10px 15px;
+  padding: 10px 18px;
   font-size: 24px;
   cursor: pointer;
   z-index: 10;
@@ -25,7 +25,7 @@
 
 .owl-prev:hover,
 .owl-next:hover {
-  background: rgba(0, 0, 0, 0.8);
+  background: #dc4299af;
 }
 
 }
@@ -38,6 +38,8 @@
   
   .container{
     position: relative;
+    margin: 20px auto;
+    padding: 0 20px;
   }
 
   .product-card {
@@ -53,8 +55,8 @@
 
   .grid-container {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 5 items per row */
-    gap: 20px;
+    grid-template-columns: repeat(5, 1fr); /* 5 items per row */
+    gap: 30px;
     position: relative;
   }
   
@@ -79,7 +81,7 @@
   
   .owl-prev, .owl-next {
     /* background: #d8e029;  ✅ Yellowish background */
-    background-color: rgba(14, 13, 13, 0.597);
+    background-color: #dc4298;
     color: white;         /* ✅ Arrow color */
     border: none;
     width: 45px;          /* ✅ Circle size */
@@ -96,7 +98,7 @@
 }
 
 .owl-prev:hover, .owl-next:hover {
-  background: #dc4298; 
+  background: #c43485b3; 
 }
   
   .owl-prev {
@@ -148,23 +150,7 @@
 }
 
 /* ✅ Style for navigation buttons */
-.owl-prev,
-.owl-next {
-  background-color: rgba(14, 13, 13, 0.597);
-  color: white;
-  border: none;
-  width: 40px; 
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 18px;
-  position: absolute;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-  transition: background 0.3s ease-in-out;
-}
+
 
 /* ✅ Adjust button position for smaller screens */
 @media (max-width: 768px) {
@@ -268,7 +254,7 @@
 
 .original-price {
   color: #888;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .discount {

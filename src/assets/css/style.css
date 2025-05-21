@@ -298,7 +298,7 @@ Header
     height: 50px;
 }
 .top-left {
-    padding: 15px 0;
+    padding: 20px 0;
 }
 .contact-info {
     display: flex;
@@ -312,10 +312,11 @@ Header
 .contact-info a i {
     color: var(--secondary-color);
     margin: 0 10px 0 0;
-    font-size: 20px;
+    font-size: 18px;
 }
 .contact-info a span {
     color: var(--secondary-color);
+    font-size: 18px;
 }
 #top > div {
     display: flex;
@@ -323,6 +324,7 @@ Header
 }
 .top-right {
     display: flex;
+    padding: 5px 0;
 }
 .top-right-bg-box {
     background: none;
@@ -340,6 +342,7 @@ Header
 .dropdown {
     position: relative;
     display: inline-block;
+    
 }
 .dropdown-content {
     display: none;
@@ -354,6 +357,7 @@ Header
     padding: 6px 10px;
     text-decoration: none;
     display: block;
+    
 }
 element.style {
     background: var(--background-color) url() no-repeat center center;
@@ -572,6 +576,7 @@ header.home {
     display: block;
     max-width: 100% !important;
     height: auto;
+    border-radius: 10px;
 }
 .main-menu {
     display: block;
@@ -689,6 +694,15 @@ nav.navbar.navbar-expand-lg.navbar-light .container {
 }
 .top-right .symbol {
     display: none;
+    font-size: 18px;
+}
+.top-right .drop-text {
+   
+    font-size: 18px;
+}
+.top-right .code {
+    font-size: 18px;
+    
 }
 .top-right span.drop-text:after {
     content: ":";
@@ -1003,6 +1017,7 @@ Slider Section
 .vipodha-banner .banner-owl-carousel.owl-carousel .owl-nav .owl-prev {
     left: 30px;
     right: auto;
+    
 }
 .vipodha-banner .banner-owl-carousel.owl-carousel .owl-nav .owl-next {
     left: auto;
@@ -1010,8 +1025,7 @@ Slider Section
 }
 .vipodha-banner .banner-owl-carousel.owl-carousel .owl-nav .owl-prev,
 .vipodha-banner .banner-owl-carousel.owl-carousel .owl-nav .owl-next {
-    background: var(--secondary-color);
-    color: var(--primary-hover-color);
+    
     transform: translateY(50%);
 }
 .vipodha-banner .banner-owl-carousel.owl-carousel .owl-prev:hover,
@@ -3507,8 +3521,7 @@ Common CSS
     min-height: 0vh;
 }
 .container {
-    padding-left: 15px;
-    padding-right: 15px;
+    padding:0px 20px
 }
 .row>*{
     padding-left: 15px;

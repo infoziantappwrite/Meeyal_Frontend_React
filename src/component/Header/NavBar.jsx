@@ -15,10 +15,9 @@ const currencies = [
 const NavBar = () => {
   const { currency, changeCurrency } = useCurrency();
   const [currencyOpen, setCurrencyOpen] = useState(false);
-  const [languageOpen, setLanguageOpen] = useState(false);
 
   const currencyRef = useRef(null);
-  const languageRef = useRef(null);
+ 
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -26,9 +25,7 @@ const NavBar = () => {
       if (currencyRef.current && !currencyRef.current.contains(event.target)) {
         setCurrencyOpen(false);
       }
-      if (languageRef.current && !languageRef.current.contains(event.target)) {
-        setLanguageOpen(false);
-      }
+      
     }
 
     document.addEventListener("mousedown", handleClickOutside);
@@ -45,7 +42,7 @@ const NavBar = () => {
             <div className="contact-info">
               <a href="tel:+1(123)8425733">
                 <i className="fa fa-phone"></i>
-                <span>+1 (123) 8425733</span>
+                <span >+1 (123) 8425733</span>
               </a>
             </div>
           </div>

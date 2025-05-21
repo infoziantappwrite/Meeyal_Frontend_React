@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link,useNavigate } from "react-router-dom";
+import { Link} from "react-router-dom";
 import axios from "axios";
 import Slider from "./Slider";
 import { toast } from "react-toastify";
@@ -8,7 +8,6 @@ import "react-toastify/dist/ReactToastify.css";
 const API_URL = import.meta.env.VITE_API_URL;
 
 const LoginPage = () => {
-  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -39,8 +38,8 @@ const LoginPage = () => {
 
     // Redirect after short delay (or use navigate from react-router-dom)
     setTimeout(() => {
-      navigate("/"); // ✅ Redirect to home page
-      //window.location.href = "/"; // ✅ Full reload (or use navigate('/'))
+      
+      window.location.href = "/"; // ✅ Full reload (or use navigate('/'))
     }, 2000);
   } catch (err) {
     const message = err.response?.data?.message || err.response?.data?.error || "Login failed.";

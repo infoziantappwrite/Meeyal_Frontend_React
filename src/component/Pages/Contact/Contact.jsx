@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Slider from "./RegAndLogin/Slider"; // Importing the Slider component
+import Slider from "../RegAndLogin/Slider"; // Importing the Slider component
 import "./Contact.css";
 
 const Contact = () => {
