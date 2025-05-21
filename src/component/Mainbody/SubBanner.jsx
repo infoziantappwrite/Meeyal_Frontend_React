@@ -1,6 +1,5 @@
 import React from 'react'
 const SubBanner = ({ newCollectionBanners, offerBanners }) => {
-
     const offerBanner = offerBanners?.[0];
   const newCollectionBanner = newCollectionBanners?.[0];
     
@@ -51,4 +50,4 @@ const SubBanner = ({ newCollectionBanners, offerBanners }) => {
   )
 }
 
-export default SubBanner
+export default SubBanner;

@@ -1,58 +1,84 @@
-import React from 'react';
-import { account, databases } from '../../appwriteConfig';
-import { ProfileCollectionId, DatabaseId } from '../../appwriteConfig';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const ProductActions = ({ productId, stock }) => {
-  const handleAction = async (action) => {
-    if (action === 'Add to Cart') {
-      alert(`${action} clicked for Product ID: ${productId}`);
-      return;
-    }
+  const [inWishlist, setInWishlist] = useState(false);
+  const [inCart, setInCart] = useState(false);
 
-    if (action === 'Add to Wishlist') {
+  useEffect(() => {
+    const fetchStatus = async () => {
       try {
-        const user = await account.get();
-
-        // Search for an existing profile document
-        const profileRes = await databases.listDocuments(
-          DatabaseId,
-          ProfileCollectionId,
-          user.$id
+        // Fetch Wishlist
+        const wishlistRes = await axios.get('http://localhost:8000/api/wishlist', {
+          withCredentials: true,
+        });
+        const wishlistItems = wishlistRes.data;
+        const isInWishlist = wishlistItems.some(item =>
+          item.productId === productId || item.productId._id === productId
         );
-        console.log('Profile Search Result:', profileRes);
+        setInWishlist(isInWishlist);
 
-        // if (profileRes.total === 0) {
-        //   // No profile exists, create one with current product ID
-        //   await databases.createDocument(
-        //     DatabaseId,
-        //     ProfileCollectionId,
-        //     user.$id, 
-        //     {
-        //       products: [productId], // initialize with one product
-        //     }
-        //   );
-        // } else {
-        //   const profile = profileRes.documents[0];
-        //   const existingProducts = profile.products || [];
-
-        //   // Add product only if not already in wishlist
-        //   if (!existingProducts.includes(productId)) {
-        //     await databases.updateDocument(
-        //       DatabaseId,
-        //       ProfileCollectionId,
-        //       profile.$id,
-        //       {
-        //         products: [...existingProducts, productId],
-        //       }
-        //     );
-        //   }
-        // }
-
-        alert(`Product ID ${productId} added to wishlist.`);
-      } catch (error) {
-        console.error('Error adding to wishlist:', error);
-        alert('Failed to add to wishlist.');
+        // Fetch Cart
+        const cartRes = await axios.get('http://localhost:8000/api/cart', {
+          withCredentials: true,
+        });
+        const cartItems = cartRes.data;
+        const isInCart = cartItems.some(item =>
+          item.productId === productId || item.productId._id === productId
+        );
+        setInCart(isInCart);
+      } catch (err) {
+        console.error('Error fetching status:', err);
       }
+    };
+
+    fetchStatus();
+  }, [productId]);
+
+  const handleAction = async (action) => {
+    try {
+      if (action === 'Add to Cart') {
+        if (inCart) {
+          // Remove from cart
+          const res = await axios.delete('http://localhost:8000/api/cart/remove', {
+            data: { productId },
+            withCredentials: true,
+          });
+          alert(res.data.message || 'Removed from cart');
+          setInCart(false);
+        } else {
+          // Add to cart
+          const res = await axios.post(
+            'http://localhost:8000/api/cart/add',
+            { productId, quantity: 1 },
+            { withCredentials: true }
+          );
+          alert(res.data.message || 'Added to cart');
+          setInCart(true);
+        }
+      }
+
+      if (action === 'Add to Wishlist') {
+        if (inWishlist) {
+          const res = await axios.delete('http://localhost:8000/api/wishlist', {
+            data: { productId },
+            withCredentials: true,
+          });
+          alert(res.data.message || 'Removed from wishlist');
+          setInWishlist(false);
+        } else {
+          const res = await axios.post(
+            'http://localhost:8000/api/wishlist',
+            { productId },
+            { withCredentials: true }
+          );
+          alert(res.data.message || 'Added to wishlist');
+          setInWishlist(true);
+        }
+      }
+    } catch (error) {
+      console.error(`Error in ${action.toLowerCase()} toggle:`, error);
+      alert(`Something went wrong with ${action.toLowerCase()} action.`);
     }
   };
 
@@ -65,7 +91,10 @@ const ProductActions = ({ productId, stock }) => {
         disabled={stock === 0}
         onClick={() => handleAction('Add to Cart')}
       >
-        <i className="icon-bag"></i>
+        <i
+          className="icon-bag"
+          style={{ color: inCart ? 'green' : 'inherit' }}
+        ></i>
       </button>
 
       <button
@@ -75,7 +104,10 @@ const ProductActions = ({ productId, stock }) => {
         disabled={stock === 0}
         onClick={() => handleAction('Add to Wishlist')}
       >
-        <i className="icon-like"></i>
+        <i
+          className="icon-like"
+          style={{ color: inWishlist ? 'hotpink' : 'inherit' }}
+        ></i>
       </button>
     </div>
   );
