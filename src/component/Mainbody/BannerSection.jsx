@@ -1,37 +1,12 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
-import { databases, DatabaseId, BannerImageCollectionId } from "../../appwriteConfig"; // Import Appwrite config
 import "swiper/css";
 import "swiper/css/pagination";
-import "font-awesome/css/font-awesome.min.css"; // Ensure FontAwesome is imported
+import "font-awesome/css/font-awesome.min.css";
 
-const BannerSection = () => {
-  const [banners, setMainBanners] = useState([]);
+const BannerSection = ({ banners }) => {
   const swiperRef = useRef(null);
-
-
-
-
-  useEffect(() => {
-    const fetchBannerImages = async () => {
-      try {
-        const response = await databases.listDocuments(DatabaseId, BannerImageCollectionId);
-        const banners = response.documents.map((doc) => ({
-          id: doc.$id,
-          url: doc.imageurl,
-          tag: doc.tag,
-        }));
-
-     
-        setMainBanners(banners.filter((banner) => banner.tag === "main"));
-      } catch (error) {
-        console.error("Error fetching banner images:", error);
-      }
-    };
-
-    fetchBannerImages();
-  }, []);
 
   return (
     <div className="banner-section">
@@ -60,7 +35,7 @@ const BannerSection = () => {
               )}
             </Swiper>
 
-            {/* Custom Navigation */}
+            {/* Navigation buttons */}
             <div className="owl-prev" onClick={() => swiperRef.current?.slidePrev()}>
               <i className="fa fa-angle-left" aria-hidden="true"></i>
             </div>
@@ -70,7 +45,6 @@ const BannerSection = () => {
           </div>
         </div>
       </div>
-      
     </div>
   );
 };
