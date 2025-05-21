@@ -19,9 +19,6 @@ const TopProduct = () => {
     const { currency } = useCurrency();
 
 
-    console.log(products);
-    
-
 useEffect(() => {
   const fetchProducts = async () => {
     try {
