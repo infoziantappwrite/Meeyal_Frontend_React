@@ -3,13 +3,12 @@ import BannerSection from './BannerSection';
 import TopProduct from './TopProduct';
 import SubBanner from './SubBanner';
 import Testimonials from './Testimonials';
-
+const API_URL = import.meta.env.VITE_API_URL;
 const Mainbody = () => {
   const [banners, setMainBanners] = useState([]);
   const [offerBanners, setOfferBanners] = useState([]);
-  const [specialBanners, setSpecialBanners] = useState([]);
   const [newCollectionBanners, setNewCollectionBanners] = useState([]);
-  const [categoryBanners, setCategoryBanners] = useState([]);
+
 
   useEffect(() => {
     const fetchBannerImages = async () => {
@@ -26,10 +25,9 @@ const Mainbody = () => {
             }));
 
         setMainBanners(formatBanners("main"));
-        setOfferBanners(formatBanners("offer"));
-        setSpecialBanners(formatBanners("special"));
+        setOfferBanners(formatBanners("offer"));    
         setNewCollectionBanners(formatBanners("newcollection"));
-        setCategoryBanners(formatBanners("category"));
+        
       } catch (error) {
         console.error("Error fetching banners:", error);
       }

@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from 'react'
-import { databases, DatabaseId, BannerImageCollectionId } from "../../appwriteConfig"; // Import Appwrite config
-
+import React from 'react'
 const SubBanner = ({ newCollectionBanners, offerBanners }) => {
 
     const offerBanner = offerBanners?.[0];

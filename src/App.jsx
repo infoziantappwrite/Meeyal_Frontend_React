@@ -15,20 +15,18 @@ import "./assets/css/owl.carousel.css";
 import "./assets/css/vipodha_megamenu.css";
 import "./assets/css/style.css";
 import Footer from "./component/Header/Footer";
-import CartPage from "./component/Pages/CartPage";
+import CartPage from "./component/Pages/Cart/CartPage";
 import LoginPage from "./component/Pages/RegAndLogin/LoginPage";
 import RegisterPage from "./component/Pages/RegAndLogin/RegisterPage";
 import ProtectedRoute from "./ProtectedRoute";
 import { ToastContainer } from "react-toastify";
-import SinglePage from "./component/Pages/SinglePage";
+import SinglePage from "./component/Pages/SinglePage/SinglePage";
 import PublicRoute from "./PublicRoute";
 import Profile from "./component/Pages/RegAndLogin/Profile";
 import Categories from "./component/Pages/Categories/Categories ";
-import VerifyPage from "./component/Pages/RegAndLogin/VerifyPage";
-import ResetPasswordPage from "./component/Pages/RegAndLogin/ResetPasswordPage";
-import About from "./component/Pages/About";
-import About1 from "./component/Pages/About1";
-import Contact from "./component/Pages/Contact";
+import About from "./component/Pages/About/About";
+import About1 from "./component/Pages/About/About1";
+import Contact from "./component/Pages/Contact/Contact";
 
 // ✅ 404 Not Found Component
 const NotFound = () => (
@@ -77,8 +75,7 @@ const AppLayout = () => {
         <Route element={<PublicRoute />}>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/verify" element={<VerifyPage />} />
-          <Route path="/reset-password" element={<ResetPasswordPage />} />
+          
         </Route>
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<Profile />} />
