@@ -4,6 +4,7 @@ import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import "font-awesome/css/font-awesome.min.css";
+import Loader from "../Loader";
 
 const BannerSection = ({ banners }) => {
   const swiperRef = useRef(null);
@@ -30,7 +31,7 @@ const BannerSection = ({ banners }) => {
                 ))
               ) : (
                 <SwiperSlide>
-                  <p>Loading banners...</p>
+                  <Loader />
                 </SwiperSlide>
               )}
             </Swiper>

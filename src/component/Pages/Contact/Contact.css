@@ -2,7 +2,7 @@
   position: relative;
   min-height: 100vh;
   background-color: #f9f9f9;
-}
+
 
 .contact-banner {
   background: url('/public/assets/images/banners/breadcrumb_img.png');
@@ -537,4 +537,5 @@ textarea.form-control {
   .form-buttons {
     margin-top: 15px;
   }
+}
 }

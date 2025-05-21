@@ -4,11 +4,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import { useNavigate } from "react-router-dom";
 import { useCurrency } from "../../CurrencyContext";
-import {
-  databases,
-  DatabaseId,
-  ProductsCollectionId,
-} from "../../appwriteConfig";
+
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -127,7 +123,7 @@ const TopProduct = () => {
 
                 <Tab.Content>
                   {Object.keys(products).map((category) => {
-                    const chunkSize = 8;
+                    const chunkSize = 10;
                     const productChunks = [];
 
                     for (
