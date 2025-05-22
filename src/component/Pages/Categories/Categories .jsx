@@ -6,7 +6,6 @@ import "rc-slider/assets/index.css";
 import "./css/Categories.css";
 import { useParams } from "react-router-dom";
 
-
 const Categories = () => {
   const location = useLocation();
 
