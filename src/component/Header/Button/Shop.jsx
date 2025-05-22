@@ -1,107 +1,115 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import "../Header.css";
-import { databases, DatabaseId, subcategoriesCollectionId } from "../../../appwriteConfig";
 
 const Shop = ({ setShowNav }) => {
-    const navigate = useNavigate();
-    const [sareeCategories, setSareeCategories] = useState([]);
-    const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const navigate = useNavigate();
+  const [sareeCategories, setSareeCategories] = useState([]);
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
 
-    const handleClickOutside = (event) => {
-        if (!event.target.closest(".shop-section")) {
-            setDropdownOpen(false);
-           
-        }
+  const handleClickOutside = (event) => {
+    if (!event.target.closest(".shop-section")) {
+      setDropdownOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
     };
+  }, []);
 
-    useEffect(() => {
-        document.addEventListener("click", handleClickOutside);
-        return () => {
-            document.removeEventListener("click", handleClickOutside);
-        };
-    }, []);
+  const fetchSubcategoriesAndCategories = async () => {
+    try {
+      const res = await axios.get("http://localhost:8000/api/subcategory/all", {
+        withCredentials: true
+      });
 
-    // ✅ Fetch subcategories first and then get categories
-    const fetchSubcategoriesAndCategories = async () => {
-        try {
-            const subcategoriesResponse = await databases.listDocuments(DatabaseId, subcategoriesCollectionId);
-            const subcategories = subcategoriesResponse.documents;
+      const subcategories = res.data.data;
 
-
-            const categoryNames = [...new Set(subcategories.map((sub) => sub.categories.name))];
-
-            // Match subcategories with their respective category
-            const formattedCategories = categoryNames.map((category) => ({
-                category, // Category name
-                subcategories: subcategories
-                    .filter((sub) => sub.categories.name === category) // Match category
-                    .map((sub) => ({
-                        id: sub.$id,
-                        name: sub.name,
-                    })),
-            }));
-
-            setSareeCategories(formattedCategories);
-        } catch (error) {
-            console.error("Error fetching subcategories and categories:", error);
+      // Group by category name
+      const grouped = subcategories.reduce((acc, curr) => {
+        const categoryName = curr.category.name;
+        if (!acc[categoryName]) {
+          acc[categoryName] = [];
         }
-    };
+        acc[categoryName].push({
+          id: curr._id,
+          name: curr.name,
+        });
+        return acc;
+      }, {});
 
-    // ✅ Fetch data when the component mounts
-    useEffect(() => {
-        fetchSubcategoriesAndCategories();
-    }, []);
+      // Convert to array of objects
+      const formatted = Object.entries(grouped).map(([category, subs]) => ({
+        category,
+        subcategories: subs,
+      }));
 
-    return (
-        <div
-            className="shop-section"
-             onClick={(e) => {
-                e.stopPropagation(); // Prevent closing when clicking inside
-                setDropdownOpen(prev => !prev);
-            }}
-            
-        >
-            <div className={`with-sub-menu ${isDropdownOpen ? "open" : ""}`}>
+      setSareeCategories(formatted);
+    } catch (error) {
+      console.error("Error fetching subcategories:", error);
+    }
+  };
 
-                <li>Shop <b className={`fa ${isDropdownOpen ? "fa-angle-up" : "fa-angle-down"}`}></b></li>
-                {/* Submenu */}
-                <div className="sub-menu">
-                    <div className="categories">
-                        {sareeCategories.map((category, index) => (
-                            <div key={index} className="static-menu">
-                                <span className="main-menu">{category.category}</span>
-                                <ul>
-                                    {category.subcategories.map((sub) => (
-                                        <li key={sub.id}>
-                                            <button
-                                                className="sub-item-btn"
-                                                onClick={() =>
-                                                   {navigate(`/shop/${category.category}/${sub.name}`, {
-                                                        state: {
-                                                            sareeCategories,
-                                                            category,
-                                                            relatedSubcategories: category.subcategories,
-                                                            catid: sub.id
-                                                        },
-                                                    });
-                                                    setShowNav(false);
-                                                }
-                                                }
-                                            >
-                                                {sub.name}
-                                            </button>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        ))}
+  useEffect(() => {
+    fetchSubcategoriesAndCategories();
+  }, []);
 
-                    </div>
-                </div>
-            </div>
+  return (
+    <div
+      className="shop-section"
+      onClick={(e) => {
+        e.stopPropagation();
+        setDropdownOpen((prev) => !prev);
+      }}
+    >
+      <div className={`with-sub-menu ${isDropdownOpen ? "open" : ""}`}>
+        <li>
+          Shop{" "}
+          <b
+            className={`fa ${
+              isDropdownOpen ? "fa-angle-up" : "fa-angle-down"
+            }`}
+          ></b>
+        </li>
+
+        <div className="sub-menu">
+          <div className="categories">
+            {sareeCategories.map((category, index) => (
+              <div key={index} className="static-menu">
+                <span className="main-menu">{category.category}</span>
+                <ul>
+                  {category.subcategories.map((sub) => (
+                    <li key={sub.id}>
+                      <button
+                        className="sub-item-btn"
+                        onClick={() => {
+                          navigate(`/shop/${category.category}/${sub.name}`, {
+                            state: {
+                              sareeCategories,
+                              category,
+                              relatedSubcategories: category.subcategories,
+                              catid: sub.id,
+                            },
+                          });
+                          setShowNav(false);
+                        }}
+                      >
+                        {sub.name}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default Shop;
