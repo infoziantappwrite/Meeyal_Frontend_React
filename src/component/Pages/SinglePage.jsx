@@ -2,8 +2,19 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useCurrency } from "../../CurrencyContext";
 import "../../assets/css/SinglPage.css";
+import {
+  ArrowLeft,
+  ShieldCheck,
+  BadgeCheck,
+  Truck,
+  Undo2,
+  Contact,
+  PackageCheck,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
 
-const SinglePage = () => {
+export default function SinglePage() {
   const location = useLocation();
   const navigate = useNavigate();
   const { currency } = useCurrency();
@@ -11,46 +22,31 @@ const SinglePage = () => {
   const product = location.state?.product;
   const allProducts = location.state?.allProducts || [];
 
-  const [selectedImage, setSelectedImage] = useState(
-    product?.productImages && product.productImages.length > 0
-      ? product.productImages[0]
-      : product?.image
-  );
-
-  const [otherProducts, setOtherProducts] = useState([]);
+  const [quantity, setQuantity] = useState(1);
+  const [selectedImage, setSelectedImage] = useState(0);
+  const [discountsOpen, setDiscountsOpen] = useState(false);
+  const [supplierOpen, setSupplierOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("FABRIC");
+  const [carouselIndex, setCarouselIndex] = useState(0);
 
   useEffect(() => {
-    if (product && allProducts.length > 0) {
-      const filtered = allProducts.filter((p) => p.id !== product.id);
-      setOtherProducts(filtered);
+    if (!product) {
+      navigate("/products");
     }
-    console.log("Current Product:", product);
-    console.log("All Products:", allProducts);
-    console.log("Other Products:", otherProducts);
-  }, [product, allProducts]);
+  }, [product, navigate]);
 
-  if (!product) {
-    return (
-      <div className="error-container">
-        <h2>Product data not found</h2>
-        <p>
-          The product details are not available. Please go back and try again.
-        </p>
-        <button onClick={() => navigate(-1)}>Go Back</button>
-      </div>
-    );
-  }
+  if (!product) return null;
 
   const {
+    id,
     title,
     description,
-    image,
-    productImages,
-    discountPrice,
     originalPrice,
+    discountPrice,
+    productImages,
     stock,
-    category,
     subcategory,
+    image,
   } = product;
 
   const discountedPrice =
@@ -58,137 +54,330 @@ const SinglePage = () => {
       ? (originalPrice * (100 - discountPrice)) / 100
       : originalPrice;
 
+  const images =
+    productImages?.length > 0 ? productImages : ["/placeholder.svg"];
+
+  const incrementQuantity = () => setQuantity((prev) => prev + 1);
+  const decrementQuantity = () =>
+    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+
+  const relatedProducts = allProducts.filter(
+    (p) => p.subcategory === subcategory && p.id !== id
+  );
+
+  const getProductsPerView = () =>
+    window.innerWidth < 768
+      ? 1
+      : window.innerWidth < 1024
+      ? 2
+      : window.innerWidth < 1280
+      ? 3
+      : 4;
+
+  const productsPerView = getProductsPerView();
+
+  const visibleRelated = relatedProducts.slice(
+    carouselIndex,
+    carouselIndex + productsPerView
+  );
+
+  const handlePrev = () => {
+    setCarouselIndex((prev) => Math.max(0, prev - 1));
+  };
+
+  const handleNext = () => {
+    setCarouselIndex((prev) =>
+      Math.min(relatedProducts.length - productsPerView, prev + 1)
+    );
+  };
+
   return (
-    <div className="product-details-container">
-      <button className="back-button" onClick={() => navigate(-1)}>
-        ← Back to Products
+    <div className="container">
+      <button className="back-link" onClick={() => navigate(-1)}>
+        <ArrowLeft size={16} /> Back to products
       </button>
 
-      <h1 className="product-title">{title}</h1>
-      <p className="product-category">
-        <strong>Category:</strong> {category} / {subcategory}
-      </p>
-
-      <div className="product-content">
+      <div className="product-grid">
         <div className="product-images">
-          <div className="main-image-container">
-            <img
-              className="main-image"
-              src={selectedImage || "/placeholder.svg"}
-              alt={title}
-              onError={(e) => (e.target.src = "https://dummyimage.com/600x400")}
-            />
+          <div className="thumbnails">
+            {images.map((img, index) => (
+              <div
+                key={index}
+                className={`thumbnail ${
+                  selectedImage === index ? "selected" : ""
+                }`}
+                onClick={() => setSelectedImage(index)}
+              >
+                <img src={img} alt={`Product thumbnail ${index + 1}`} />
+              </div>
+            ))}
           </div>
-
-          {productImages && productImages.length > 1 && (
-            <div className="thumbnail-container">
-              {productImages.map((imgUrl, idx) => (
-                <img
-                  className={`thumbnail ${
-                    selectedImage === imgUrl ? "active-thumbnail" : ""
-                  }`}
-                  key={idx}
-                  src={imgUrl || "/placeholder.svg"}
-                  alt={`${title} ${idx + 1}`}
-                  onError={(e) => (e.target.src = "https://dummyimage.com/80")}
-                  onClick={() => setSelectedImage(imgUrl)}
-                />
-              ))}
-            </div>
-          )}
+          <div className="main-image">
+            <img src={images[selectedImage]} alt="Product main" />
+          </div>
         </div>
 
-        <div className="product-info">
-          <p className="product-description">{description}</p>
+        <div className="product-details">
+          <div className="product-title">
+            <h1>{title}</h1>
+            <p className="designer">Designer Collection</p>
+          </div>
 
-          <div className="price-container">
+          <div className="product-price">
             {discountPrice && discountPrice > 0 ? (
               <>
-                <span className="original-price">
-                  {currency.symbol} {(originalPrice / currency.rate).toFixed(2)}
-                </span>
-                <span className="discount-badge">-{discountPrice}%</span>
-                <span className="final-price">
+                <span className="current-price">
                   {currency.symbol}{" "}
                   {(discountedPrice / currency.rate).toFixed(2)}
                 </span>
+                <span className="original-price">
+                  MRP {currency.symbol}{" "}
+                  {(originalPrice / currency.rate).toFixed(2)}
+                </span>
+                <span className="discount">{discountPrice}% OFF</span>
               </>
             ) : (
-              <span className="final-price">
+              <span className="current-price">
                 {currency.symbol} {(originalPrice / currency.rate).toFixed(2)}
               </span>
             )}
           </div>
 
-          <p className="stock-info">
-            <strong>Stock: </strong>
-            {stock > 0 ? (
-              <span className="in-stock">{stock} available</span>
-            ) : (
-              <span className="out-of-stock">Out of stock</span>
-            )}
+          <p className="tax-info">
+            Inclusive of all taxes. Free Shipping above ₹1500.
           </p>
 
-          <button className="add-to-cart-button" disabled={stock === 0}>
-            {stock > 0 ? "Add to Cart" : "Out of Stock"}
-          </button>
+          <div className="product-guarantees">
+            <div className="guarantee-item">
+              <ShieldCheck size={20} />
+              <span>Authentic & Quality Assured</span>
+            </div>
+            <div className="guarantee-item">
+              <BadgeCheck size={20} />
+              <span>
+                100% money back guarantee{" "}
+                <a href="#" className="learn-more">
+                  *Learn more
+                </a>
+              </span>
+            </div>
+            <div className="guarantee-item">
+              <Truck size={20} />
+              <span>
+                Free Shipping & Returns{" "}
+                <a href="#" className="learn-more">
+                  *Learn more
+                </a>
+              </span>
+            </div>
+          </div>
+
+          <div className="quantity-section">
+            <label htmlFor="quantity">QUANTITY:</label>
+            <div className="quantity-selector">
+              <button onClick={decrementQuantity} className="quantity-btn">
+                -
+              </button>
+              <input
+                type="text"
+                id="quantity"
+                value={quantity}
+                readOnly
+                className="quantity-input"
+              />
+              <button onClick={incrementQuantity} className="quantity-btn">
+                +
+              </button>
+            </div>
+          </div>
+
+          <div className="action-buttons">
+            <button className="add-to-cart-btn" disabled={stock === 0}>
+              {stock > 0 ? "ADD TO CART" : "OUT OF STOCK"}
+            </button>
+            <button className="buy-now-btn" disabled={stock === 0}>
+              BUY NOW
+            </button>
+          </div>
+
+          <div className="product-tabs">
+            <div className="tabs-header">
+              {["STORY", "DESCRIPTION", "SHIPPING", "FABRIC"].map((tab) => (
+                <button
+                  key={tab}
+                  className={activeTab === tab ? "active" : ""}
+                  onClick={() => setActiveTab(tab)}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+            <div className="tab-content">
+              {activeTab === "FABRIC" && (
+                <div>
+                  <h3>Blended Organza</h3>
+                  <p>
+                    Elegant saree crafted with a blend of organza and premium
+                    fabrics. Lightweight, perfect for special occasions.
+                  </p>
+                  <div className="material-care">
+                    <h4>Material & Care</h4>
+                    <p>Dry Wash Only</p>
+                  </div>
+                </div>
+              )}
+              {activeTab === "DESCRIPTION" && <p>{description}</p>}
+              {activeTab === "SHIPPING" && (
+                <p>
+                  Free shipping on orders above ₹1500. Delivery within 5-7
+                  business days.
+                </p>
+              )}
+              {activeTab === "STORY" && (
+                <p>
+                  This product is part of our exclusive designer collection,
+                  crafted for elegance and timeless beauty.
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="discounts-section">
+            <button
+              className="discounts-header"
+              onClick={() => setDiscountsOpen(!discountsOpen)}
+            >
+              <span>AVAILABLE DISCOUNTS!</span>
+              {discountsOpen ? (
+                <ChevronUp size={16} />
+              ) : (
+                <ChevronDown size={16} />
+              )}
+            </button>
+            {discountsOpen && (
+              <div className="discounts-content">
+                <div className="discount-grid">
+                  <div className="discount-item">
+                    <div className="discount-title">
+                      FLAT 5% off above ₹3999
+                    </div>
+                    <div className="discount-subtitle">
+                      Discount applicable at checkout
+                    </div>
+                  </div>
+                  <div className="discount-item">
+                    <div className="discount-title">
+                      FLAT 10% off above ₹5999
+                    </div>
+                    <div className="discount-subtitle">
+                      Discount applicable at checkout
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="safety-section">
+            <h3>YOUR SAFETY IS OUR PRIORITY</h3>
+            <div className="safety-features">
+              <div className="safety-feature">
+                <Undo2 size={48} />
+                <span>Easy Returns</span>
+              </div>
+              <div className="safety-divider"></div>
+              <div className="safety-feature">
+                <Contact size={48} />
+                <span>No Contact Delivery</span>
+              </div>
+              <div className="safety-divider"></div>
+              <div className="safety-feature">
+                <PackageCheck size={48} />
+                <span>Safe & Clean Packaging</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="supplier-section">
+            <button
+              className="supplier-header"
+              onClick={() => setSupplierOpen(!supplierOpen)}
+            >
+              <span>SUPPLIER INFORMATION</span>
+              {supplierOpen ? (
+                <ChevronUp size={16} />
+              ) : (
+                <ChevronDown size={16} />
+              )}
+            </button>
+            {supplierOpen && (
+              <div className="supplier-content">
+                <p>
+                  Marketed By: Pyxis Brand Technologies Private Limited,
+                  Vaishnavi Silicon Terraces, #30/1, 2nd and 3rd Floor, Adugodi,
+                  Hosur Main Road, Bengaluru – 560 095
+                </p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* View Other Products Section */}
-      {otherProducts.length > 0 && (
-        <div className="related-products-section" style={{ marginTop: "3rem" }}>
-          <h2>View Other Products</h2>
-          <div
-            className="related-products-grid"
-            style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}
-          >
-            {otherProducts.map((item) => (
-              <div
-                key={item._id}
-                className="related-product-card"
-                style={{
-                  cursor: "pointer",
-                  border: "1px solid #ddd",
-                  padding: "10px",
-                  width: "150px",
-                }}
-                onClick={() =>
-                  navigate(`/productdetails/${item._id}`, {
-                    state: { product: item, allProducts },
-                  })
-                }
-              >
-                <img
-                  src={item.image || "https://dummyimage.com/150"}
-                  alt={item.title}
-                  className="related-product-image"
-                  style={{
-                    width: "100%",
-                    height: "auto",
-                    marginBottom: "0.5rem",
-                  }}
-                  onError={(e) => (e.target.src = "https://dummyimage.com/150")}
-                />
-                <div className="related-product-info">
-                  <p
-                    className="related-product-title"
-                    style={{ fontWeight: "bold", marginBottom: "0.25rem" }}
-                  >
-                    {item.title}
-                  </p>
-                  <p className="related-product-price">
-                    {currency.symbol}{" "}
-                    {(item.originalPrice / currency.rate).toFixed(2)}
-                  </p>
+      {relatedProducts.length > 0 && (
+        <div className="related-products-carousel">
+          <div className="related-carousel-wrapper">
+            <button
+              className="carousel-arrow carousel-arrow-left"
+              onClick={handlePrev}
+              disabled={carouselIndex === 0}
+            >
+              <ArrowLeft size={20} />
+            </button>
+
+            <div className="products-wrapper">
+              {visibleRelated.map((item) => (
+                <div className="product-card-1" key={item.id}>
+                  <div className="product-image">
+                    <img
+                      src={item.image || "/placeholder.svg"}
+                      alt={item.title}
+                    />
+                  </div>
+                  <div className="product-info">
+                    <h3 className="product-name">{item.title}</h3>
+                    <div className="product-price">
+                      <span className="current-price">
+                        ₹{" "}
+                        {(
+                          item.originalPrice *
+                          (1 - item.discountPrice / 100)
+                        ).toFixed(0)}
+                      </span>
+                      <span className="original-price">
+                        ₹ {item.originalPrice.toLocaleString()}
+                      </span>
+                      <span className="discount">
+                        ({item.discountPrice}% off)
+                      </span>
+                    </div>
+                    <button className="add-to-cart-btn">ADD TO CART</button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+
+            <button
+              className="carousel-arrow carousel-arrow-right"
+              onClick={handleNext}
+              disabled={
+                carouselIndex >= relatedProducts.length - productsPerView
+              }
+            >
+              <ArrowLeft size={20} style={{ transform: "rotate(180deg)" }} />
+            </button>
           </div>
         </div>
       )}
     </div>
   );
-};
-
-export default SinglePage;
+}
