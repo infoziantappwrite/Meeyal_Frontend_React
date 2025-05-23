@@ -23,7 +23,7 @@ const Shop = ({ setShowNav }) => {
 
   const fetchSubcategoriesAndCategories = async () => {
     try {
-      const res = await axios.get("https://meeyalbackendnode-production.up.railway.app/api/subcategory/all", {
+      const res = await axios.get("http://localhost:8000/api/subcategory/all", {
         withCredentials: true
       });
 
