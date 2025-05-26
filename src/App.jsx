@@ -27,6 +27,7 @@ import Categories from "./component/Pages/Categories/Categories ";
 import About from "./component/Pages/About/About";
 import About1 from "./component/Pages/About/About1";
 import Contact from "./component/Pages/Contact/Contact";
+import CheckoutPage from "./component/Pages/Cart/CheckoutPage";
 
 // ✅ 404 Not Found Component
 const NotFound = () => (
@@ -85,6 +86,7 @@ const AppLayout = () => {
             element={<Categories />}
           />
         </Route>
+         <Route path="/checkout" element={<CheckoutPage />} />
 
         {/* ✅ Catch-All Route for 404 Page */}
         <Route path="*" element={<NotFound />} />

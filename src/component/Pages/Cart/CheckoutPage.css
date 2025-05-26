@@ -1,0 +1,200 @@
+.checkout-page {
+  padding: 2rem;
+}
+
+.checkout-grid {
+  display: flex;
+  gap: 2rem;
+}
+
+.checkout-right {
+  flex: 1;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+.checkout-left {
+  background: #fff;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.section-title {
+  font-size: 20px;
+  margin-bottom: 12px;
+  color: #333;
+  border-bottom: 2px solid #dc4298;
+  display: inline-block;
+  padding-bottom: 4px;
+}
+
+.no-address-message {
+  color: #888;
+}
+
+.profile-link {
+  color: #dc4298;
+  text-decoration: underline;
+}
+
+.address-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.address-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border 0.3s, background 0.3s;
+}
+
+.address-card:hover {
+  border-color: #dc4298;
+  background: #fff7f5;
+}
+
+.address-card.selected {
+  border-color: #dc4298;
+  background: #fff2ec;
+}
+
+.default-tag {
+  background: #dc4298;
+  color: #fff;
+  padding: 2px 6px;
+  font-size: 10px;
+  border-radius: 8px;
+  margin-left: 8px;
+}
+
+.add-address-button {
+  background: #dc4298;
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 10px 0 20px;
+  transition: background 0.3s;
+}
+
+.delete-address-button {
+  background-color: #dc4298;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 4px;
+}
+
+.delete-address-button:hover {
+  background-color: #cc187e;
+}
+
+.add-address-button:hover {
+  background: #dc4298;
+}
+
+.address-form {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.address-form input {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.save-address-button {
+  background: #28a745;
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.save-address-button:hover {
+  background: #218838;
+}
+
+.payment-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.payment-option {
+  padding: 10px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border 0.3s, background 0.3s;
+}
+
+.payment-option:hover {
+  border-color: #dc4298;
+  background: #fff7f5;
+}
+
+.payment-option.selected {
+  border-color: #dc4298;
+  background: #fff2ec;
+}
+
+.place-order-button {
+  width: 100%;
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #dc4298;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.place-order-button:hover {
+  background-color: #dc4299a7;
+}
+
+.add-address-button {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.address-form {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.address-form input {
+  padding: 8px;
+  border: 1px solid #ccc;
+}
+
+.save-address-button {
+  padding: 8px 12px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  cursor: pointer;
+}

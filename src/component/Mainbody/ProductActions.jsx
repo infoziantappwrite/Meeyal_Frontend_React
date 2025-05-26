@@ -4,6 +4,7 @@ import axios from 'axios';
 const ProductActions = ({ productId, stock }) => {
   const [inWishlist, setInWishlist] = useState(false);
   const [inCart, setInCart] = useState(false);
+  
 
   useEffect(() => {
     const fetchStatus = async () => {

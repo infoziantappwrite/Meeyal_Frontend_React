@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useCurrency } from "../../../CurrencyContext";
 import "./SinglePage.css";
+import axios from "axios";
+
 
 import {
   ArrowLeft,
@@ -16,48 +18,22 @@ import {
 } from "lucide-react";
 
 export default function SinglePage() {
+  const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
   const { currency } = useCurrency();
 
-  const product = location.state?.product;
   const allProducts = location.state?.allProducts || [];
+  const product = allProducts.find((p) => p.id === id);
 
-  const [quantity, setQuantity] = useState(1);
+
   const [selectedImage, setSelectedImage] = useState(0);
   const [discountsOpen, setDiscountsOpen] = useState(false);
   const [supplierOpen, setSupplierOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("FABRIC");
   const [carouselIndex, setCarouselIndex] = useState(0);
 
-  const productId = useParams().id;
-  const [cartItems, setCartItems] = useState([]);
-  const isInCart = cartItems?.productId?._id === productId;
-
-
-
-  useEffect(() => {
-    const fetchCart = async () => {
-      try {
-        const res = await fetch(`https://meeyalbackendnode-production.up.railway.app/api/cart/${productId}`, {
-          credentials: 'include' // same as axios `withCredentials: true`
-        });
-
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-
-        const data = await res.json();
-
-        setCartItems(data || []); // Adjust based on response structure
-      } catch (err) {
-        console.error("Error fetching cart:", err);
-      }
-    };
-
-    fetchCart();
-  }, []);
-
+  const [inCart, setInCart] = useState(false);
 
   useEffect(() => {
     if (!product) {
@@ -70,7 +46,6 @@ export default function SinglePage() {
 
 
   const {
-    id,
     title,
     description,
     originalPrice,
@@ -88,10 +63,6 @@ export default function SinglePage() {
 
   const images =
     productImages?.length > 0 ? productImages : ["/placeholder.svg"];
-
-  const incrementQuantity = () => setQuantity((prev) => prev + 1);
-  const decrementQuantity = () =>
-    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
   const relatedProducts = allProducts.filter(
     (p) => p.subcategory === subcategory && p.id !== id
@@ -122,6 +93,44 @@ export default function SinglePage() {
       Math.min(relatedProducts.length - productsPerView, prev + 1)
     );
   };
+
+
+  const handleAddToCart = async () => {
+    try {
+      const res = await axios.post(
+        'https://meeyalbackendnode-production.up.railway.app/api/cart/add',
+        { productId: product.id, quantity: 1 },
+        { withCredentials: true }
+      );
+
+      const data = res.data;
+
+      setInCart(true);
+    } catch (err) {
+      console.error("Error adding to cart:", err);
+    }
+  };
+
+  useEffect(() => {
+    const fetchCartStatus = async () => {
+      try {
+        const result = await fetch(`https://meeyalbackendnode-production.up.railway.app/api/cart/${product.id}`, {
+          credentials: 'include' // same as axios `withCredentials: true`
+        });
+        if (result.ok) {
+          setInCart(true);
+        } else {
+          setInCart(false);
+        }
+      } catch (err) {
+        console.error('Error fetching cart status:', err);
+      }
+    };
+
+    if (product) {
+      fetchCartStatus();
+    }
+  }, [product]);
 
   return (
     <div className="single_page">
@@ -203,43 +212,22 @@ export default function SinglePage() {
                 </span>
               </div>
             </div>
-
-            <div className="quantity-section">
-              <label htmlFor="quantity">QUANTITY:</label>
-              <div className="quantity-selector">
-                <button onClick={decrementQuantity} className="quantity-btn">
-                  -
-                </button>
-                <input
-                  type="text"
-                  id="quantity"
-                  value={quantity}
-                  readOnly
-                  className="quantity-input"
-                />
-                <button onClick={incrementQuantity} className="quantity-btn">
-                  +
-                </button>
-              </div>
-            </div>
-
+            
             <div className="action-buttons">
               <button
                 className="add-to-cart-btn"
-                disabled={stock === 0 || isInCart}
-                onClick={() => {
-                  if (!isInCart) {
-                    // your add-to-cart logic here
-                  }
-                }}
+                disabled={stock === 0 || inCart}
+                onClick={handleAddToCart}
               >
                 {stock === 0
                   ? "OUT OF STOCK"
-                  : isInCart
-                    ? <span style={{ color: "green", fontStyle: "italic", fontWeight: 600 }}>ALREADY IN CART</span>
+                  : inCart
+                    ? "ALREADY IN CART"
                     : "ADD TO CART"}
               </button>
-
+              <button className="buy-now-btn" disabled={stock === 0}>
+                BUY NOW
+              </button>
             </div>
 
             <div className="product-tabs">
@@ -378,7 +366,17 @@ export default function SinglePage() {
 
               <div className="products-wrapper">
                 {visibleRelated.map((item) => (
-                  <div className="product-card-1" key={item.id}>
+                  <div
+                    className="product-card-1"
+                    key={item.id}
+                    onClick={() =>
+                      navigate(`/productdetails/${item.id}`, {
+                        state: { allProducts },
+                      })
+                    }
+                    style={{ cursor: "pointer" }}
+                  >
+
                     <div className="product-image">
                       <img
                         src={item.image || "/placeholder.svg"}
