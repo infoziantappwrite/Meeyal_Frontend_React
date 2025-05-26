@@ -85,6 +85,36 @@
   border-bottom: 1px solid #e5e7eb; /* gray-200 */
 }
 
+.item-price-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.original-price {
+  text-decoration: line-through;
+  color: #999;
+  font-size: 0.9rem;
+}
+
+.discounted-price {
+  color: #e60023; /* bright red or whatever matches your theme */
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+/* Discount badge */
+.discount-badge {
+  background-color: #00ff2fad; /* yellow or gold to pop */
+  color: #333;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+
 @media (min-width: 640px) {
   .cart-item {
     flex-direction: row;
