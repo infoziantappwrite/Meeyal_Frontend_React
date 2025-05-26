@@ -4,6 +4,7 @@ import { useCurrency } from "../../../CurrencyContext";
 import "./SinglePage.css";
 import axios from "axios";
 
+
 import {
   ArrowLeft,
   ShieldCheck,
@@ -32,9 +33,7 @@ export default function SinglePage() {
   const [activeTab, setActiveTab] = useState("FABRIC");
   const [carouselIndex, setCarouselIndex] = useState(0);
 
-
   const [inCart, setInCart] = useState(false);
-  const [inCartMap, setInCartMap] = useState({});
 
   useEffect(() => {
     if (!product) {
@@ -43,6 +42,8 @@ export default function SinglePage() {
   }, [product, navigate]);
 
   if (!product) return null;
+
+
 
   const {
     title,
@@ -211,8 +212,7 @@ export default function SinglePage() {
                 </span>
               </div>
             </div>
-
-
+            
             <div className="action-buttons">
               <button
                 className="add-to-cart-btn"
@@ -229,7 +229,6 @@ export default function SinglePage() {
                 BUY NOW
               </button>
             </div>
-
 
             <div className="product-tabs">
               <div className="tabs-header">
@@ -377,6 +376,7 @@ export default function SinglePage() {
                     }
                     style={{ cursor: "pointer" }}
                   >
+
                     <div className="product-image">
                       <img
                         src={item.image || "/placeholder.svg"}
