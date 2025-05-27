@@ -4,12 +4,11 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import { useNavigate } from "react-router-dom";
 import { useCurrency } from "../../CurrencyContext";
-
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Mainbody.css";
-import TopProductActions from "./ProductActions"; // Import the ProductActions component
+import TopProductActions from "./ProductActions"; 
 
 const TopProduct = () => {
   const [activeTab, setActiveTab] = useState("latest");
@@ -123,7 +122,7 @@ const TopProduct = () => {
 
                 <Tab.Content>
                   {Object.keys(products).map((category) => {
-                    const chunkSize = 10;
+                    const chunkSize = 8;
                     const productChunks = [];
 
                     for (
