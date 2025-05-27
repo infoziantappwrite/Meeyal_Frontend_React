@@ -1,31 +1,34 @@
 import React, { useEffect, useState } from "react";
-import { databases,DatabaseId, BannerImageCollectionId  } from "../../../appwriteConfig"; // Update with your actual Appwrite config import
+ // Update with your actual Appwrite config import
 
 
 const CategoryBanner = () => {
   const [categoryBanner, setCategoryBanner] = useState(null);
+ 
+  
 
   useEffect(() => {
-    const fetchCategoryBanner = async () => {
+    const fetchBannerImages = async () => {
       try {
-        const response = await databases.listDocuments(DatabaseId, BannerImageCollectionId);
-        
-        // Find the banner with the "category" tag
-        const banner = response.documents.find((doc) => doc.tag === "category");
+        const response = await fetch("https://meeyaladminbackend-production.up.railway.app/api/offer");
+        const data = await response.json();
 
-        if (banner) {
-          setCategoryBanner({
-            id: banner.$id,
-            url: banner.imageurl, // Ensure imageurl is the correct field name
-            alt: banner.tag || "Category Banner",
-          });
-        }
+        const formatBanners = (tag) =>
+          data
+            .filter((banner) => banner.tag === tag)
+            .map((banner) => ({
+              id: banner._id || banner.id,
+              url: banner.imageurl || banner.imagesUrl,
+            }));
+        setCategoryBanner(formatBanners("category")[0]|| null);
+        //console.log("Category Banner:", formatBanners("category"));
+        
       } catch (error) {
-        console.error("Error fetching category banner:", error);
+        console.error("Error fetching banners:", error);
       }
     };
 
-    fetchCategoryBanner();
+    fetchBannerImages();
   }, []);
 
   return (
@@ -37,7 +40,7 @@ const CategoryBanner = () => {
               src={categoryBanner.url}
               alt={categoryBanner.alt}
               title={categoryBanner.alt}
-              className="img-thumbnail"
+              className="img-thumbnail rounded img-fluid"
             />
           </div>
           <div className="category-desc col-sm-12">

@@ -28,21 +28,28 @@ const Shop = ({ setShowNav }) => {
       });
 
       const subcategories = res.data.data;
+      //console.log("Fetched Subcategories:", subcategories);
 
-      // Group by category name
       const grouped = subcategories.reduce((acc, curr) => {
+        if (!curr.category || !curr.category.name) {
+          // Skip subcategories with missing or invalid category
+          return acc;
+        }
+
         const categoryName = curr.category.name;
+
         if (!acc[categoryName]) {
           acc[categoryName] = [];
         }
+
         acc[categoryName].push({
           id: curr._id,
           name: curr.name,
         });
+
         return acc;
       }, {});
 
-      // Convert to array of objects
       const formatted = Object.entries(grouped).map(([category, subs]) => ({
         category,
         subcategories: subs,
@@ -53,6 +60,8 @@ const Shop = ({ setShowNav }) => {
       console.error("Error fetching subcategories:", error);
     }
   };
+
+  //console.log("Saree Categories:", sareeCategories);
 
   useEffect(() => {
     fetchSubcategoriesAndCategories();
@@ -67,14 +76,13 @@ const Shop = ({ setShowNav }) => {
       }}
     >
       <div className={`with-sub-menu ${isDropdownOpen ? "open" : ""}`}>
-        <li>
+        <span>
           Shop{" "}
           <b
-            className={`fa ${
-              isDropdownOpen ? "fa-angle-up" : "fa-angle-down"
-            }`}
+            className={`fa ${isDropdownOpen ? "fa-angle-up" : "fa-angle-down"
+              }`}
           ></b>
-        </li>
+        </span>
 
         <div className="sub-menu">
           <div className="categories">
@@ -87,16 +95,23 @@ const Shop = ({ setShowNav }) => {
                       <button
                         className="sub-item-btn"
                         onClick={() => {
-                          navigate(`/shop/${category.category}/${sub.name}`, {
+                          const formattedCategory = category.category.toLowerCase().replace(/\s+/g, '-');
+                          const formattedSub = sub.name.toLowerCase().replace(/\s+/g, '-');
+
+                          navigate(`/shop/${formattedCategory}/${formattedSub}`, {
                             state: {
                               sareeCategories,
                               category,
+                              catoname: category.category,
+                              subcatoname: sub.name,
                               relatedSubcategories: category.subcategories,
                               catid: sub.id,
                             },
                           });
+
                           setShowNav(false);
                         }}
+
                       >
                         {sub.name}
                       </button>

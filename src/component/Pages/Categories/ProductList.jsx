@@ -1,160 +1,146 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { databases, DatabaseId, ProductsCollectionId } from "../../../appwriteConfig";
-import { useCurrency } from "../../../CurrencyContext"; // Import currency context
+import { useCurrency } from "../../../CurrencyContext";
+import ProductActions from "../../Mainbody/ProductActions";
 
-const ProductList = ({ subcatid, filter }) => {
-  const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const navigate = useNavigate();
-  const { currency } = useCurrency(); // Get currency info
-
-  const itemsPerPage = filter.limit || 1; // Default to 12 items per page
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await databases.listDocuments(DatabaseId, ProductsCollectionId);
-
-        // Filtering products based on subcategory ID
-        const filtered = response.documents.filter(
-          (product) => product.subcategories?.$id === subcatid
-        );
-
-        setProducts(filtered);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
+const ProductList = ({ productsdata, filters }) => {
+  console.log("Filters:", filters.viewMode);
+  const viewMode = filters?.viewMode || "grid";
+  const products = productsdata.map((doc) => {
+    const imageUrl = doc.productImages?.[0]?.imageUrl || "/public/assets/images/No image.png";
+    return {
+      id: doc._id,
+      title: doc.productName,
+      description: doc.details,
+      discountPrice: doc.discountPrice,
+      originalPrice: doc.originalPrice,
+      stock: doc.stock,
+      status: doc.status,
+      sold: doc.sold,
+      createdAt: doc.createdAt,
+      updatedAt: doc.updatedAt,
+      image: imageUrl,
+      category: doc.category?.name || "Uncategorized",
+      subcategory: doc.subCategory?.name || "Uncategorized",
+      productImages: doc.productImages.map((img) => img.imageUrl),
     };
+  });
 
-    fetchProducts();
-  }, [subcatid]);
 
-  useEffect(() => {
-    let updatedProducts = [...products];
+  const navigate = useNavigate();
+  const { currency } = useCurrency();
 
-    // Apply Price Filter
-    updatedProducts = updatedProducts.filter((product) => {
-      const price = product.originalprice / currency.rate;
-      return price >= filter.price.min && (filter.price.max === null || price <= filter.price.max);
-    });
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = filters?.limit || 8;
 
-    // Apply Sorting
-    switch (filter.sort) {
+  // Step 1: Filter by price range
+  const filteredProducts = products.filter((product) => {
+    const finalPrice =
+      product.discountPrice > 0
+        ? (product.originalPrice * (100 - product.discountPrice)) / 100
+        : product.originalPrice;
+
+    return (
+      finalPrice >= parseFloat(filters?.price?.min || 0) &&
+      finalPrice <= parseFloat(filters?.price?.max || Infinity)
+    );
+  });
+
+  // Step 2: Sorting
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    switch (filters?.sort) {
       case "price-low-high":
-        updatedProducts.sort((a, b) => a.originalprice - b.originalprice);
-        break;
+        return (a.originalPrice * (100 - a.discountPrice)) / 100 - (b.originalPrice * (100 - b.discountPrice)) / 100;
       case "price-high-low":
-        updatedProducts.sort((a, b) => b.originalprice - a.originalprice);
-        break;
+        return (b.originalPrice * (100 - b.discountPrice)) / 100 - (a.originalPrice * (100 - a.discountPrice)) / 100;
       case "name-asc":
-        updatedProducts.sort((a, b) => a.productname.localeCompare(b.productname));
-        break;
+        return a.productName.localeCompare(b.productName);
       case "name-desc":
-        updatedProducts.sort((a, b) => b.productname.localeCompare(a.productname));
-        break;
+        return b.productName.localeCompare(a.productName);
       default:
-        break;
+        return 0;
     }
+  });
 
-    setFilteredProducts(updatedProducts);
-    setCurrentPage(1); // Reset to first page on filter change
-  }, [products, filter, currency]);
+  // Step 3: Pagination
+  const indexOfLast = currentPage * itemsPerPage;
+  const indexOfFirst = indexOfLast - itemsPerPage;
+  const currentProducts = sortedProducts.slice(indexOfFirst, indexOfLast);
+  const totalPages = Math.ceil(sortedProducts.length / itemsPerPage);
 
-  // Pagination Logic
-  const indexOfLastProduct = currentPage * itemsPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
-  const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
-  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-  console.log(currentProducts);
 
   return (
     <div>
-      {filteredProducts.length === 0 ? (
-        <p>No products found for this subcategory.</p>
+      {sortedProducts.length === 0 ? (
+        <p>No products found.</p>
       ) : (
         <>
-          <div className={`category-row row ${filter.viewMode === "list" ? "list-view" : "grid-view"}`}>
+          <div className={`category-row row ${viewMode === "grid" ? "grid-view" : "list-view"}`}>
+
             {currentProducts.map((product) => {
-              const firstImage = product.productimages?.[0]?.imageurl || "https://dummyimage.com/300";
+              const hasDiscount = product.discountPrice > 0;
+              const discountedPrice =
+                (product.originalPrice * (100 - product.discountPrice)) / 100;
+              const finalPrice = hasDiscount ? discountedPrice : product.originalPrice;
+
               return (
                 <div
-                  key={product.$id}
-                  className={`product-layout product-card ${filter.viewMode === "list" ? " product-list col-xs-12" : "product-grid col-xl-3 col-lg-4 col-md-4 col-sm-6 col-xs-6"}`}
+  key={product.id}
+  className={`product-layout ${
+    viewMode === "grid" ? "product-grid col-xl-3 col-lg-4 col-md-4 col-sm-6 col-xs-6" : "product-list col-12"
+  }`}
+>
 
-                  style={{ cursor: "pointer" }}
-                >
-                  <div className="product-thumb">
+                  <div className="product-thumb product-card">
                     <div className="image">
-                      <img
-                        src={firstImage}
-                        alt={product.productname}
-                        title={product.productname}
-                        className="img-responsive"
-                      />
-                      {product.stock === 0 && <span className="badge out-of-badge">out of stock</span>}
-
+                      <img src={product.image} alt={product.title} className="img-responsive" />
+                      {product.stock === 0 && <span className="badge out-of-badge">Out of stock</span>}
                       <div className="button-group">
-                        <button className="addcart" type="button" title="Add to Cart" disabled={product.stock === 0}>
-                          <i className="icon-bag"></i>
-                        </button>
-                        <button className="wishlist" type="button" title="Add to wishlist" disabled={product.stock === 0}>
-                          <i className="icon-like"></i>
-                        </button>
+                        <ProductActions
+                          productId={product.id}
+                          stock={product.stock}
+                        />
                         <button
                           className="vipodha_quickview-button"
                           type="button"
                           title="Quickview"
-                          onClick={() => navigate(`/productdetails/${product.$id}`)}
+                          onClick={() =>
+                            navigate(`/productdetails/${product.id}`, {
+                              state: {
+                                product,
+                                allProducts: products,
+                              },
+                            })
+                          }
                           disabled={product.stock === 0}
                         >
                           <i className="icon-eye"></i>
                         </button>
-
                       </div>
                     </div>
 
                     <div className="product-description">
-                      <div className="caption">
-                        <div className="title-rating clearfix">
-                          <h4 className="product-title">{product.productname}</h4>
-                
-                        </div>
-                        
-                        <p className="sub-cat">{product.subcategories.name}</p>
-                        <div className="price-cartbtn clearfix">
-                          <p className="price">
-                            {product.discountprice && product.discountprice > 0 ? (
-                              <>
-                                {/* Strikethrough Original Price */}
-                                <span className="original-price">
-                                  <s>{currency.symbol} {(product.originalprice / currency.rate).toFixed(2)}</s>
-                                </span>
-
-                                {/* Discount Percentage */}
-
-
-                                {/* Discounted Price */}
-                                <span className="discounted-price">
-                                  {currency.symbol}&nbsp;{((product.originalprice * (100 - product.discountprice)) / 100 / currency.rate).toFixed(2)}
-                                </span>
-                                <span className="discount">
-                                  {product.discountprice}% OFFER
-                                </span>
-
-                              </>
-                            ) : (
-                              <span className="discounted-price">
-                                {currency.symbol} {(product.originalprice / currency.rate).toFixed(2)}
-                              </span>
-                            )}
-                          </p>
-                        </div>
-                        <div className="description">
-                          {product.details || "No description available."}
-                        </div>
-                      </div>
+                      <h4 className="product-title">
+                        <a href="#">{product.title}</a>
+                      </h4>
+                      <p className="sub-cat">{product.category}</p>
+                      <p className="price">
+                        {hasDiscount ? (
+                          <>
+                            <span className="original-price">
+                              <s>{currency.symbol} {(product.originalPrice / currency.rate).toFixed(2)}</s>
+                            </span>
+                            <span className="discount">-{product.discountPrice}%</span>
+                            <span className="discounted-price">
+                              {currency.symbol} {(discountedPrice / currency.rate).toFixed(2)}
+                            </span>
+                          </>
+                        ) : (
+                          <span className="discounted-price">
+                            {currency.symbol} {(finalPrice / currency.rate).toFixed(2)}
+                          </span>
+                        )}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -162,55 +148,38 @@ const ProductList = ({ subcatid, filter }) => {
             })}
           </div>
 
-          {/* Pagination Controls */}
           <div className="pagination-main mb-5">
             <div className="row">
               <div className="col-sm-6 text-left">
-                Showing {indexOfFirstProduct + 1} to {Math.min(indexOfLastProduct, filteredProducts.length)} of {filteredProducts.length} products
+                Showing {indexOfFirst + 1} to {Math.min(indexOfLast, sortedProducts.length)} of {sortedProducts.length} products
               </div>
               <div className="col-sm-6 text-right">
                 <nav>
                   <ul className="pagination">
                     <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
-                      <button
-                        className="page-link "
-                        
-                        onClick={() => setCurrentPage(currentPage - 1)}
-                      >
-                        Previous
-                      </button>
+                      <button className="page-link" onClick={() => setCurrentPage(currentPage - 1)}>Previous</button>
                     </li>
                     {[...Array(totalPages)].map((_, index) => (
                       <li key={index} className={`page-item ${currentPage === index + 1 ? "active" : ""}`}>
                         <button
                           className="page-link"
+                          onClick={() => setCurrentPage(index + 1)}
                           style={{
                             backgroundColor: currentPage === index + 1 ? "#dc4298" : "#fff",
                             color: currentPage === index + 1 ? "white" : "#dc4298",
-                            border: `1px solid #dc4298`,
-                            outline: "none",
-                            
+                            border: `1px solid #dc4298`
                           }}
-                          
-                          onClick={() => setCurrentPage(index + 1)}
                         >
                           {index + 1}
                         </button>
                       </li>
                     ))}
                     <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
-                      <button
-                        className="page-link"
-                       
-                        onClick={() => setCurrentPage(currentPage + 1)}
-                      >
-                        Next
-                      </button>
+                      <button className="page-link" onClick={() => setCurrentPage(currentPage + 1)}>Next</button>
                     </li>
                   </ul>
                 </nav>
               </div>
-
             </div>
           </div>
         </>
@@ -218,5 +187,7 @@ const ProductList = ({ subcatid, filter }) => {
     </div>
   );
 };
+
+
 
 export default ProductList;

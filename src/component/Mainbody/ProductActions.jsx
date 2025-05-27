@@ -1,41 +1,45 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ProductActions = ({ productId, stock }) => {
   const [inWishlist, setInWishlist] = useState(false);
   const [inCart, setInCart] = useState(false);
 
   useEffect(() => {
-    const fetchStatus = async () => {
-      try {
-        // Fetch Wishlist
-        const wishlistRes = await axios.get('https://meeyalbackendnode-production.up.railway.app/api/wishlist', {
-          withCredentials: true,
-        });
-        const wishlistItems = wishlistRes.data;
-        const isInWishlist = wishlistItems.some(item =>
-          item.productId === productId || item.productId._id === productId
-        );
-        setInWishlist(isInWishlist);
+  const fetchStatus = async () => {
+    try {
+      // Fetch Wishlist
+      const wishlistRes = await axios.get('https://meeyalbackendnode-production.up.railway.app/api/wishlist', {
+        withCredentials: true,
+      });
+      const wishlistItems = wishlistRes.data;
+      const isInWishlist = wishlistItems.some(item =>
+        item.productId === productId || (item.productId && item.productId._id === productId)
+      );
+      setInWishlist(isInWishlist);
 
-        // Fetch Cart
-        const cartRes = await axios.get('https://meeyalbackendnode-production.up.railway.app/api/cart', {
-          withCredentials: true,
-        });
-        const cartItems = cartRes.data;
-        const isInCart = cartItems.some(item =>
-          item.productId === productId || item.productId._id === productId
-        );
-        setInCart(isInCart);
-      } catch (err) {
-        console.error('Error fetching status:', err);
-      }
-    };
+      // Fetch Cart
+      const cartRes = await axios.get('https://meeyalbackendnode-production.up.railway.app/api/cart', {
+        withCredentials: true,
+      });
+      const cartItems = cartRes.data;
+      const isInCart = cartItems.some(item =>
+        item.productId === productId || (item.productId && item.productId._id === productId)
+      );
+      setInCart(isInCart);
+    } catch (err) {
+      console.error('Error fetching status:', err);
+    }
+  };
 
-    fetchStatus();
-  }, [productId]);
+  fetchStatus();
+}, [productId]);
+
 
   const handleAction = async (action) => {
+    
     try {
       if (action === 'Add to Cart') {
         if (inCart) {
@@ -44,7 +48,8 @@ const ProductActions = ({ productId, stock }) => {
             data: { productId },
             withCredentials: true,
           });
-          alert(res.data.message || 'Removed from cart');
+          toast.success(res.data.message || 'Removed from cart');
+          //alert(res.data.message || 'Removed from cart');
           setInCart(false);
         } else {
           // Add to cart
@@ -53,7 +58,8 @@ const ProductActions = ({ productId, stock }) => {
             { productId, quantity: 1 },
             { withCredentials: true }
           );
-          alert(res.data.message || 'Added to cart');
+          toast.success(res.data.message || 'Added to cart');
+          //alert(res.data.message || 'Added to cart');
           setInCart(true);
         }
       }
@@ -64,7 +70,8 @@ const ProductActions = ({ productId, stock }) => {
             data: { productId },
             withCredentials: true,
           });
-          alert(res.data.message || 'Removed from wishlist');
+          toast.success(res.data.message || 'Removed from wishlist');
+          //alert(res.data.message || 'Removed from wishlist');
           setInWishlist(false);
         } else {
           const res = await axios.post(
@@ -72,7 +79,8 @@ const ProductActions = ({ productId, stock }) => {
             { productId },
             { withCredentials: true }
           );
-          alert(res.data.message || 'Added to wishlist');
+          toast.success(res.data.message || 'Added to wishlist');
+          //alert(res.data.message || 'Added to wishlist');
           setInWishlist(true);
         }
       }

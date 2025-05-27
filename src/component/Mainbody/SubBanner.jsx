@@ -23,7 +23,7 @@ const SubBanner = ({ newCollectionBanners, offerBanners }) => {
         },
       ];
   return (
-    <div className="html1 mt-20">
+    <div className="html1 mt-20 ">
       <div className="container">
         <div className="banner-all">
           {banners.map((banner, index) => (

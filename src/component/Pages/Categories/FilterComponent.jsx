@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect ,useRef} from "react";
 import { useCurrency } from "../../../CurrencyContext"; // Import currency context
 
 const FilterComponent = ({ onApplyFilters }) => {
   const { currency } = useCurrency(); // Get currency and conversion function
-
+ const isFirstRender = useRef(true);
   const [viewMode, setViewMode] = useState("grid");
   const [sortOption, setSortOption] = useState("default");
   const [limit, setLimit] = useState(12);
@@ -22,8 +22,12 @@ const FilterComponent = ({ onApplyFilters }) => {
   ];
   // Automatically send updated filters to parent component
   useEffect(() => {
-    onApplyFilters({ price: selectedPrice, sort: sortOption, limit,viewMode });
-  }, [selectedPrice, sortOption, limit, onApplyFilters,viewMode]);
+    if (isFirstRender.current) {
+      isFirstRender.current = false; // Skip the first render
+    } else {
+      onApplyFilters({ price: selectedPrice, sort: sortOption, limit, viewMode });
+    }
+  }, [selectedPrice, sortOption, limit, viewMode, onApplyFilters]);
 
   return (
     <div className="category-info p-2">
@@ -83,8 +87,7 @@ const FilterComponent = ({ onApplyFilters }) => {
       <option value="name-desc">Name (Z - A)</option>
       <option value="price-low-high">Price (Low → High)</option>
       <option value="price-high-low">Price (High → Low)</option>
-      <option value="rating-highest">Rating (Highest)</option>
-      <option value="rating-lowest">Rating (Lowest)</option>
+      
     </select>
 
     {/* Price Filter */}
