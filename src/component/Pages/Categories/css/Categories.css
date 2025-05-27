@@ -11,12 +11,7 @@
   border-right: 1px solid #ddd;
 }
 
-h2 {
-  font-size: 22px;
-  margin-bottom: 20px;
-  border-bottom: 2px solid #9D30b1;
-  padding-bottom: 5px;
-}
+
 
 .filter-group {
   margin-bottom: 20px;
@@ -50,28 +45,9 @@ h2 {
 }
 
 /* Optional: Change color of the rail (unselected range) */
-.price-slider .rc-slider-track {
-  background-color: #9D30b1;
-}
 
-/* Custom slider handle (thumb) */
-.price-slider .rc-slider-handle {
-  border: solid 2px #9D30b1;
-  background-color: #fff;
-  width: 16px;
-  height: 16px;
-  margin-top: -6px;
-}
 
-/* Optional: Change color of the rail (unselected range) */
-.price-slider .rc-slider-rail {
-  background-color: #ddd;
-}
 
-/* Optional: handle hover or active state */
-.price-slider .rc-slider-handle:active {
-  box-shadow: 0 0 5px #9D30b1;
-}
 
 .product-grid-container {
   flex: 1;
