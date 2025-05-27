@@ -10,9 +10,7 @@ import {
   ShieldCheck,
   BadgeCheck,
   Truck,
-  Undo2,
-  Contact,
-  PackageCheck,
+  Tag,
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
@@ -25,11 +23,8 @@ export default function SinglePage() {
 
   const allProducts = location.state?.allProducts || [];
   const product = allProducts.find((p) => p.id === id);
-
-
   const [selectedImage, setSelectedImage] = useState(0);
   const [discountsOpen, setDiscountsOpen] = useState(false);
-  const [supplierOpen, setSupplierOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("FABRIC");
   const [carouselIndex, setCarouselIndex] = useState(0);
 
@@ -41,7 +36,7 @@ export default function SinglePage() {
     }
   }, [product, navigate]);
 
-  if (!product) return null;
+
 
 
 
@@ -53,7 +48,6 @@ export default function SinglePage() {
     productImages,
     stock,
     subcategory,
-    image,
   } = product;
 
   const discountedPrice =
@@ -97,13 +91,13 @@ export default function SinglePage() {
 
   const handleAddToCart = async () => {
     try {
-      const res = await axios.post(
+      await axios.post(
         'https://meeyalbackendnode-production.up.railway.app/api/cart/add',
         { productId: product.id, quantity: 1 },
         { withCredentials: true }
       );
 
-      const data = res.data;
+
 
       setInCart(true);
     } catch (err) {
@@ -131,6 +125,9 @@ export default function SinglePage() {
       fetchCartStatus();
     }
   }, [product]);
+  if (!product) return null;
+  console.log("Product:", relatedProducts);
+
 
   return (
     <div className="single_page">
@@ -167,15 +164,16 @@ export default function SinglePage() {
             <div className="product-price">
               {discountPrice && discountPrice > 0 ? (
                 <>
+                  
+                  <span className="original-price">
+                   {currency.symbol}{" "}
+                    {(originalPrice / currency.rate).toFixed(2)}
+                  </span>
                   <span className="current-price">
                     {currency.symbol}{" "}
                     {(discountedPrice / currency.rate).toFixed(2)}
                   </span>
-                  <span className="original-price">
-                    MRP {currency.symbol}{" "}
-                    {(originalPrice / currency.rate).toFixed(2)}
-                  </span>
-                  <span className="discount">{discountPrice}% OFF</span>
+                  <span className="discount text-white">{discountPrice}% OFF</span>
                 </>
               ) : (
                 <span className="current-price">
@@ -202,17 +200,9 @@ export default function SinglePage() {
                   </a>
                 </span>
               </div>
-              <div className="guarantee-item">
-                <Truck size={20} />
-                <span>
-                  Free Shipping & Returns{" "}
-                  <a href="#" className="learn-more">
-                    *Learn more
-                  </a>
-                </span>
-              </div>
+
             </div>
-            
+
             <div className="action-buttons">
               <button
                 className="add-to-cart-btn"
@@ -229,49 +219,6 @@ export default function SinglePage() {
                 BUY NOW
               </button>
             </div>
-
-            <div className="product-tabs">
-              <div className="tabs-header">
-                {["STORY", "DESCRIPTION", "SHIPPING", "FABRIC"].map((tab) => (
-                  <button
-                    key={tab}
-                    className={activeTab === tab ? "active" : ""}
-                    onClick={() => setActiveTab(tab)}
-                  >
-                    {tab}
-                  </button>
-                ))}
-              </div>
-              <div className="tab-content">
-                {activeTab === "FABRIC" && (
-                  <div>
-                    <h3>Blended Organza</h3>
-                    <p>
-                      Elegant saree crafted with a blend of organza and premium
-                      fabrics. Lightweight, perfect for special occasions.
-                    </p>
-                    <div className="material-care">
-                      <h4>Material & Care</h4>
-                      <p>Dry Wash Only</p>
-                    </div>
-                  </div>
-                )}
-                {activeTab === "DESCRIPTION" && <p>{description}</p>}
-                {activeTab === "SHIPPING" && (
-                  <p>
-                    Free shipping on orders above ₹1500. Delivery within 5-7
-                    business days.
-                  </p>
-                )}
-                {activeTab === "STORY" && (
-                  <p>
-                    This product is part of our exclusive designer collection,
-                    crafted for elegance and timeless beauty.
-                  </p>
-                )}
-              </div>
-            </div>
-
             <div className="discounts-section">
               <button
                 className="discounts-header"
@@ -308,53 +255,64 @@ export default function SinglePage() {
               )}
             </div>
 
-            <div className="safety-section">
-              <h3>YOUR SAFETY IS OUR PRIORITY</h3>
-              <div className="safety-features">
-                <div className="safety-feature">
-                  <Undo2 size={48} />
-                  <span>Easy Returns</span>
-                </div>
-                <div className="safety-divider"></div>
-                <div className="safety-feature">
-                  <Contact size={48} />
-                  <span>No Contact Delivery</span>
-                </div>
-                <div className="safety-divider"></div>
-                <div className="safety-feature">
-                  <PackageCheck size={48} />
-                  <span>Safe & Clean Packaging</span>
-                </div>
-              </div>
-            </div>
 
-            <div className="supplier-section">
-              <button
-                className="supplier-header"
-                onClick={() => setSupplierOpen(!supplierOpen)}
-              >
-                <span>SUPPLIER INFORMATION</span>
-                {supplierOpen ? (
-                  <ChevronUp size={16} />
-                ) : (
-                  <ChevronDown size={16} />
-                )}
-              </button>
-              {supplierOpen && (
-                <div className="supplier-content">
-                  <p>
-                    Marketed By: Pyxis Brand Technologies Private Limited,
-                    Vaishnavi Silicon Terraces, #30/1, 2nd and 3rd Floor, Adugodi,
-                    Hosur Main Road, Bengaluru – 560 095
-                  </p>
-                </div>
-              )}
-            </div>
+
+
+
           </div>
         </div>
+        <div className="product-tabs">
+          <div className="tabs-header">
+            {["STORY", "DESCRIPTION", "SHIPPING", "FABRIC"].map((tab) => (
+              <button
+                key={tab}
+                className={activeTab === tab ? "active" : ""}
+                onClick={() => setActiveTab(tab)}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+          <div className="tab-content">
+            {activeTab === "FABRIC" && (
+              <div>
+                <h3>Blended Organza</h3>
+                <p>
+                  Elegant saree crafted with a blend of organza and premium
+                  fabrics. Lightweight, perfect for special occasions.
+                </p>
+                <div className="material-care">
+                  <h4>Material & Care</h4>
+                  <p>Dry Wash Only</p>
+                </div>
+              </div>
+            )}
+            {activeTab === "DESCRIPTION" && <p>{description}</p>}
+            {activeTab === "SHIPPING" && (
+              <p>
+                Free shipping on orders above ₹1500. Delivery within 5-7
+                business days.
+              </p>
+            )}
+            {activeTab === "STORY" && (
+              <p>
+                This product is part of our exclusive designer collection,
+                crafted for elegance and timeless beauty.
+              </p>
+            )}
+          </div>
+
+        </div>
+
+
 
         {relatedProducts.length > 0 && (
           <div className="related-products-carousel">
+            <h2 className="related-products-title">
+              <Tag size={24} style={{ marginRight: "10px" }} />
+              Related Products
+            </h2>
+
             <div className="related-carousel-wrapper">
               <button
                 className="carousel-arrow carousel-arrow-left"
@@ -384,22 +342,58 @@ export default function SinglePage() {
                       />
                     </div>
                     <div className="product-info">
-                      <h3 className="product-name">{item.title}</h3>
-                      <div className="product-price">
-                        <span className="current-price">
-                          ₹{" "}
-                          {(
-                            item.originalPrice *
-                            (1 - item.discountPrice / 100)
-                          ).toFixed(0)}
-                        </span>
-                        <span className="original-price">
-                          ₹ {item.originalPrice.toLocaleString()}
-                        </span>
-                        <span className="discount">
-                          ({item.discountPrice}% off)
-                        </span>
+                      <div className="product-description">
+                        <h4 className="product-title">
+                          <a href="#">{item.title}</a>
+                        </h4>
+                        <p className="sub-cat">
+                          {item.subcategory}
+                        </p>
+                        <p className="price">
+                          {item.discountPrice &&
+                            item.discountPrice > 0 ? (
+                            <>
+                              {/* Strikethrough Original Price */}
+                              <span className="original-price">
+                                <s>
+                                  {currency.symbol}{" "}
+                                  {(
+                                    item.originalPrice /
+                                    currency.rate
+                                  ).toFixed(2)}
+                                </s>
+                              </span>
+
+                              {/* Discount Percentage */}
+                              <span className="discount text-white">
+                                -{item.discountPrice}%
+                              </span>
+
+                              {/* Discounted Price */}
+                              <span className="discounted-price">
+                                {currency.symbol}&nbsp;
+                                {(
+                                  (item.originalPrice *
+                                    (100 -
+                                      item.discountPrice)) /
+                                  100 /
+                                  currency.rate
+                                ).toFixed(2)}
+                              </span>
+                            </>
+                          ) : (
+                            // If no discount, show only the original price
+                            <span className="discounted-price">
+                              {currency.symbol}{" "}
+                              {(
+                                item.originalPrice /
+                                currency.rate
+                              ).toFixed(2)}
+                            </span>
+                          )}
+                        </p>
                       </div>
+
                     </div>
                   </div>
                 ))}
