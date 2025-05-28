@@ -7,6 +7,7 @@ import Shop from "./Button/Shop";
 import Search from "./Button/Search";
 import Admin from "./Button/Admin";
 import Card from "./Button/Card";
+import Wishlist from "./Button/Wishlist";
 
 
 
@@ -90,9 +91,11 @@ const Header = () => {
                                         {showNav ? <FaTimes size={24} /> : <FaBars size={24} />}
                                     </button>
                                 )}
+                                <Wishlist />
                                 <Search />
                                 <Admin />
                                 <Card />
+                                
                             </div>
                         </div>
                     </div>

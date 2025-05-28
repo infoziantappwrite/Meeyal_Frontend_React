@@ -28,6 +28,7 @@ import About from "./component/Pages/About/About";
 import About1 from "./component/Pages/About/About1";
 import Contact from "./component/Pages/Contact/Contact";
 import CheckoutPage from "./component/Pages/Cart/CheckoutPage";
+import Wishlist from "./component/Pages/Wishlist/Wishlist";
 
 // ✅ 404 Not Found Component
 const NotFound = () => (
@@ -87,6 +88,7 @@ const AppLayout = () => {
           />
         </Route>
          <Route path="/checkout" element={<CheckoutPage />} />
+         <Route path="/wishlist" element={<Wishlist />} />
 
         {/* ✅ Catch-All Route for 404 Page */}
         <Route path="*" element={<NotFound />} />
