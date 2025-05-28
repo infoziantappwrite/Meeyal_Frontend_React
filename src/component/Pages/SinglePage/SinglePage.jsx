@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useCurrency } from "../../../CurrencyContext";
-import "./SinglePage.css";
 import axios from "axios";
-
+import "./SinglePage.css";
 
 import {
   ArrowLeft,
@@ -19,63 +18,102 @@ import {
 
 export default function SinglePage() {
   const { id } = useParams();
-  const location = useLocation();
   const navigate = useNavigate();
   const { currency } = useCurrency();
 
-  const allProducts = location.state?.allProducts || [];
-  const product = allProducts.find((p) => p.id === id);
-
-
+  const [product, setProduct] = useState(null);
+  
+  const [relatedProducts, setRelatedProducts] = useState([]);
   const [selectedImage, setSelectedImage] = useState(0);
-  const [discountsOpen, setDiscountsOpen] = useState(false);
   const [supplierOpen, setSupplierOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("FABRIC");
   const [carouselIndex, setCarouselIndex] = useState(0);
-
   const [inCart, setInCart] = useState(false);
+  
+
 
   useEffect(() => {
-    if (!product) {
-      navigate("/products");
+    const fetchProduct = async () => {
+      try {
+        const res = await axios.get(
+          `https://meeyaladminbackend-production.up.railway.app/api/products/${id}`
+        );
+        setProduct(res.data);
+      } catch (error) {
+        console.error("Failed to fetch product:", error);
+        navigate("/products");
+      }
+    };
+
+    fetchProduct();
+  }, [id, navigate]);
+
+  useEffect(() => {
+    const fetchRelatedProducts = async () => {
+      try {
+        const res = await axios.get(
+          `https://meeyaladminbackend-production.up.railway.app/api/products/${id}/related`
+        );
+        setRelatedProducts(res.data);
+      } catch (error) {
+        console.error("Failed to fetch related products:", error);
+      }
+    };
+
+    fetchRelatedProducts();
+  }, [id]);
+
+
+
+  
+  useEffect(() => {
+  const checkIfInCart = async () => {    
+    try {
+      const res = await axios.get(
+        `https://meeyalbackendnode-production.up.railway.app/api/cart/${id}`,
+        { withCredentials: true }
+      );
+
+      if (res.data) {
+        setInCart(true);
+      } else {
+        setInCart(false);
+      }
+    } catch (err) {
+      console.error('Error checking cart:', err);
     }
-  }, [product, navigate]);
+  };
+    checkIfInCart();
+}, [product]);
+
+
 
   if (!product) return null;
 
-
-
   const {
-    title,
-    description,
+    productName: title,
+    details: description,
     originalPrice,
     discountPrice,
-    productImages,
     stock,
-    subcategory,
-    image,
+    productImages = [],
   } = product;
 
-  const discountedPrice =
-    discountPrice && discountPrice > 0
-      ? (originalPrice * (100 - discountPrice)) / 100
-      : originalPrice;
-
-  const images =
-    productImages?.length > 0 ? productImages : ["/placeholder.svg"];
-
-  const relatedProducts = allProducts.filter(
-    (p) => p.subcategory === subcategory && p.id !== id
-  );
+  const images = productImages.map((img) => img.imageUrl) || [
+    "/placeholder.svg",
+  ];
+  const discountedPrice = discountPrice
+    ? (originalPrice * (100 - discountPrice)) / 100
+    : originalPrice;
 
   const getProductsPerView = () =>
     window.innerWidth < 768
       ? 1
       : window.innerWidth < 1024
-        ? 2
-        : window.innerWidth < 1280
-          ? 3
-          : 4;
+      ? 2
+      : window.innerWidth < 1280
+      ? 3
+      : 4;
 
   const productsPerView = getProductsPerView();
 
@@ -95,7 +133,7 @@ export default function SinglePage() {
   };
 
 
-  const handleAddToCart = async () => {
+   const handleAddToCart = async () => {
     try {
       const res = await axios.post(
         'https://meeyalbackendnode-production.up.railway.app/api/cart/add',
@@ -111,26 +149,8 @@ export default function SinglePage() {
     }
   };
 
-  useEffect(() => {
-    const fetchCartStatus = async () => {
-      try {
-        const result = await fetch(`https://meeyalbackendnode-production.up.railway.app/api/cart/${product.id}`, {
-          credentials: 'include' // same as axios `withCredentials: true`
-        });
-        if (result.ok) {
-          setInCart(true);
-        } else {
-          setInCart(false);
-        }
-      } catch (err) {
-        console.error('Error fetching cart status:', err);
-      }
-    };
 
-    if (product) {
-      fetchCartStatus();
-    }
-  }, [product]);
+
 
   return (
     <div className="single_page">
@@ -145,11 +165,12 @@ export default function SinglePage() {
               {images.map((img, index) => (
                 <div
                   key={index}
-                  className={`thumbnail ${selectedImage === index ? "selected" : ""
-                    }`}
+                  className={`thumbnail ${
+                    selectedImage === index ? "selected" : ""
+                  }`}
                   onClick={() => setSelectedImage(index)}
                 >
-                  <img src={img} alt={`Product thumbnail ${index + 1}`} />
+                  <img src={img} alt={`Thumbnail ${index + 1}`} />
                 </div>
               ))}
             </div>
@@ -159,13 +180,9 @@ export default function SinglePage() {
           </div>
 
           <div className="product-details">
-            <div className="product-title">
-              <h1>{title}</h1>
-              <p className="designer">Designer Collection</p>
-            </div>
-
+            <h1>{title}</h1>
             <div className="product-price">
-              {discountPrice && discountPrice > 0 ? (
+              {discountPrice ? (
                 <>
                   <span className="current-price">
                     {currency.symbol}{" "}
@@ -184,35 +201,6 @@ export default function SinglePage() {
               )}
             </div>
 
-            <p className="tax-info">
-              Inclusive of all taxes. Free Shipping above ₹1500.
-            </p>
-
-            <div className="product-guarantees">
-              <div className="guarantee-item">
-                <ShieldCheck size={20} />
-                <span>Authentic & Quality Assured</span>
-              </div>
-              <div className="guarantee-item">
-                <BadgeCheck size={20} />
-                <span>
-                  100% money back guarantee{" "}
-                  <a href="#" className="learn-more">
-                    *Learn more
-                  </a>
-                </span>
-              </div>
-              <div className="guarantee-item">
-                <Truck size={20} />
-                <span>
-                  Free Shipping & Returns{" "}
-                  <a href="#" className="learn-more">
-                    *Learn more
-                  </a>
-                </span>
-              </div>
-            </div>
-            
             <div className="action-buttons">
               <button
                 className="add-to-cart-btn"
@@ -243,19 +231,6 @@ export default function SinglePage() {
                 ))}
               </div>
               <div className="tab-content">
-                {activeTab === "FABRIC" && (
-                  <div>
-                    <h3>Blended Organza</h3>
-                    <p>
-                      Elegant saree crafted with a blend of organza and premium
-                      fabrics. Lightweight, perfect for special occasions.
-                    </p>
-                    <div className="material-care">
-                      <h4>Material & Care</h4>
-                      <p>Dry Wash Only</p>
-                    </div>
-                  </div>
-                )}
                 {activeTab === "DESCRIPTION" && <p>{description}</p>}
                 {activeTab === "SHIPPING" && (
                   <p>
@@ -269,62 +244,19 @@ export default function SinglePage() {
                     crafted for elegance and timeless beauty.
                   </p>
                 )}
-              </div>
-            </div>
-
-            <div className="discounts-section">
-              <button
-                className="discounts-header"
-                onClick={() => setDiscountsOpen(!discountsOpen)}
-              >
-                <span>AVAILABLE DISCOUNTS!</span>
-                {discountsOpen ? (
-                  <ChevronUp size={16} />
-                ) : (
-                  <ChevronDown size={16} />
+                {activeTab === "FABRIC" && (
+                  <>
+                    <h3>Blended Organza</h3>
+                    <p>
+                      Elegant saree crafted with a blend of organza and premium
+                      fabrics. Lightweight, perfect for special occasions.
+                    </p>
+                    <div className="material-care">
+                      <h4>Material & Care</h4>
+                      <p>Dry Wash Only</p>
+                    </div>
+                  </>
                 )}
-              </button>
-              {discountsOpen && (
-                <div className="discounts-content">
-                  <div className="discount-grid">
-                    <div className="discount-item">
-                      <div className="discount-title">
-                        FLAT 5% off above ₹3999
-                      </div>
-                      <div className="discount-subtitle">
-                        Discount applicable at checkout
-                      </div>
-                    </div>
-                    <div className="discount-item">
-                      <div className="discount-title">
-                        FLAT 10% off above ₹5999
-                      </div>
-                      <div className="discount-subtitle">
-                        Discount applicable at checkout
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <div className="safety-section">
-              <h3>YOUR SAFETY IS OUR PRIORITY</h3>
-              <div className="safety-features">
-                <div className="safety-feature">
-                  <Undo2 size={48} />
-                  <span>Easy Returns</span>
-                </div>
-                <div className="safety-divider"></div>
-                <div className="safety-feature">
-                  <Contact size={48} />
-                  <span>No Contact Delivery</span>
-                </div>
-                <div className="safety-divider"></div>
-                <div className="safety-feature">
-                  <PackageCheck size={48} />
-                  <span>Safe & Clean Packaging</span>
-                </div>
               </div>
             </div>
 
@@ -344,8 +276,8 @@ export default function SinglePage() {
                 <div className="supplier-content">
                   <p>
                     Marketed By: Pyxis Brand Technologies Private Limited,
-                    Vaishnavi Silicon Terraces, #30/1, 2nd and 3rd Floor, Adugodi,
-                    Hosur Main Road, Bengaluru – 560 095
+                    Vaishnavi Silicon Terraces, #30/1, 2nd and 3rd Floor,
+                    Adugodi, Hosur Main Road, Bengaluru – 560 095
                   </p>
                 </div>
               )}
@@ -368,23 +300,20 @@ export default function SinglePage() {
                 {visibleRelated.map((item) => (
                   <div
                     className="product-card-1"
-                    key={item.id}
-                    onClick={() =>
-                      navigate(`/productdetails/${item.id}`, {
-                        state: { allProducts },
-                      })
-                    }
+                    key={item._id}
+                    onClick={() => navigate(`/productdetails/${item._id}`)}
                     style={{ cursor: "pointer" }}
                   >
-
                     <div className="product-image">
                       <img
-                        src={item.image || "/placeholder.svg"}
-                        alt={item.title}
+                        src={
+                          item.productImages[0].imageUrl || "/placeholder.svg"
+                        }
+                        alt={item.productName}
                       />
                     </div>
                     <div className="product-info">
-                      <h3 className="product-name">{item.title}</h3>
+                      <h3 className="product-name">{item.productName}</h3>
                       <div className="product-price">
                         <span className="current-price">
                           ₹{" "}
@@ -394,7 +323,7 @@ export default function SinglePage() {
                           ).toFixed(0)}
                         </span>
                         <span className="original-price">
-                          ₹ {item.originalPrice.toLocaleString()}
+                          ₹ {item.originalPrice}
                         </span>
                         <span className="discount">
                           ({item.discountPrice}% off)
