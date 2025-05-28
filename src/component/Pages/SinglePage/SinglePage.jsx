@@ -98,7 +98,7 @@ export default function SinglePage() {
   const handleAddToCart = async () => {
     try {
       const res = await axios.post(
-        'http://localhost:8000/api/cart/add',
+        'https://meeyalbackendnode-production.up.railway.app/api/cart/add',
         { productId: product.id, quantity: 1 },
         { withCredentials: true }
       );
@@ -114,7 +114,7 @@ export default function SinglePage() {
   useEffect(() => {
     const fetchCartStatus = async () => {
       try {
-        const result = await fetch(`http://localhost:8000/api/cart/${product.id}`, {
+        const result = await fetch(`https://meeyalbackendnode-production.up.railway.app/api/cart/${product.id}`, {
           credentials: 'include' // same as axios `withCredentials: true`
         });
         if (result.ok) {

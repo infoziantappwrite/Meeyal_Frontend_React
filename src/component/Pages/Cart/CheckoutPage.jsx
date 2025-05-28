@@ -38,7 +38,7 @@ const CheckoutPage = () => {
 
   const fetchUserAddresses = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/api/addresses", {
+      const response = await axios.get("https://meeyalbackendnode-production.up.railway.app/api/addresses", {
         withCredentials: true,
       });
 
@@ -82,7 +82,7 @@ const handlePlaceOrder = async () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/orders",
+        "https://meeyalbackendnode-production.up.railway.app/api/orders",
         orderData,
         { withCredentials: true }
       );
@@ -90,7 +90,7 @@ const handlePlaceOrder = async () => {
       console.log("Order placed:", response.data);
       alert("Order placed successfully!");
 
-       await axios.delete('http://localhost:8000/api/cart/clear', {
+       await axios.delete('https://meeyalbackendnode-production.up.railway.app/api/cart/clear', {
       withCredentials: true,
     });
 
@@ -106,7 +106,7 @@ const handlePlaceOrder = async () => {
   const handleAddAddress = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:8000/api/addresses", newAddress, {
+      await axios.post("https://meeyalbackendnode-production.up.railway.app/api/addresses", newAddress, {
         withCredentials: true,
       });
       alert("Address added successfully!");
@@ -132,7 +132,7 @@ const handlePlaceOrder = async () => {
   }
 
   try {
-    await axios.delete(`http://localhost:8000/api/addresses/${addressId}`, {
+    await axios.delete(`https://meeyalbackendnode-production.up.railway.app/api/addresses/${addressId}`, {
       withCredentials: true,
     });
 

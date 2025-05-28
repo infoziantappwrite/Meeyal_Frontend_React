@@ -24,7 +24,7 @@ const CartPage = () => {
   const fetchCart = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:8000/api/cart/",
+        "https://meeyalbackendnode-production.up.railway.app/api/cart/",
         {
           withCredentials: true,
         });
@@ -45,7 +45,7 @@ const CartPage = () => {
   const increaseQuantity = async (item) => {
     try {
       await axios.post(
-        "http://localhost:8000/api/cart/add",
+        "https://meeyalbackendnode-production.up.railway.app/api/cart/add",
         { productId: item.productId._id },
         {
           withCredentials: true,
@@ -62,7 +62,7 @@ const CartPage = () => {
     if (item.quantity <= 1) return;
     try {
       await axios.put(
-        "http://localhost:8000/api/cart/reduce",
+        "https://meeyalbackendnode-production.up.railway.app/api/cart/reduce",
         { productId: item.productId._id },  // <- Ensure this is a valid ObjectId
         {
           withCredentials: true,
@@ -78,7 +78,7 @@ const CartPage = () => {
   const removeItem = async (item) => {
     try {
       await axios.delete(
-        `http://localhost:8000/api/cart/remove`,
+        `https://meeyalbackendnode-production.up.railway.app/api/cart/remove`,
         {
           withCredentials: true,
           data: { productId: item.productId._id },
@@ -92,7 +92,7 @@ const CartPage = () => {
 
   const handleClearCart = async () => {
     try {
-      const res = await axios.delete('http://localhost:8000/api/cart/clear', {
+      const res = await axios.delete('https://meeyalbackendnode-production.up.railway.app/api/cart/clear', {
         withCredentials: true, // this sends the cookie to the backend
       });
 

@@ -13,7 +13,7 @@ const Wishlist = () => {
   const navigate = useNavigate();
 
   const api = axios.create({
-    baseURL: "http://localhost:8000/api",
+    baseURL: "https://meeyalbackendnode-production.up.railway.app/api",
     withCredentials: true,
   });
 
