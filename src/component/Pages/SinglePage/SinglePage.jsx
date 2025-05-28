@@ -137,7 +137,7 @@ export default function SinglePage() {
     try {
       const res = await axios.post(
         'https://meeyalbackendnode-production.up.railway.app/api/cart/add',
-        { productId: product.id, quantity: 1 },
+        { productId: product._id, quantity: 1 },
         { withCredentials: true }
       );
 
