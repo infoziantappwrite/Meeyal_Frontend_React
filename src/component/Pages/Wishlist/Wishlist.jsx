@@ -112,7 +112,8 @@ const Wishlist = () => {
   };
 
   return (
-    <div className="wishlist_page">
+   <div className="wishlist_page_container">
+     <div className="wishlist_page">
       <div className="wishlist-container">
         <nav className="breadcrumb">
           <span>HOME / WISHLIST</span>
@@ -210,6 +211,7 @@ const Wishlist = () => {
         </div>
       </div>
     </div>
+   </div>
   );
 };
 

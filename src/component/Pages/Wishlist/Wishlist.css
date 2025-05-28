@@ -1,3 +1,4 @@
+.wishlist_page_container{
 .wishlist_page {
   background-color: #f8f9fa;
   min-height: 100vh;
@@ -287,4 +288,6 @@
     width: 100%;
     text-align: center;
   }
+}
+
 }
