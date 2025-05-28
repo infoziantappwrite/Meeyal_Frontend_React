@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./CartPage.css";
+import { Eye } from "lucide-react";
 
 // Format price in INR
 const formatPrice = (price) =>
@@ -16,7 +17,7 @@ const taxRate = 0.18;
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
-   const navigate = useNavigate();
+  const navigate = useNavigate();
 
   console.log("cartItems", cartItems);
 
@@ -103,7 +104,7 @@ const CartPage = () => {
     }
   };
 
-    const handleProceedToCheckout = () => {
+  const handleProceedToCheckout = () => {
     // Option 1: Save to localStorage
     localStorage.setItem("cartData", JSON.stringify(cartItems));
 
@@ -200,6 +201,7 @@ const CartPage = () => {
                                       strokeWidth={2} d="M12 4v16m8-8H4" />
                                   </svg>
                                 </button>
+
                               </div>
                               <div style={{ display: "flex", gap: "1rem" }}>
                                 <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
@@ -221,7 +223,13 @@ const CartPage = () => {
                                   )}
                                 </div>
 
-
+                                {/* 👉 VIEW BUTTON HERE */}
+                                <button
+                                  className="view-btn"
+                                  onClick={() => navigate(`/productdetails/${product._id}`)}
+                                >
+                                   <Eye size={16} strokeWidth={2} />
+                                </button>
 
                                 <button
                                   onClick={() => removeItem(item)}
