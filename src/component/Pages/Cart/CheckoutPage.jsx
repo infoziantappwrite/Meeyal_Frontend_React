@@ -157,17 +157,20 @@ const CheckoutPage = () => {
   // Calculate totals
   const subtotal = cartData.reduce((total, item) => {
     const product = item.productId;
-    const discountAmountPerItem =
-      product.originalPrice * (product.discountPrice / 100);
+    const discountAmountPerItem = product.originalPrice * (product.discountPrice / 100);
     const discountedPricePerItem = product.originalPrice - discountAmountPerItem;
     return total + discountedPricePerItem * item.quantity;
   }, 0);
 
-  const discountAmount = Math.round(subtotal * (discountPercentage / 100));
-  const discountedSubtotal = subtotal - discountAmount;
+  const taxRate = 0.18;
   const shipping = 150;
-  const tax = Math.round(discountedSubtotal * 0.18);
-  const total = discountedSubtotal + shipping + tax;
+
+  const tax = Math.round(subtotal * taxRate);
+  const totalBeforeDiscount = subtotal + shipping + tax;
+
+  const discountAmount = Math.round((totalBeforeDiscount * discountPercentage) / 100);
+
+  const finalTotal = totalBeforeDiscount - discountAmount;
 
   return (
     <div className="checkout-page">
@@ -189,9 +192,8 @@ const CheckoutPage = () => {
               {addresses.map((addr) => (
                 <label
                   key={addr._id}
-                  className={`address-card ${
-                    selectedAddressId === addr._id ? "selected" : ""
-                  }`}
+                  className={`address-card ${selectedAddressId === addr._id ? "selected" : ""
+                    }`}
                 >
                   <input
                     type="radio"
@@ -295,9 +297,8 @@ const CheckoutPage = () => {
           <h2 className="section-title">Payment Method</h2>
           <div className="payment-methods">
             <label
-              className={`payment-option ${
-                paymentMethod === "cod" ? "selected" : ""
-              }`}
+              className={`payment-option ${paymentMethod === "cod" ? "selected" : ""
+                }`}
             >
               <input
                 type="radio"
@@ -308,9 +309,8 @@ const CheckoutPage = () => {
               Cash on Delivery
             </label>
             <label
-              className={`payment-option ${
-                paymentMethod === "upi" ? "selected" : ""
-              }`}
+              className={`payment-option ${paymentMethod === "upi" ? "selected" : ""
+                }`}
             >
               <input
                 type="radio"
@@ -321,9 +321,8 @@ const CheckoutPage = () => {
               UPI / PayTM
             </label>
             <label
-              className={`payment-option ${
-                paymentMethod === "card" ? "selected" : ""
-              }`}
+              className={`payment-option ${paymentMethod === "card" ? "selected" : ""
+                }`}
             >
               <input
                 type="radio"
@@ -353,7 +352,7 @@ const CheckoutPage = () => {
                       (item.productId.originalPrice -
                         (item.productId.originalPrice *
                           item.productId.discountPrice) /
-                          100) * item.quantity
+                        100) * item.quantity
                     )}
                   </span>
                 </div>
@@ -364,10 +363,6 @@ const CheckoutPage = () => {
                 <span>{formatPrice(subtotal)}</span>
               </div>
               <div className="summary-line">
-                <span>Coupon Discount ({discountPercentage}%)</span>
-                <span>-{formatPrice(discountAmount)}</span>
-              </div>
-              <div className="summary-line">
                 <span>Shipping</span>
                 <span>{formatPrice(shipping)}</span>
               </div>
@@ -375,10 +370,15 @@ const CheckoutPage = () => {
                 <span>Tax (18%)</span>
                 <span>{formatPrice(tax)}</span>
               </div>
+              <div className="summary-line">
+                <span>Coupon Discount ({discountPercentage}%)</span>
+                <span>-{formatPrice(discountAmount)}</span>
+              </div>
               <div className="summary-total">
                 <strong>Total</strong>
-                <strong>{formatPrice(total)}</strong>
+                <strong>{formatPrice(finalTotal)}</strong>
               </div>
+
 
               <button
                 className="place-order-button"
