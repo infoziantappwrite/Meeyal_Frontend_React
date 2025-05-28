@@ -17,21 +17,20 @@ const taxRate = 0.18;
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
+  console.log("Cart Items:", cartItems);
+  
+  const [couponCode, setCouponCode] = useState("");
+  const [discountPercentage, setDiscountPercentage] = useState(0);
+  const [discountMessage, setDiscountMessage] = useState("");
+
   const navigate = useNavigate();
-
-  console.log("cartItems", cartItems);
-
 
   const fetchCart = async () => {
     try {
       const res = await axios.get(
         "https://meeyalbackendnode-production.up.railway.app/api/cart/",
-        {
-          withCredentials: true,
-        });
-
-
-
+        { withCredentials: true }
+      );
       setCartItems(res.data || []);
     } catch (err) {
       console.error("Error fetching cart:", err);
@@ -42,15 +41,12 @@ const CartPage = () => {
     fetchCart();
   }, []);
 
-  // Increase quantity using /add
   const increaseQuantity = async (item) => {
     try {
       await axios.post(
         "https://meeyalbackendnode-production.up.railway.app/api/cart/add",
         { productId: item.productId._id },
-        {
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
       fetchCart();
     } catch (err) {
@@ -58,16 +54,13 @@ const CartPage = () => {
     }
   };
 
-  // Reduce quantity using /reduce
   const reduceQuantity = async (item) => {
     if (item.quantity <= 1) return;
     try {
       await axios.put(
         "https://meeyalbackendnode-production.up.railway.app/api/cart/reduce",
-        { productId: item.productId._id },  // <- Ensure this is a valid ObjectId
-        {
-          withCredentials: true,
-        }
+        { productId: item.productId._id },
+        { withCredentials: true }
       );
       fetchCart();
     } catch (err) {
@@ -75,7 +68,6 @@ const CartPage = () => {
     }
   };
 
-  // Remove item using /remove
   const removeItem = async (item) => {
     try {
       await axios.delete(
@@ -93,36 +85,63 @@ const CartPage = () => {
 
   const handleClearCart = async () => {
     try {
-      const res = await axios.delete('https://meeyalbackendnode-production.up.railway.app/api/cart/clear', {
-        withCredentials: true, // this sends the cookie to the backend
-      });
-
-      console.log(res.data.message);
-      setCartItems([]); // clear frontend cart
+      await axios.delete(
+        "https://meeyalbackendnode-production.up.railway.app/api/cart/clear",
+        { withCredentials: true }
+      );
+      setCartItems([]);
     } catch (err) {
-      console.error('Error clearing cart:', err.response?.data?.message || err.message);
+      console.error(
+        "Error clearing cart:",
+        err.response?.data?.message || err.message
+      );
     }
   };
 
   const handleProceedToCheckout = () => {
-    // Option 1: Save to localStorage
     localStorage.setItem("cartData", JSON.stringify(cartItems));
-
-    // Navigate
+     localStorage.setItem("discountPercentage", JSON.stringify(discountPercentage));
     navigate("/checkout");
   };
 
+  const handleApplyCoupon = async () => {
+    if (!couponCode) {
+      setDiscountMessage("Please enter a coupon code.");
+      return;
+    }
+    try {
+      const res = await axios.post(
+        "https://meeyaladminbackend-production.up.railway.app/api/coupons/check",
+        { code: couponCode }
+      );
+      if (res.data && res.data.discountPercentage) {
+        setDiscountPercentage(res.data.discountPercentage);
+        setDiscountMessage(
+          `Coupon applied! You get ${res.data.discountPercentage}% off.`
+        );
+      } else {
+        setDiscountMessage("Invalid coupon.");
+      }
+    } catch (err) {
+      console.error("Error applying coupon:", err);
+      setDiscountMessage("Invalid or expired coupon.");
+    }
+  };
 
   const subtotal = cartItems.reduce((total, item) => {
     const product = item.productId;
-    const discountAmount = product.originalPrice * (product.discountPrice / 100);
+    const discountAmount =
+      product.originalPrice * (product.discountPrice / 100);
     const discountedPrice = product.originalPrice - discountAmount;
     return total + discountedPrice * item.quantity;
   }, 0);
 
   const tax = Math.round(subtotal * taxRate);
-  const total = subtotal + shipping + tax;
-
+  const totalBeforeDiscount = subtotal + shipping + tax;
+  const discountAmount = Math.round(
+    (totalBeforeDiscount * discountPercentage) / 100
+  );
+  const finalTotal = totalBeforeDiscount - discountAmount;
 
   return (
     <div className="cart_page_fullPage">
@@ -150,7 +169,12 @@ const CartPage = () => {
               <p className="empty-cart-message">
                 Looks like you haven't added any sarees to your cart yet.
               </p>
-              <button className="checkout-button">Continue Shopping</button>
+              <button
+                className="checkout-button"
+                onClick={() => navigate("/")}
+              >
+                Continue Shopping
+              </button>
             </div>
           ) : (
             <div className="cart-grid">
@@ -182,64 +206,95 @@ const CartPage = () => {
                                   onClick={() => reduceQuantity(item)}
                                   className="quantity-button"
                                 >
-                                  {/* minus icon */}
-                                  <svg className="icon-sm" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round"
-                                      strokeWidth={2} d="M20 12H4" />
+                                  <svg
+                                    className="icon-sm"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M20 12H4"
+                                    />
                                   </svg>
                                 </button>
-                                <span className="quantity-value">{item.quantity}</span>
+                                <span className="quantity-value">
+                                  {item.quantity}
+                                </span>
                                 <button
                                   onClick={() => increaseQuantity(item)}
                                   className="quantity-button"
                                 >
-                                  {/* plus icon */}
-                                  <svg className="icon-sm" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round"
-                                      strokeWidth={2} d="M12 4v16m8-8H4" />
+                                  <svg
+                                    className="icon-sm"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M12 4v16m8-8H4"
+                                    />
                                   </svg>
                                 </button>
-
                               </div>
                               <div style={{ display: "flex", gap: "1rem" }}>
-                                <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    gap: "1rem",
+                                    alignItems: "center",
+                                  }}
+                                >
                                   <div className="item-price-group">
                                     <span className="original-price">
-                                      {formatPrice(product.originalPrice * item.quantity)}
+                                      {formatPrice(
+                                        product.originalPrice * item.quantity
+                                      )}
                                     </span>
                                     <span className="discounted-price">
                                       {formatPrice(
-                                        (product.originalPrice - (product.originalPrice * product.discountPrice / 100)) * item.quantity
+                                        (product.originalPrice -
+                                          product.originalPrice *
+                                            (product.discountPrice / 100)) *
+                                          item.quantity
                                       )}
                                     </span>
                                   </div>
-
                                   {product.discountPrice > 0 && (
                                     <span className="discount-badge">
                                       {product.discountPrice}% OFF
                                     </span>
                                   )}
                                 </div>
-
-                                {/* 👉 VIEW BUTTON HERE */}
                                 <button
                                   className="view-btn"
-                                  onClick={() => navigate(`/productdetails/${product._id}`)}
+                                  onClick={() =>
+                                    navigate(`/productdetails/${product._id}`)
+                                  }
                                 >
-                                   <Eye size={16} strokeWidth={2} />
+                                  <Eye size={16} strokeWidth={2} />
                                 </button>
-
                                 <button
                                   onClick={() => removeItem(item)}
-
                                   className="remove-button"
                                 >
-                                  {/* trash icon */}
-                                  <svg className="icon" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round"
+                                  <svg
+                                    className="icon"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
                                       strokeWidth={2}
                                       d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                                     />
@@ -253,14 +308,12 @@ const CartPage = () => {
                     })}
                   </div>
                 </div>
-
                 <div className="cart-actions">
                   <button onClick={handleClearCart} className="clear-cart">
                     Clear Cart
                   </button>
                 </div>
               </div>
-
               <div>
                 <div className="card">
                   <div className="card-header">
@@ -279,12 +332,23 @@ const CartPage = () => {
                       <span>Tax (18% GST)</span>
                       <span>{formatPrice(tax)}</span>
                     </div>
+                    {discountPercentage > 0 && (
+                      <div className="summary-row">
+                        <span>Coupon Discount ({discountPercentage}%)</span>
+                        <span>-{formatPrice(discountAmount)}</span>
+                      </div>
+                    )}
                     <div className="summary-divider"></div>
                     <div className="summary-total">
                       <span>Total</span>
-                      <span className="total-amount">{formatPrice(total)}</span>
+                      <span className="total-amount">
+                        {formatPrice(finalTotal)}
+                      </span>
                     </div>
-                    <button onClick={handleProceedToCheckout} className="checkout-button">
+                    <button
+                      onClick={handleProceedToCheckout}
+                      className="checkout-button"
+                    >
                       Proceed to Checkout
                     </button>
                     <div className="coupon-section">
@@ -294,11 +358,20 @@ const CartPage = () => {
                           type="text"
                           placeholder="Enter coupon code"
                           className="coupon-input"
+                          value={couponCode}
+                          onChange={(e) => setCouponCode(e.target.value)}
                         />
-                        <button className="apply-button">Apply</button>
+                        <button
+                          onClick={handleApplyCoupon}
+                          className="apply-button"
+                        >
+                          Apply
+                        </button>
                       </div>
+                      {discountMessage && (
+                        <p className="discount-message">{discountMessage}</p>
+                      )}
                     </div>
-
                     <div className="payment-methods">
                       <p>We accept:</p>
                       <div className="payment-icons">
@@ -318,12 +391,11 @@ const CartPage = () => {
                     </div>
                   </div>
                 </div>
-
                 <div className="help-section">
                   <h3 className="help-title">Need Help?</h3>
                   <p className="help-text">
-                    Our customer service team is available 24/7 to assist you with
-                    any questions.
+                    Our customer service team is available 24/7 to assist you
+                    with any questions.
                   </p>
                   <a href="/contact" className="help-link">
                     Contact Support →
