@@ -79,12 +79,17 @@ const CheckoutPage = () => {
         discount: item.productId.discountPrice,
       })),
       subtotal,
-      discount: discountAmount,
+      discountAmount,           // NEW
+      discountPercentage,       // NEW
       tax,
       shipping,
-      total,
+      finalTotal,
       paymentMethod,
     };
+
+    console.log("Placing order with data:", orderData);
+    
+
 
     try {
       const response = await axios.post(
