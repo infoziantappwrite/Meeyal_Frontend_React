@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./CheckoutPage.css";
+const API = import.meta.env.VITE_API_URL;
+
 
 // Helper function to format price in INR
 const formatPrice = (price) =>
@@ -43,7 +45,7 @@ const CheckoutPage = () => {
   const fetchUserAddresses = async () => {
     try {
       const response = await axios.get(
-        "https://meeyalbackendnode-production.up.railway.app/api/addresses",
+        `${API}/api/addresses`,
         { withCredentials: true }
       );
 
@@ -66,6 +68,9 @@ const CheckoutPage = () => {
     const selectedAddress = addresses.find(
       (addr) => addr._id === selectedAddressId
     );
+    
+    console.log("Selected Address:", selectedAddress._id);
+    
     if (!selectedAddress) {
       alert("Please select a shipping address before placing the order.");
       return;
@@ -84,6 +89,7 @@ const CheckoutPage = () => {
       tax,
       shipping,
       finalTotal,
+      addressId:selectedAddress._id,
       paymentMethod,
     };
 
@@ -93,7 +99,7 @@ const CheckoutPage = () => {
 
     try {
       const response = await axios.post(
-        "https://meeyalbackendnode-production.up.railway.app/api/orders",
+        `${API}/api/orders`,
         orderData,
         { withCredentials: true }
       );
@@ -102,7 +108,7 @@ const CheckoutPage = () => {
       alert("Order placed successfully!");
 
       await axios.delete(
-        "https://meeyalbackendnode-production.up.railway.app/api/cart/clear",
+        `${API}/api/cart/clear`,
         { withCredentials: true }
       );
 
@@ -119,7 +125,7 @@ const CheckoutPage = () => {
     e.preventDefault();
     try {
       await axios.post(
-        "https://meeyalbackendnode-production.up.railway.app/api/addresses",
+        `${API}/api/addresses`,
         newAddress,
         { withCredentials: true }
       );
@@ -147,7 +153,7 @@ const CheckoutPage = () => {
 
     try {
       await axios.delete(
-        `https://meeyalbackendnode-production.up.railway.app/api/addresses/${addressId}`,
+        `${API}/api/addresses/${addressId}`,
         { withCredentials: true }
       );
 

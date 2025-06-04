@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./CartPage.css";
 import { Eye } from "lucide-react";
+const API = import.meta.env.VITE_API_URL;
+
 
 // Format price in INR
 const formatPrice = (price) =>
@@ -28,7 +30,7 @@ const CartPage = () => {
   const fetchCart = async () => {
     try {
       const res = await axios.get(
-        "https://meeyalbackendnode-production.up.railway.app/api/cart/",
+        `${API}/api/cart/`,
         { withCredentials: true }
       );
       setCartItems(res.data || []);
@@ -44,7 +46,7 @@ const CartPage = () => {
   const increaseQuantity = async (item) => {
     try {
       await axios.post(
-        "https://meeyalbackendnode-production.up.railway.app/api/cart/add",
+        `${API}/api/cart/add`,
         { productId: item.productId._id },
         { withCredentials: true }
       );
@@ -58,7 +60,7 @@ const CartPage = () => {
     if (item.quantity <= 1) return;
     try {
       await axios.put(
-        "https://meeyalbackendnode-production.up.railway.app/api/cart/reduce",
+        `${API}/api/cart/reduce`,
         { productId: item.productId._id },
         { withCredentials: true }
       );
@@ -71,7 +73,7 @@ const CartPage = () => {
   const removeItem = async (item) => {
     try {
       await axios.delete(
-        `https://meeyalbackendnode-production.up.railway.app/api/cart/remove`,
+        `${API}/api/cart/remove`,
         {
           withCredentials: true,
           data: { productId: item.productId._id },
@@ -86,7 +88,7 @@ const CartPage = () => {
   const handleClearCart = async () => {
     try {
       await axios.delete(
-        "https://meeyalbackendnode-production.up.railway.app/api/cart/clear",
+        `${API}/api/cart/clear`,
         { withCredentials: true }
       );
       setCartItems([]);

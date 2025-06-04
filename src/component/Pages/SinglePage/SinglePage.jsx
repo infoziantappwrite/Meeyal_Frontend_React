@@ -3,6 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useCurrency } from "../../../CurrencyContext";
 import axios from "axios";
 import "./SinglePage.css";
+const API = import.meta.env.VITE_API_URL;
+
 
 import {
   ArrowLeft,
@@ -70,7 +72,7 @@ export default function SinglePage() {
   const checkIfInCart = async () => {    
     try {
       const res = await axios.get(
-        `https://meeyalbackendnode-production.up.railway.app/api/cart/${id}`,
+        `${API}/api/cart/${id}`,
         { withCredentials: true }
       );
 
@@ -136,7 +138,7 @@ export default function SinglePage() {
    const handleAddToCart = async () => {
     try {
       const res = await axios.post(
-        'https://meeyalbackendnode-production.up.railway.app/api/cart/add',
+        `${API}/api/cart/add`,
         { productId: product._id, quantity: 1 },
         { withCredentials: true }
       );

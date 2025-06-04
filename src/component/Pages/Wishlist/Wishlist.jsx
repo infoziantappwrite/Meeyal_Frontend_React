@@ -5,6 +5,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { Eye } from "lucide-react";
+const API = import.meta.env.VITE_API_URL;
+
 
 const Wishlist = () => {
   const [wishlistItems, setWishlistItems] = useState([]);
@@ -13,7 +15,7 @@ const Wishlist = () => {
   const navigate = useNavigate();
 
   const api = axios.create({
-    baseURL: "https://meeyalbackendnode-production.up.railway.app/api",
+    baseURL: `${API}/api`,
     withCredentials: true,
   });
 
