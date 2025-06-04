@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../Header.css";
+const API = import.meta.env.VITE_API_URL;
+
 
 const Shop = ({ setShowNav }) => {
   const navigate = useNavigate();
@@ -23,7 +25,7 @@ const Shop = ({ setShowNav }) => {
 
   const fetchSubcategoriesAndCategories = async () => {
     try {
-      const res = await axios.get("https://meeyalbackendnode-production.up.railway.app/api/subcategory/all", {
+      const res = await axios.get(`${API}/api/subcategory/all`, {
         withCredentials: true
       });
 

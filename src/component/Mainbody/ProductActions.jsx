@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+const API = import.meta.env.VITE_API_URL;
+
 
 const ProductActions = ({ productId, stock }) => {
   const [inWishlist, setInWishlist] = useState(false);
@@ -12,7 +14,7 @@ const ProductActions = ({ productId, stock }) => {
   const fetchStatus = async () => {
     try {
       // Fetch Wishlist
-      const wishlistRes = await axios.get('https://meeyalbackendnode-production.up.railway.app/api/wishlist', {
+      const wishlistRes = await axios.get(`${API}/api/wishlist`, {
         withCredentials: true,
       });
       const wishlistItems = wishlistRes.data;
@@ -22,7 +24,7 @@ const ProductActions = ({ productId, stock }) => {
       setInWishlist(isInWishlist);
 
       // Fetch Cart
-      const cartRes = await axios.get('https://meeyalbackendnode-production.up.railway.app/api/cart', {
+      const cartRes = await axios.get(`${API}/api/cart`, {
         withCredentials: true,
       });
       const cartItems = cartRes.data;
@@ -45,7 +47,7 @@ const ProductActions = ({ productId, stock }) => {
       if (action === 'Add to Cart') {
         if (inCart) {
           // Remove from cart
-          const res = await axios.delete('https://meeyalbackendnode-production.up.railway.app/api/cart/remove', {
+          const res = await axios.delete(`${API}/api/cart/remove`, {
             data: { productId },
             withCredentials: true,
           });
@@ -55,7 +57,7 @@ const ProductActions = ({ productId, stock }) => {
         } else {
           // Add to cart
           const res = await axios.post(
-            'https://meeyalbackendnode-production.up.railway.app/api/cart/add',
+            `${API}/api/cart/add`,
             { productId, quantity: 1 },
             { withCredentials: true }
           );
@@ -67,7 +69,7 @@ const ProductActions = ({ productId, stock }) => {
 
       if (action === 'Add to Wishlist') {
         if (inWishlist) {
-          const res = await axios.delete('https://meeyalbackendnode-production.up.railway.app/api/wishlist', {
+          const res = await axios.delete(`${API}/api/wishlist`, {
             data: { productId },
             withCredentials: true,
           });
@@ -76,7 +78,7 @@ const ProductActions = ({ productId, stock }) => {
           setInWishlist(false);
         } else {
           const res = await axios.post(
-            'https://meeyalbackendnode-production.up.railway.app/api/wishlist',
+            `${API}/api/wishlist`,
             { productId },
             { withCredentials: true }
           );
