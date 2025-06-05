@@ -113,7 +113,7 @@ const CartPage = () => {
     }
     try {
       const res = await axios.post(
-        "https://meeyaladminbackend-production.up.railway.app/api/coupons/check",
+        `${AdminAPI}/api/coupons/check`,
         { code: couponCode }
       );
       if (res.data && res.data.discountPercentage) {

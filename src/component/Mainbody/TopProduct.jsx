@@ -9,6 +9,7 @@ import "swiper/css/pagination";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Mainbody.css";
 import TopProductActions from "./ProductActions"; 
+const AdminAPI = import.meta.env.VITE_Admin_API_URL;
 
 const TopProduct = () => {
   const [activeTab, setActiveTab] = useState("latest");
@@ -27,7 +28,7 @@ const TopProduct = () => {
     const fetchProducts = async () => {
       try {
         const response = await fetch(
-          "https://meeyaladminbackend-production.up.railway.app/api/products"
+          `${AdminAPI}/api/products`
         );
         const data = await response.json();
 
