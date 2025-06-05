@@ -4,6 +4,7 @@ import { useCurrency } from "../../../CurrencyContext";
 import axios from "axios";
 import "./SinglePage.css";
 const API = import.meta.env.VITE_API_URL;
+const AdminAPI = import.meta.env.VITE_Admin_API_URL;
 
 
 import {
@@ -27,8 +28,7 @@ export default function SinglePage() {
   
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [selectedImage, setSelectedImage] = useState(0);
-  const [supplierOpen, setSupplierOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("FABRIC");
+  const [activeTab, setActiveTab] = useState("Material");
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [inCart, setInCart] = useState(false);
   
@@ -38,7 +38,7 @@ export default function SinglePage() {
     const fetchProduct = async () => {
       try {
         const res = await axios.get(
-          `https://meeyaladminbackend-production.up.railway.app/api/products/${id}`
+          `${AdminAPI}/api/products/${id}`
         );
         setProduct(res.data);
       } catch (error) {
@@ -54,7 +54,7 @@ export default function SinglePage() {
     const fetchRelatedProducts = async () => {
       try {
         const res = await axios.get(
-          `https://meeyaladminbackend-production.up.railway.app/api/products/${id}/related`
+          `${AdminAPI}/api/products/${id}/related`
         );
         setRelatedProducts(res.data);
       } catch (error) {
@@ -98,8 +98,11 @@ export default function SinglePage() {
     originalPrice,
     discountPrice,
     stock,
+    material:material,
     productImages = [],
   } = product;
+
+  
 
   const images = productImages.map((img) => img.imageUrl) || [
     "/placeholder.svg",
@@ -215,14 +218,11 @@ export default function SinglePage() {
                     ? "ALREADY IN CART"
                     : "ADD TO CART"}
               </button>
-              <button className="buy-now-btn" disabled={stock === 0}>
-                BUY NOW
-              </button>
             </div>
 
             <div className="product-tabs">
               <div className="tabs-header">
-                {["STORY", "DESCRIPTION", "SHIPPING", "FABRIC"].map((tab) => (
+                {["DESCRIPTION", "SHIPPING", "Material"].map((tab) => (
                   <button
                     key={tab}
                     className={activeTab === tab ? "active" : ""}
@@ -240,49 +240,12 @@ export default function SinglePage() {
                     business days.
                   </p>
                 )}
-                {activeTab === "STORY" && (
-                  <p>
-                    This product is part of our exclusive designer collection,
-                    crafted for elegance and timeless beauty.
-                  </p>
-                )}
-                {activeTab === "FABRIC" && (
+                {activeTab === "Material" && (
                   <>
-                    <h3>Blended Organza</h3>
-                    <p>
-                      Elegant saree crafted with a blend of organza and premium
-                      fabrics. Lightweight, perfect for special occasions.
-                    </p>
-                    <div className="material-care">
-                      <h4>Material & Care</h4>
-                      <p>Dry Wash Only</p>
-                    </div>
+                      <p>{material || 'NA'}</p>
                   </>
                 )}
               </div>
-            </div>
-
-            <div className="supplier-section">
-              <button
-                className="supplier-header"
-                onClick={() => setSupplierOpen(!supplierOpen)}
-              >
-                <span>SUPPLIER INFORMATION</span>
-                {supplierOpen ? (
-                  <ChevronUp size={16} />
-                ) : (
-                  <ChevronDown size={16} />
-                )}
-              </button>
-              {supplierOpen && (
-                <div className="supplier-content">
-                  <p>
-                    Marketed By: Pyxis Brand Technologies Private Limited,
-                    Vaishnavi Silicon Terraces, #30/1, 2nd and 3rd Floor,
-                    Adugodi, Hosur Main Road, Bengaluru – 560 095
-                  </p>
-                </div>
-              )}
             </div>
           </div>
         </div>
