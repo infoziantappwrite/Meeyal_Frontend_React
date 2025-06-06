@@ -36,7 +36,7 @@ const Categories = () => {
   const [topProducts, setTopProducts] = useState([]);
   useEffect(() => {
     axios
-      .get("https://meeyaladminbackend-production.up.railway.app/api/products")
+      .get(`${AdminAPI}/api/products`)
       .then((res) => {
         const allProducts = res.data;
         //console.log("All Products:", allProducts); 

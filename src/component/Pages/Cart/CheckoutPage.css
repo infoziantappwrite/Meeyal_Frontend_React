@@ -1,200 +1,426 @@
 .checkout-page {
-  padding: 2rem;
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #fdf2f8, #ffffff);
+  padding: 2rem 1rem;
 }
+
+.checkout-page h1 {
+  text-align: center;
+  color: #be185d;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 3rem;
+  text-shadow: 0 2px 4px rgba(190, 24, 93, 0.1);
+}
+
 
 .checkout-grid {
-  display: flex;
-  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 3rem;
+  align-items: start;
 }
 
-.checkout-right {
-  flex: 1;
-  padding: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-}
+
 .checkout-left {
-  background: #fff;
-  padding: 20px;
-  border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  background: white;
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border: 1px solid #fce7f3;
 }
 
 .section-title {
-  font-size: 20px;
-  margin-bottom: 12px;
-  color: #333;
- 
-  display: inline-block;
-  padding-bottom: 4px;
+  color: #be185d;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #f9a8d4;
 }
 
+
 .no-address-message {
-  color: #888;
+  background: #fdf2f8;
+  border: 2px dashed #f9a8d4;
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  color: #be185d;
+  margin-bottom: 1.5rem;
 }
 
 .profile-link {
-  color: #dc4298;
+  color: #ec4899;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.profile-link:hover {
+  color: #be185d;
   text-decoration: underline;
 }
 
 .address-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .address-card {
+  position: relative;
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  padding: 12px;
-  border: 2px solid #ddd;
-  border-radius: 12px;
+  gap: 1rem;
+  padding: 1.5rem;
+  border: 2px solid #fce7f3;
+  border-radius: 16px;
+  background: #fefcff;
   cursor: pointer;
-  transition: border 0.3s, background 0.3s;
+  transition: all 0.3s ease;
 }
 
 .address-card:hover {
-  border-color: #dc4298;
-  background: #fff7f5;
+  border-color: #f9a8d4;
+  box-shadow: 0 8px 25px -5px rgba(236, 72, 153, 0.15);
+  transform: translateY(-2px);
 }
 
 .address-card.selected {
-  border-color: #dc4298;
-  background: #fff2ec;
+  border-color: #ec4899;
+  background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
+  box-shadow: 0 8px 25px -5px rgba(236, 72, 153, 0.25);
+}
+
+.address-card input[type="radio"] {
+  width: 20px;
+  height: 20px;
+  accent-color: #ec4899;
+  margin-top: 2px;
+}
+
+.address-details {
+  flex: 1;
+  line-height: 1.6;
+}
+
+.address-details strong {
+  color: #be185d;
+  font-size: 1.1rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.address-details div {
+  color: #6b7280;
+  margin-bottom: 0.25rem;
 }
 
 .default-tag {
-  background: #dc4298;
-  color: #fff;
-  padding: 2px 6px;
-  font-size: 10px;
-  border-radius: 8px;
-  margin-left: 8px;
-}
-
-.add-address-button {
-  background: #dc4298;
-  color: #fff;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  margin: 10px 0 20px;
-  transition: background 0.3s;
+  display: inline-block;
+  background: linear-gradient(135deg, #ec4899, #be185d);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
 }
 
 .delete-address-button {
-  background-color: #dc4298;
-  color: white;
-  border: none;
-  padding: 4px 8px;
-  border-radius: 4px;
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
   cursor: pointer;
-  margin-top: 4px;
+  transition: all 0.3s ease;
 }
 
 .delete-address-button:hover {
-  background-color: #cc187e;
+  background: #fee2e2;
+  border-color: #fca5a5;
+  transform: translateY(-1px);
+}
+
+
+.add-address-button {
+  width: 100%;
+  background: linear-gradient(135deg, #ec4899, #be185d);
+  color: white;
+  border: none;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 2rem;
 }
 
 .add-address-button:hover {
-  background: #dc4298;
+  background: linear-gradient(135deg, #be185d, #9d174d);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px -5px rgba(190, 24, 93, 0.4);
 }
 
+
 .address-form {
+  background: #fdf2f8;
+  padding: 2rem;
+  border-radius: 16px;
+  border: 1px solid #f9a8d4;
+  margin-bottom: 2rem;
   display: grid;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 1rem;
 }
 
 .address-form input {
-  padding: 8px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+  padding: 1rem;
+  border: 2px solid #fce7f3;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.address-form input:focus {
+  outline: none;
+  border-color: #ec4899;
+  box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
 }
 
 .save-address-button {
-  background: #28a745;
-  color: #fff;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
   border: none;
-  padding: 10px 16px;
-  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: all 0.3s ease;
 }
 
 .save-address-button:hover {
-  background: #218838;
+  background: linear-gradient(135deg, #059669, #047857);
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
 }
+
 
 .payment-methods {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-top: 12px;
+  gap: 1rem;
 }
 
 .payment-option {
-  padding: 10px;
-  border: 2px solid #ddd;
-  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+  border: 2px solid #fce7f3;
+  border-radius: 12px;
+  background: white;
   cursor: pointer;
-  transition: border 0.3s, background 0.3s;
+  transition: all 0.3s ease;
+  font-weight: 500;
 }
 
 .payment-option:hover {
-  border-color: #dc4298;
-  background: #fff7f5;
+  border-color: #f9a8d4;
+  background: #fefcff;
 }
 
 .payment-option.selected {
-  border-color: #dc4298;
-  background: #fff2ec;
+  border-color: #ec4899;
+  background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
+  color: #be185d;
 }
+
+.payment-option input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #ec4899;
+}
+
+
+.checkout-right {
+  background: white;
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border: 1px solid #fce7f3;
+  position: sticky;
+  top: 2rem;
+}
+
+.checkout-right h2 {
+  color: #be185d;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #f9a8d4;
+}
+
+.checkout-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid #fce7f3;
+  color: #374151;
+}
+
+.checkout-item:last-of-type {
+  border-bottom: 2px solid #f9a8d4;
+  margin-bottom: 1rem;
+}
+
+.summary-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.summary-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 0;
+  margin-top: 1rem;
+  border-top: 2px solid #f9a8d4;
+  font-size: 1.25rem;
+  color: #be185d;
+}
+
 
 .place-order-button {
   width: 100%;
-  margin-top: 1rem;
-  padding: 1rem;
-  background-color: #dc4298;
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  border-radius: 6px;
-}
-
-.place-order-button:hover {
-  background-color: #dc4299a7;
-}
-
-.add-address-button {
-  margin-top: 10px;
-  padding: 8px 12px;
-  background-color: #007bff;
+  background: linear-gradient(135deg, #ec4899, #be185d);
   color: white;
   border: none;
+  padding: 1.25rem 1.5rem;
+  border-radius: 16px;
+  font-size: 1.1rem;
+  font-weight: 700;
   cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.address-form {
-  margin-top: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+.place-order-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #be185d, #9d174d);
+  transform: translateY(-3px);
+  box-shadow: 0 15px 35px -5px rgba(190, 24, 93, 0.4);
 }
 
-.address-form input {
-  padding: 8px;
-  border: 1px solid #ccc;
+.place-order-button:disabled {
+  background: #d1d5db;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
-.save-address-button {
-  padding: 8px 12px;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  cursor: pointer;
+
+@media (max-width: 1024px) {
+  .checkout-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .checkout-right {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .checkout-page {
+    padding: 1rem 0.5rem;
+  }
+
+  .checkout-page h1 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .checkout-left,
+  .checkout-right {
+    padding: 1.5rem;
+  }
+
+  .address-form {
+    padding: 1.5rem;
+  }
+
+  .address-card {
+    padding: 1rem;
+  }
+
+  .delete-address-button {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .checkout-page h1 {
+    font-size: 1.75rem;
+  }
+
+  .checkout-left,
+  .checkout-right {
+    padding: 1rem;
+  }
+
+  .section-title {
+    font-size: 1.25rem;
+  }
+
+  .address-card {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .address-card input[type="radio"] {
+    align-self: flex-start;
+  }
+
+  .delete-address-button {
+    align-self: flex-start;
+    margin-top: 0.5rem;
+  }
+}
+
+
+
+.checkout-left,
+.checkout-right {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.add-address-button:focus,
+.save-address-button:focus,
+.place-order-button:focus,
+.delete-address-button:focus {
+  outline: 3px solid rgba(236, 72, 153, 0.5);
+  outline-offset: 2px;
+}
+
+.address-form input:focus,
+.payment-option:focus-within {
+  outline: 2px solid rgba(236, 72, 153, 0.5);
+  outline-offset: 2px;
 }

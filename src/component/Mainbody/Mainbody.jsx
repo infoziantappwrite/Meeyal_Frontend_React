@@ -3,6 +3,7 @@ import BannerSection from './BannerSection';
 import TopProduct from './TopProduct';
 import SubBanner from './SubBanner';
 import Testimonials from './Testimonials';
+const AdminAPI = import.meta.env.VITE_Admin_API_URL;
 
 const Mainbody = () => {
   const [banners, setMainBanners] = useState([]);
@@ -14,7 +15,7 @@ const Mainbody = () => {
   useEffect(() => {
     const fetchBannerImages = async () => {
       try {
-        const response = await fetch("https://meeyaladminbackend-production.up.railway.app/api/offer");
+        const response = await fetch(`${AdminAPI}/api/offer`);
         const data = await response.json();
 
         const formatBanners = (tag) =>

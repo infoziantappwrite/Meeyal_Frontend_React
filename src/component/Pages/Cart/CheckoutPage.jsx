@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./CheckoutPage.css";
+const API = import.meta.env.VITE_API_URL;
+
 
 // Helper function to format price in INR
 const formatPrice = (price) =>
@@ -24,27 +26,30 @@ const CheckoutPage = () => {
     postalCode: "",
     phone: "",
   });
+  const [discountPercentage, setDiscountPercentage] = useState(0);
 
   useEffect(() => {
-    // Load cart data from localStorage
     const storedCart = localStorage.getItem("cartData");
     if (storedCart) {
       setCartData(JSON.parse(storedCart));
     }
 
-    // Fetch saved user addresses
+    const storedDiscount = localStorage.getItem("discountPercentage");
+    if (storedDiscount) {
+      setDiscountPercentage(parseFloat(storedDiscount));
+    }
+
     fetchUserAddresses();
   }, []);
 
   const fetchUserAddresses = async () => {
     try {
-      const response = await axios.get("https://meeyalbackendnode-production.up.railway.app/api/addresses", {
-        withCredentials: true,
-      });
+      const response = await axios.get(
+        `${API}/api/addresses`,
+        { withCredentials: true }
+      );
 
       setAddresses(response.data);
-
-      // Auto-select the default address if one exists
       const defaultAddr = response.data.find((addr) => addr.isDefault);
       if (defaultAddr) {
         setSelectedAddressId(defaultAddr._id);
@@ -59,8 +64,13 @@ const CheckoutPage = () => {
     setPaymentMethod(e.target.value);
   };
 
-const handlePlaceOrder = async () => {
-    const selectedAddress = addresses.find((addr) => addr._id === selectedAddressId);
+  const handlePlaceOrder = async () => {
+    const selectedAddress = addresses.find(
+      (addr) => addr._id === selectedAddressId
+    );
+    
+    console.log("Selected Address:", selectedAddress._id);
+    
     if (!selectedAddress) {
       alert("Please select a shipping address before placing the order.");
       return;
@@ -74,15 +84,22 @@ const handlePlaceOrder = async () => {
         discount: item.productId.discountPrice,
       })),
       subtotal,
+      discountAmount,           // NEW
+      discountPercentage,       // NEW
       tax,
       shipping,
-      total,
-      paymentMethod
+      finalTotal,
+      addressId:selectedAddress._id,
+      paymentMethod,
     };
+
+    console.log("Placing order with data:", orderData);
+    
+
 
     try {
       const response = await axios.post(
-        "https://meeyalbackendnode-production.up.railway.app/api/orders",
+        `${API}/api/orders`,
         orderData,
         { withCredentials: true }
       );
@@ -90,25 +107,28 @@ const handlePlaceOrder = async () => {
       console.log("Order placed:", response.data);
       alert("Order placed successfully!");
 
-       await axios.delete('https://meeyalbackendnode-production.up.railway.app/api/cart/clear', {
-      withCredentials: true,
-    });
+      await axios.delete(
+        `${API}/api/cart/clear`,
+        { withCredentials: true }
+      );
 
       localStorage.removeItem("cartData");
+      localStorage.removeItem("discountPercentage");
       setCartData([]);
     } catch (error) {
       console.error("Error placing order:", error);
       alert("Failed to place order. Please try again later.");
     }
-};
-
+  };
 
   const handleAddAddress = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("https://meeyalbackendnode-production.up.railway.app/api/addresses", newAddress, {
-        withCredentials: true,
-      });
+      await axios.post(
+        `${API}/api/addresses`,
+        newAddress,
+        { withCredentials: true }
+      );
       alert("Address added successfully!");
       setShowAddressForm(false);
       setNewAddress({
@@ -127,35 +147,41 @@ const handlePlaceOrder = async () => {
   };
 
   const handleDeleteAddress = async (addressId) => {
-  if (!window.confirm("Are you sure you want to delete this address?")) {
-    return;
-  }
+    if (!window.confirm("Are you sure you want to delete this address?")) {
+      return;
+    }
 
-  try {
-    await axios.delete(`https://meeyalbackendnode-production.up.railway.app/api/addresses/${addressId}`, {
-      withCredentials: true,
-    });
+    try {
+      await axios.delete(
+        `${API}/api/addresses/${addressId}`,
+        { withCredentials: true }
+      );
 
-    alert("Address deleted successfully!");
-    fetchUserAddresses(); // Refresh the list
-  } catch (error) {
-    console.error("Error deleting address:", error);
-    alert("Failed to delete address. Please try again.");
-  }
-};
-
+      alert("Address deleted successfully!");
+      fetchUserAddresses();
+    } catch (error) {
+      console.error("Error deleting address:", error);
+      alert("Failed to delete address. Please try again.");
+    }
+  };
 
   // Calculate totals
   const subtotal = cartData.reduce((total, item) => {
     const product = item.productId;
-    const discountAmount = product.originalPrice * (product.discountPrice / 100);
-    const discountedPrice = product.originalPrice - discountAmount;
-    return total + discountedPrice * item.quantity;
+    const discountAmountPerItem = product.originalPrice * (product.discountPrice / 100);
+    const discountedPricePerItem = product.originalPrice - discountAmountPerItem;
+    return total + discountedPricePerItem * item.quantity;
   }, 0);
 
+  const taxRate = 0.18;
   const shipping = 150;
-  const tax = Math.round(subtotal * 0.18);
-  const total = subtotal + shipping + tax;
+
+  const tax = Math.round(subtotal * taxRate);
+  const totalBeforeDiscount = subtotal + shipping + tax;
+
+  const discountAmount = Math.round((totalBeforeDiscount * discountPercentage) / 100);
+
+  const finalTotal = totalBeforeDiscount - discountAmount;
 
   return (
     <div className="checkout-page">
@@ -164,145 +190,161 @@ const handlePlaceOrder = async () => {
       <div className="checkout-grid">
         {/* Left Side - Address & Payment */}
         <div className="checkout-left">
-  <h2 className="section-title">Select Shipping Address</h2>
-  {addresses.length === 0 ? (
-    <p className="no-address-message">
-      No saved addresses. Please add one below or in your{" "}
-      <a href="/profile" className="profile-link">profile page</a>.
-    </p>
-  ) : (
-    <div className="address-list">
-     {addresses.map((addr) => (
-  <label key={addr._id} className={`address-card ${selectedAddressId === addr._id ? 'selected' : ''}`}>
-    <input
-      type="radio"
-      name="selectedAddress"
-      value={addr._id}
-      checked={selectedAddressId === addr._id}
-      onChange={() => setSelectedAddressId(addr._id)}
-    />
-    <div className="address-details">
-      <strong>{addr.name}</strong>
-      <div>{addr.address}, {addr.city}, {addr.country}</div>
-      <div>Postal Code: {addr.postalCode}</div>
-      <div>Phone: {addr.phone}</div>
-      {addr.isDefault && <span className="default-tag">Default</span>}
-    </div>
+          <h2 className="section-title">Select Shipping Address</h2>
+          {addresses.length === 0 ? (
+            <p className="no-address-message">
+              No saved addresses. Please add one below or in your{" "}
+              <a href="/profile" className="profile-link">
+                profile page
+              </a>.
+            </p>
+          ) : (
+            <div className="address-list">
+              {addresses.map((addr) => (
+                <label
+                  key={addr._id}
+                  className={`address-card ${selectedAddressId === addr._id ? "selected" : ""
+                    }`}
+                >
+                  <input
+                    type="radio"
+                    name="selectedAddress"
+                    value={addr._id}
+                    checked={selectedAddressId === addr._id}
+                    onChange={() => setSelectedAddressId(addr._id)}
+                  />
+                  <div className="address-details">
+                    <strong>{addr.name}</strong>
+                    <div>
+                      {addr.address}, {addr.city}, {addr.country}
+                    </div>
+                    <div>Postal Code: {addr.postalCode}</div>
+                    <div>Phone: {addr.phone}</div>
+                    {addr.isDefault && (
+                      <span className="default-tag">Default</span>
+                    )}
+                  </div>
 
-    {/* DELETE BUTTON HERE */}
-    <button
-      className="delete-address-button"
-      onClick={() => handleDeleteAddress(addr._id)}
-    >
-      Delete
-    </button>
-  </label>
-))}
+                  <button
+                    className="delete-address-button"
+                    onClick={() => handleDeleteAddress(addr._id)}
+                  >
+                    Delete
+                  </button>
+                </label>
+              ))}
+            </div>
+          )}
 
-    </div>
-  )}
+          <button
+            className="add-address-button"
+            onClick={() => setShowAddressForm(!showAddressForm)}
+          >
+            {showAddressForm ? "Cancel" : "+ Add New Address"}
+          </button>
 
-  <button
-    className="add-address-button"
-    onClick={() => setShowAddressForm(!showAddressForm)}
-  >
-    {showAddressForm ? "Cancel" : "+ Add New Address"}
-  </button>
+          {showAddressForm && (
+            <form className="address-form" onSubmit={handleAddAddress}>
+              <input
+                type="text"
+                placeholder="Name"
+                value={newAddress.name}
+                onChange={(e) =>
+                  setNewAddress({ ...newAddress, name: e.target.value })
+                }
+                required
+              />
+              <input
+                type="text"
+                placeholder="Address"
+                value={newAddress.address}
+                onChange={(e) =>
+                  setNewAddress({ ...newAddress, address: e.target.value })
+                }
+                required
+              />
+              <input
+                type="text"
+                placeholder="City"
+                value={newAddress.city}
+                onChange={(e) =>
+                  setNewAddress({ ...newAddress, city: e.target.value })
+                }
+                required
+              />
+              <input
+                type="text"
+                placeholder="Country"
+                value={newAddress.country}
+                onChange={(e) =>
+                  setNewAddress({ ...newAddress, country: e.target.value })
+                }
+                required
+              />
+              <input
+                type="text"
+                placeholder="Postal Code"
+                value={newAddress.postalCode}
+                onChange={(e) =>
+                  setNewAddress({ ...newAddress, postalCode: e.target.value })
+                }
+                required
+              />
+              <input
+                type="text"
+                placeholder="Phone"
+                value={newAddress.phone}
+                onChange={(e) =>
+                  setNewAddress({ ...newAddress, phone: e.target.value })
+                }
+                required
+              />
+              <button type="submit" className="save-address-button">
+                Save Address
+              </button>
+            </form>
+          )}
 
-  {showAddressForm && (
-    <form className="address-form" onSubmit={handleAddAddress}>
-      <input
-        type="text"
-        placeholder="Name"
-        value={newAddress.name}
-        onChange={(e) =>
-          setNewAddress({ ...newAddress, name: e.target.value })
-        }
-        required
-      />
-      <input
-        type="text"
-        placeholder="Address"
-        value={newAddress.address}
-        onChange={(e) =>
-          setNewAddress({ ...newAddress, address: e.target.value })
-        }
-        required
-      />
-      <input
-        type="text"
-        placeholder="City"
-        value={newAddress.city}
-        onChange={(e) =>
-          setNewAddress({ ...newAddress, city: e.target.value })
-        }
-        required
-      />
-      <input
-        type="text"
-        placeholder="Country"
-        value={newAddress.country}
-        onChange={(e) =>
-          setNewAddress({ ...newAddress, country: e.target.value })
-        }
-        required
-      />
-      <input
-        type="text"
-        placeholder="Postal Code"
-        value={newAddress.postalCode}
-        onChange={(e) =>
-          setNewAddress({ ...newAddress, postalCode: e.target.value })
-        }
-        required
-      />
-      <input
-        type="text"
-        placeholder="Phone"
-        value={newAddress.phone}
-        onChange={(e) =>
-          setNewAddress({ ...newAddress, phone: e.target.value })
-        }
-        required
-      />
-      <button type="submit" className="save-address-button">
-        Save Address
-      </button>
-    </form>
-  )}
-
-  <h2 className="section-title">Payment Method</h2>
-  <div className="payment-methods">
-    <label className={`payment-option ${paymentMethod === 'cod' ? 'selected' : ''}`}>
-      <input
-        type="radio"
-        value="cod"
-        checked={paymentMethod === "cod"}
-        onChange={handlePaymentChange}
-      />
-      Cash on Delivery
-    </label>
-    <label className={`payment-option ${paymentMethod === 'upi' ? 'selected' : ''}`}>
-      <input
-        type="radio"
-        value="upi"
-        checked={paymentMethod === "upi"}
-        onChange={handlePaymentChange}
-      />
-      UPI / PayTM
-    </label>
-    <label className={`payment-option ${paymentMethod === 'card' ? 'selected' : ''}`}>
-      <input
-        type="radio"
-        value="card"
-        checked={paymentMethod === "card"}
-        onChange={handlePaymentChange}
-      />
-      Credit/Debit Card
-    </label>
-  </div>
-</div>
-
+          <h2 className="section-title">Payment Method</h2>
+          <div className="payment-methods">
+            <label
+              className={`payment-option ${paymentMethod === "cod" ? "selected" : ""
+                }`}
+            >
+              <input
+                type="radio"
+                value="cod"
+                checked={paymentMethod === "cod"}
+                onChange={handlePaymentChange}
+              />
+              Cash on Delivery
+            </label>
+            <label
+              className={`payment-option ${paymentMethod === "upi" ? "selected" : ""
+                }`}
+            >
+              <input
+                type="radio"
+                value="upi"
+                checked={paymentMethod === "upi"}
+                onChange={handlePaymentChange}
+              />
+              UPI / PayTM
+            </label>
+            <label
+              className={`payment-option ${paymentMethod === "card" ? "selected" : ""
+                }`}
+            >
+              <input
+                type="radio"
+                value="card"
+                checked={paymentMethod === "card"}
+                onChange={handlePaymentChange}
+              />
+              Credit/Debit Card
+            </label>
+          </div>
+        </div>
 
         {/* Right Side - Order Summary */}
         <div className="checkout-right">
@@ -319,8 +361,9 @@ const handlePlaceOrder = async () => {
                   <span>
                     {formatPrice(
                       (item.productId.originalPrice -
-                        (item.productId.originalPrice * item.productId.discountPrice) /
-                          100) * item.quantity
+                        (item.productId.originalPrice *
+                          item.productId.discountPrice) /
+                        100) * item.quantity
                     )}
                   </span>
                 </div>
@@ -338,10 +381,15 @@ const handlePlaceOrder = async () => {
                 <span>Tax (18%)</span>
                 <span>{formatPrice(tax)}</span>
               </div>
+              <div className="summary-line">
+                <span>Coupon Discount ({discountPercentage}%)</span>
+                <span>-{formatPrice(discountAmount)}</span>
+              </div>
               <div className="summary-total">
                 <strong>Total</strong>
-                <strong>{formatPrice(total)}</strong>
+                <strong>{formatPrice(finalTotal)}</strong>
               </div>
+
 
               <button
                 className="place-order-button"

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
  // Update with your actual Appwrite config import
+ const AdminAPI = import.meta.env.VITE_Admin_API_URL;
 
 
 const CategoryBanner = () => {
@@ -10,7 +11,7 @@ const CategoryBanner = () => {
   useEffect(() => {
     const fetchBannerImages = async () => {
       try {
-        const response = await fetch("https://meeyaladminbackend-production.up.railway.app/api/offer");
+        const response = await fetch(`${AdminAPI}/api/offer`);
         const data = await response.json();
 
         const formatBanners = (tag) =>
