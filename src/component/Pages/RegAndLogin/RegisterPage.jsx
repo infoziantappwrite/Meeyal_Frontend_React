@@ -22,10 +22,10 @@ const RegisterPage = () => {
     confirmPassword: "",
   });
 
-  // Handle Input Change
+  
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    //console.log(API_URL);
+    
   };
 
   // Handle Form Submit
@@ -51,8 +51,16 @@ const RegisterPage = () => {
         email: formData.email,
         password: formData.password,
       });
-
       toast.success("Registration successful!");
+      const frontendUrl = window.location.origin; // Get your frontend domain like http://localhost:3000 or your deployed URL
+
+  await axios.post(`${API_URL}/users/send-verification-email`, {
+    email: formData.email,
+    frontendUrl: frontendUrl,
+  });
+
+  toast.info("Verification email sent. Please check your inbox/spam folder.");
+
       navigate("/login");
     } catch (err) {
       const msg = err.response?.data?.message || "Registration failed!";
