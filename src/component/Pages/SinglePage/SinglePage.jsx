@@ -140,14 +140,13 @@ export default function SinglePage() {
 
    const handleAddToCart = async () => {
     try {
-      const res = await axios.post(
+     await axios.post(
         `${API}/api/cart/add`,
         { productId: product._id, quantity: 1 },
         { withCredentials: true }
       );
 
-      const data = res.data;
-
+      
       setInCart(true);
     } catch (err) {
       console.error("Error adding to cart:", err);

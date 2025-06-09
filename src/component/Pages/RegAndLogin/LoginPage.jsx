@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import Slider from "./Slider";
 import { toast } from "react-toastify";
@@ -13,41 +13,64 @@ const LoginPage = () => {
     password: "",
   });
   const [error, setError] = useState("");
+  const [showResend, setShowResend] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setError("");
+    e.preventDefault();
+    setError("");
+    setShowResend(false);
 
-  try {
-    await axios.post(
-      `${API_URL}/users/login`,
-      {
-        username: formData.username,
-        password: formData.password,
-      },
-      {
-        withCredentials: true, // ✅ This enables cookie handling
+    try {
+      await axios.post(
+        `${API_URL}/users/login`,
+        {
+          username: formData.username,
+          password: formData.password,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+
+      toast.success("Login successful!");
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 2000);
+    } catch (err) {
+      const message =
+        err.response?.data?.message ||
+        err.response?.data?.error ||
+        "Login failed.";
+      setError(message);
+      toast.error(message);
+
+      if (message === "Email not verified. Please check your inbox.") {
+        setShowResend(true);
       }
-    );
+    }
+  };
 
-    toast.success("Login successful!");
+  const handleResendVerification = async () => {
+    setResendLoading(true);
+    try {
+      await axios.post(`${API_URL}/users/send-verification-email`, {
+        email: formData.username,
+        frontendUrl: window.location.origin,
+      });
 
-    // Redirect after short delay (or use navigate from react-router-dom)
-    setTimeout(() => {
-      
-      window.location.href = "/"; // ✅ Full reload (or use navigate('/'))
-    }, 2000);
-  } catch (err) {
-    const message = err.response?.data?.message || err.response?.data?.error || "Login failed.";
-    toast.error(message);
-    setError(message);
-  }
-};
-
+      toast.info("Verification email sent. Please check your inbox.");
+    } catch (err) {
+      toast.error("Failed to resend verification email.");
+      console.error("Resend error:", err);
+    } finally {
+      setResendLoading(false);
+    }
+  };
 
   return (
     <div>
@@ -88,13 +111,13 @@ const LoginPage = () => {
                     {error && <p className="text-danger">{error}</p>}
                     <form onSubmit={handleSubmit}>
                       <div className="form-group">
-                        <label htmlFor="input-username">Username</label>
+                        <label htmlFor="input-username">Email</label>
                         <input
-                          type="text"
+                          type="email"
                           name="username"
                           value={formData.username}
                           onChange={handleChange}
-                          placeholder="Username"
+                          placeholder="Username or Email"
                           className="form-control"
                           required
                         />
@@ -113,6 +136,20 @@ const LoginPage = () => {
                       </div>
                       <button type="submit" className="btn btn-primary">Login</button>
                     </form>
+
+                    {/* Resend Verification */}
+                    {showResend && (
+                      <div className="mt-3">
+                        <p className="text-warning">Your email is not verified.</p>
+                        <button
+                          className="btn btn-outline-primary"
+                          onClick={handleResendVerification}
+                          disabled={resendLoading}
+                        >
+                          {resendLoading ? "Resending..." : "Resend Verification Email"}
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div> {/* End of Row */}

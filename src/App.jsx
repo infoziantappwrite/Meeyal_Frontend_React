@@ -29,6 +29,7 @@ import About1 from "./component/Pages/About/About1";
 import Contact from "./component/Pages/Contact/Contact";
 import CheckoutPage from "./component/Pages/Cart/CheckoutPage";
 import Wishlist from "./component/Pages/Wishlist/Wishlist";
+import VerifyEmail from "./component/Pages/RegAndLogin/VerifyEmail";
 
 // ✅ 404 Not Found Component
 const NotFound = () => (
@@ -50,7 +51,6 @@ const AppLayout = () => {
       "/about",
       "/about1",
       "/contact",
-
       "/productdetails/:id",
       "/cart",
       "/login",
@@ -77,6 +77,7 @@ const AppLayout = () => {
         <Route element={<PublicRoute />}>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
           
         </Route>
         <Route element={<ProtectedRoute />}>
