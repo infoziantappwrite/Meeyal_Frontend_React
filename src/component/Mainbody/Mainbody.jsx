@@ -3,6 +3,7 @@ import BannerSection from './BannerSection';
 import TopProduct from './TopProduct';
 import SubBanner from './SubBanner';
 import Testimonials from './Testimonials';
+import ProductGrid from './ProductGrid';
 const AdminAPI = import.meta.env.VITE_Admin_API_URL;
 
 const Mainbody = () => {
@@ -102,10 +103,12 @@ const Mainbody = () => {
 
 
                 {/* <!-- banner section --> */}
-              <SubBanner
+              {/* <SubBanner
         newCollectionBanners={newCollectionBanners}
         offerBanners={offerBanners}
-      />
+      /> */}
+
+      <ProductGrid />
                 {/* <!-- .banner section -->
 
 		<!-- Newsletter section -->	 */}

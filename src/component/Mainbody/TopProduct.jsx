@@ -8,8 +8,10 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Mainbody.css";
-import TopProductActions from "./ProductActions"; 
+import TopProductActions from "./ProductActions";
 const AdminAPI = import.meta.env.VITE_Admin_API_URL;
+import { Link } from "react-router-dom";
+
 
 const TopProduct = () => {
   const [activeTab, setActiveTab] = useState("latest");
@@ -100,9 +102,8 @@ const TopProduct = () => {
                             key={category}
                           >
                             <Nav.Link
-                              className={`nav-link hscp-hover ${
-                                activeTab === category ? "active" : ""
-                              }`}
+                              className={`nav-link hscp-hover ${activeTab === category ? "active" : ""
+                                }`}
                               id={`${category}-tab`}
                               onClick={() => setActiveTab(category)}
                               role="tab"
@@ -135,6 +136,7 @@ const TopProduct = () => {
                         products[category].slice(i, i + chunkSize)
                       );
                     }
+
 
                     return (
                       <Tab.Pane
@@ -191,46 +193,47 @@ const TopProduct = () => {
                                             {products["onSale"].some(
                                               (p) => p.id === product.id
                                             ) && (
-                                              <span className="badge sale-badge">
-                                                On Sale
-                                              </span>
-                                            )}
+                                                <span className="badge sale-badge">
+                                                  On Sale
+                                                </span>
+                                              )}
                                             {products["featured"].some(
                                               (p) => p.id === product.id
                                             ) && (
-                                              <span className="badge featured-badge">
-                                                Featured
-                                              </span>
-                                            )}
+                                                <span className="badge featured-badge">
+                                                  Featured
+                                                </span>
+                                              )}
                                             {product.stock === 0 && (
                                               <span className="badge out-of-badge">
                                                 out of stock
                                               </span>
                                             )}
 
-                                            <a
-                                              href="#"
+                                            <Link
+                                              to={`/productdetails/${product.id}`}
                                               className="thumb-image"
-                                              onClick={(e) =>
-                                                e.preventDefault()
-                                              }
+                                              state={{
+                                                product,
+                                                allProducts: products[activeTab],
+                                              }}
                                             >
                                               <img
                                                 src={product.image}
                                                 alt="Product"
-                                                onError={(e) =>
-                                                  (e.target.src =
-                                                    "https://dummyimage.com/300")
-                                                }
+                                                onError={(e) => {
+                                                  e.target.onerror = null;
+                                                  e.target.src = "https://dummyimage.com/300";
+                                                }}
                                               />
-                                            </a>
+                                            </Link>
+
 
                                             <div className="button-group">
                                               <TopProductActions
                                                 productId={product.id}
                                                 stock={product.stock}
                                               />{" "}
-                                              {/* Pass productId and stock to ProductActions */}
                                               <button
                                                 className="vipodha_quickview-button"
                                                 type="button"
@@ -256,54 +259,43 @@ const TopProduct = () => {
 
                                           <div className="product-description">
                                             <h4 className="product-title">
-                                              <a href="#">{product.title}</a>
+                                              <a href="#" className="product-link">
+                                                {product.title}
+                                                {product.discountPrice && product.discountPrice > 0 && (
+                                                  <span className="discount-badge">-{product.discountPrice}%</span>
+                                                )}
+                                              </a>
                                             </h4>
-                                            <p className="sub-cat">
+                                            {/* <p className="sub-cat">
                                               {product.subcategory}
-                                            </p>
+                                            </p> */}
                                             <p className="price">
-                                              {product.discountPrice &&
-                                              product.discountPrice > 0 ? (
+                                              {product.discountPrice && product.discountPrice > 0 ? (
                                                 <>
-                                                  {/* Strikethrough Original Price */}
                                                   <span className="original-price">
                                                     <s>
                                                       {currency.symbol}{" "}
-                                                      {(
-                                                        product.originalPrice /
-                                                        currency.rate
-                                                      ).toFixed(2)}
+                                                      {(product.originalPrice / currency.rate).toFixed(2)}
                                                     </s>
                                                   </span>
 
-                                                  {/* Discount Percentage */}
-                                                  <span className="discount">
-                                                    -{product.discountPrice}%
-                                                  </span>
-
-                                                  {/* Discounted Price */}
                                                   <span className="discounted-price">
                                                     {currency.symbol}&nbsp;
                                                     {(
-                                                      (product.originalPrice *
-                                                        (100 -
-                                                          product.discountPrice)) /
+                                                      (product.originalPrice * (100 - product.discountPrice)) /
                                                       100 /
                                                       currency.rate
                                                     ).toFixed(2)}
                                                   </span>
                                                 </>
                                               ) : (
-                                                // If no discount, show only the original price
                                                 <span className="discounted-price">
                                                   {currency.symbol}{" "}
-                                                  {(
-                                                    product.originalPrice /
-                                                    currency.rate
-                                                  ).toFixed(2)}
+                                                  {(product.originalPrice / currency.rate).toFixed(2)}
                                                 </span>
                                               )}
                                             </p>
+
                                           </div>
                                         </div>
                                       </div>
