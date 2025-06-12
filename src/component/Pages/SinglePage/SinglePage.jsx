@@ -158,159 +158,126 @@ export default function SinglePage() {
 
   return (
     <div className="single_page">
-      <div className="container">
-        <button className="back-link" onClick={() => navigate(-1)}>
-          <ArrowLeft size={16} /> Back to products
-        </button>
+    <div className="single-page-v2">
+  <div className="container">
+    <button className="back-button" onClick={() => navigate(-1)}>
+      <ArrowLeft size={18} /> Back to Products
+    </button>
 
-        <div className="product-grid">
-          <div className="product-images">
-            <div className="thumbnails">
-              {images.map((img, index) => (
-                <div
-                  key={index}
-                  className={`thumbnail ${
-                    selectedImage === index ? "selected" : ""
-                  }`}
-                  onClick={() => setSelectedImage(index)}
-                >
-                  <img src={img} alt={`Thumbnail ${index + 1}`} />
-                </div>
-              ))}
+    <div className="product-section">
+      <div className="gallery">
+        <div className="thumbnail-list">
+          {images.map((img, i) => (
+            <div
+              key={i}
+              className={`thumb ${selectedImage === i ? "active" : ""}`}
+              onClick={() => setSelectedImage(i)}
+            >
+              <img src={img} alt={`Thumbnail ${i + 1}`} />
             </div>
-            <div className="main-image">
-              <img src={images[selectedImage]} alt="Product main" />
-            </div>
-          </div>
+          ))}
+        </div>
+        <div className="main-display">
+          <img src={images[selectedImage]} alt="Selected product" />
+        </div>
+      </div>
 
-          <div className="product-details">
-            <h1>{title}</h1>
-            <div className="product-price">
-              {discountPrice ? (
-                <>
-                  <span className="current-price">
-                    {currency.symbol}{" "}
-                    {(discountedPrice / currency.rate).toFixed(2)}
-                  </span>
-                  <span className="original-price">
-                    MRP {currency.symbol}{" "}
-                    {(originalPrice / currency.rate).toFixed(2)}
-                  </span>
-                  <span className="discount">{discountPrice}% OFF</span>
-                </>
-              ) : (
-                <span className="current-price">
-                  {currency.symbol} {(originalPrice / currency.rate).toFixed(2)}
-                </span>
-              )}
-            </div>
+      <div className="details">
+        <h1 className="title">{title}</h1>
 
-            <div className="action-buttons">
-              <button
-                className="add-to-cart-btn"
-                disabled={stock === 0 || inCart}
-                onClick={handleAddToCart}
-              >
-                {stock === 0
-                  ? "OUT OF STOCK"
-                  : inCart
-                    ? "ALREADY IN CART"
-                    : "ADD TO CART"}
-              </button>
-            </div>
-
-            <div className="product-tabs">
-              <div className="tabs-header">
-                {["DESCRIPTION", "SHIPPING", "Material"].map((tab) => (
-                  <button
-                    key={tab}
-                    className={activeTab === tab ? "active" : ""}
-                    onClick={() => setActiveTab(tab)}
-                  >
-                    {tab}
-                  </button>
-                ))}
-              </div>
-              <div className="tab-content">
-                {activeTab === "DESCRIPTION" && <p>{description}</p>}
-                {activeTab === "SHIPPING" && (
-                  <p>
-                    Free shipping on orders above ₹1500. Delivery within 5-7
-                    business days.
-                  </p>
-                )}
-                {activeTab === "Material" && (
-                  <>
-                      <p>{material || 'NA'}</p>
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
+        <div className="pricing">
+          {discountPrice ? (
+            <>
+              <span className="price">
+                {currency.symbol}
+                {(discountedPrice / currency.rate).toFixed(2)}
+              </span>
+              <span className="mrp">
+                MRP {currency.symbol}
+                {(originalPrice / currency.rate).toFixed(2)}
+              </span>
+              <span className="off">({discountPrice}% OFF)</span>
+            </>
+          ) : (
+            <span className="price">
+              {currency.symbol}
+              {(originalPrice / currency.rate).toFixed(2)}
+            </span>
+          )}
         </div>
 
-        {relatedProducts.length > 0 && (
-          <div className="related-products-carousel">
-            <div className="related-carousel-wrapper">
-              <button
-                className="carousel-arrow carousel-arrow-left"
-                onClick={handlePrev}
-                disabled={carouselIndex === 0}
-              >
-                <ArrowLeft size={20} />
-              </button>
+        <button
+          className="add-cart"
+          disabled={stock === 0 || inCart}
+          onClick={handleAddToCart}
+        >
+          {stock === 0
+            ? "Out of Stock"
+            : inCart
+            ? "Already in Cart"
+            : "Add to Cart"}
+        </button>
 
-              <div className="products-wrapper">
-                {visibleRelated.map((item) => (
-                  <div
-                    className="product-card-1"
-                    key={item._id}
-                    onClick={() => navigate(`/productdetails/${item._id}`)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <div className="product-image">
-                      <img
-                        src={
-                          item.productImages[0].imageUrl || "/placeholder.svg"
-                        }
-                        alt={item.productName}
-                      />
-                    </div>
-                    <div className="product-info">
-                      <h3 className="product-name">{item.productName}</h3>
-                      <div className="product-price">
-                        <span className="current-price">
-                          ₹{" "}
-                          {(
-                            item.originalPrice *
-                            (1 - item.discountPrice / 100)
-                          ).toFixed(0)}
-                        </span>
-                        <span className="original-price">
-                          ₹ {item.originalPrice}
-                        </span>
-                        <span className="discount">
-                          ({item.discountPrice}% off)
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+        <div className="info-tabs">
+          {["DESCRIPTION", "SHIPPING", "Material"].map((tab) => (
+            <button
+              key={tab}
+              className={activeTab === tab ? "active" : ""}
+              onClick={() => setActiveTab(tab)}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
 
-              <button
-                className="carousel-arrow carousel-arrow-right"
-                onClick={handleNext}
-                disabled={
-                  carouselIndex >= relatedProducts.length - productsPerView
-                }
-              >
-                <ArrowLeft size={20} style={{ transform: "rotate(180deg)" }} />
-              </button>
-            </div>
-          </div>
-        )}
+        <div className="tab-body">
+          {activeTab === "DESCRIPTION" && <p>{description}</p>}
+          {activeTab === "SHIPPING" && (
+            <p>
+              Free shipping on orders above ₹1500. Delivered in 5–7 business
+              days.
+            </p>
+          )}
+          {activeTab === "Material" && <p>{material || "NA"}</p>}
+        </div>
       </div>
+    </div>
+
+    {relatedProducts.length > 0 && (
+      <div className="related-products-v2">
+        <h3 className="section-title">You may also like</h3>
+        <div className="related-grid">
+          {visibleRelated.map((item) => (
+            <div
+              className="related-item"
+              key={item._id}
+              onClick={() => navigate(`/productdetails/${item._id}`)}
+            >
+              <img
+                src={item.productImages[0].imageUrl || "/placeholder.svg"}
+                alt={item.productName}
+              />
+              <div className="info">
+                <h4>{item.productName}</h4>
+                <div className="price-wrap">
+                  <span className="final">
+                    ₹
+                    {(
+                      item.originalPrice *
+                      (1 - item.discountPrice / 100)
+                    ).toFixed(0)}
+                  </span>
+                  <span className="strike">₹{item.originalPrice}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+</div>
+
     </div>
   );
 }

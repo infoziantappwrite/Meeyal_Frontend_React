@@ -9,6 +9,7 @@ import Bestsellers from "./Bestsellers";
 import CategoryBanner from "./CategoryBanner";
 import ProductList from "./ProductList";
 import { useNavigate } from "react-router-dom";
+const AdminAPI = import.meta.env.VITE_Admin_API_URL;
 
 
 const Categories = () => {

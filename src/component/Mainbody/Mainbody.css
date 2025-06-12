@@ -39,7 +39,7 @@
   .container{
     position: relative;
     margin: 20px auto;
-    padding: 0 20px;
+    padding: 0 0px;
   }
 
   .product-card {
@@ -228,8 +228,6 @@
 
 /* "Sold Out" overlay */
 
-  
-}
 .overlay {
   position: absolute;
   top: 0;
@@ -307,4 +305,41 @@
   font-weight: bold;
   border-radius: 0 10px 0 10px;
   z-index: 10;
+}
+  
+.product-link {
+  font-size: 16px;
+  font-weight: 400;
+  color: #222;
+  text-decoration: none;
+  font-family: 'Inter', sans-serif;
+}
+
+.discount-badge {
+  background-color: #ff3b3b;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 6px;
+  margin-left: 8px;
+  border-radius: 4px;
+  vertical-align: middle;
+  text-transform: uppercase;
+}
+
+/* MOBILE OPTIMIZATION */
+@media (max-width: 480px) {
+  .product-link {
+    font-size: 14px;
+  }
+
+  .discount-badge {
+    font-size: 10px;
+    padding: 3px 5px;
+    margin-left: 4px;
+    margin-top: 6px;
+  }
+}
+
+
 }
