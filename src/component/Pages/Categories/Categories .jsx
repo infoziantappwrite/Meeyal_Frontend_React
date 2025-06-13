@@ -16,24 +16,38 @@ const Categories = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+console.log("Location State:", location.state);
+
 
 
   const subCategoryId = location?.state?.catid || null;
-  //console.log("subCategoryId :", subCategoryId); 
 
-  const allSubcategories = location?.state?.relatedSubcategories || [];
-  //nsole.log("allSubcategories", allSubcategories);
+  const isSubcategoryPage = !!location?.state?.catoname;
+
+ console.log("Is Subcategory Page:", isSubcategoryPage);
+ 
+const allSubcategories = location?.state?.sareeCategories
+  ?.find(cat => cat.category === location?.state?.catoname)
+  ?.subcategories || [];
+
+
+ console.log("All Subcategories:", allSubcategories);
+ 
+  
+
 
   const categoryName = location?.state?.catoname || "Sarees";
   const subCategoryName = location?.state?.subcatoname || "Banarasi Sarees";
 
   const relatedSubcategories = allSubcategories.filter(
-    (sub) => sub.id !== subCategoryId
-  );
+  (sub) => String(sub.id) !== String(subCategoryId)
+);
+
   //nsole.log("relatedSubcategories", relatedSubcategories);
 
   const [products, setProducts] = useState([]);
   const [filters, setFilters] = useState({});
+  
   const [topProducts, setTopProducts] = useState([]);
   useEffect(() => {
     axios
@@ -41,11 +55,9 @@ const Categories = () => {
       .then((res) => {
         const allProducts = res.data;
         //console.log("All Products:", allProducts); 
-        const filtered = subCategoryId
-          ? allProducts.filter(
-            (product) => product.subCategory?._id === subCategoryId
-          )
-          : allProducts;
+         const filtered = allProducts.filter(product => 
+      product.category?.name === categoryName // belongs to same category
+    );
 
         setProducts(filtered);
 
@@ -57,7 +69,7 @@ const Categories = () => {
             p.productImages.length > 0
         );
 
-        
+
         const formatted = available.map((p) => ({
           _id: p._id,
           title: p.productName,
@@ -82,6 +94,15 @@ const Categories = () => {
       });
   }, [subCategoryId]);
 
+  const displayedProducts = products.filter(product => {
+   const matchesSubcat = !filters.subcategory || filters.subcategory === 'All' || product.subCategory?._id === filters.subcategory;
+  const matchesPrice = !filters.price || (
+    product.discountPrice >= filters.price.min &&
+    product.discountPrice <= filters.price.max
+  );
+  return matchesSubcat && matchesPrice;
+});
+
   const handleApplyFilters = useCallback((filterData) => {
 
     setFilters(filterData);
@@ -90,17 +111,17 @@ const Categories = () => {
 
 
 
-  //console.log(displayedProducts);
+ 
 
 
   return (
     <>
       <div className="breadcrumb-banner">
         <div className="breadcrumb-content">
-          <h1 className="breadcrumb-title">{subCategoryName}</h1>
+          <h1 className="breadcrumb-title">{categoryName}</h1>
           <p className="breadcrumb-path">
             <i className="fa fa-home"></i> &nbsp;/&nbsp;
-            {categoryName} &nbsp;/&nbsp; {subCategoryName}
+            {categoryName} &nbsp;
           </p>
         </div>
       </div>
@@ -149,16 +170,16 @@ const Categories = () => {
               </div>
 
             </div>
-            <FilterComponent onApplyFilters={handleApplyFilters} />
-            <ProductList productsdata={products} filters={filters} />
+            <FilterComponent
+              onApplyFilters={handleApplyFilters}
+              subCategoryId={subCategoryId}
+              allSubcategories={[{ id: null, name: "All" }, ...allSubcategories]} 
+            />
+            <ProductList productsdata={displayedProducts} filters={filters} />
 
           </div>
         </div>
       </div>
-
-
-
-
     </>
   );
 };

@@ -84,7 +84,7 @@ const AppLayout = () => {
           <Route path="/profile" element={<Profile />} />
           <Route path="/productdetails/:id" element={<SinglePage />} />
           <Route
-            path="/shop/:categoryName/:subcategoryName"
+            path="/shop/:categoryName/"
             element={<Categories />}
           />
         </Route>
