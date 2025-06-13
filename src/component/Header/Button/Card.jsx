@@ -8,7 +8,8 @@ const Card = () => {
         <div id="cart" className="btn-group btn-block">
           {/* ✅ Wrap the button with Link to navigate to "/cart" */}
           <Link to="/cart" className="btn btn-inverse btn-block btn-lg dropdown-toggle">
-            <i className="fa-solid fa-cart-shopping"></i>
+            <i className="fa-solid fa-cart-shopping" style={{ fontSize: "20px" }}></i>
+
           </Link>
         </div>
       </div>

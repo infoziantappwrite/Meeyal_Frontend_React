@@ -31,6 +31,7 @@ const Shop = ({ setShowNav }) => {
       });
 
       const subcategories = res.data.data;
+      
 
       const grouped = subcategories.reduce((acc, curr) => {
         if (!curr.category || !curr.category.name) return acc;
@@ -39,6 +40,9 @@ const Shop = ({ setShowNav }) => {
         acc[categoryName].push({ id: curr._id, name: curr.name });
         return acc;
       }, {});
+
+    //  console.log("grouped subcategories:", grouped);
+     
 
       const formatted = Object.entries(grouped).map(([category, subs]) => ({
         category,

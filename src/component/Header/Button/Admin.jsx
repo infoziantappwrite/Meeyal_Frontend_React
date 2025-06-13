@@ -55,7 +55,7 @@ const Admin = () => {
         onClick={() => setOpen(!open)}
         className="p-2 rounded-full hover:bg-gray-100 transition duration-200"
       >
-        <FaUser className="text-gray-700 text-lg" />
+        <FaUser className="text-lg" />
       </button>
 
       {/* Dropdown Menu */}

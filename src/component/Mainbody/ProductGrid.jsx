@@ -12,8 +12,7 @@ const ProductGrid = () => {
     const [error, setError] = useState(null);
     const [banneriSaree, setbanneriSaree] = useState([]);
     const [SilkSaree, setSilkSaree] = useState([]);
-
-    console.log(products);
+    
 
 
     useEffect(() => {

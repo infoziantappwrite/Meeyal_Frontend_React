@@ -101,8 +101,9 @@ const Header = () => {
             </Link>
 
             <Search />
-            <Admin />
+            <Wishlist />
             <Card />
+            <Admin />
             <CurrencyButton />
           </nav>
         </div>
